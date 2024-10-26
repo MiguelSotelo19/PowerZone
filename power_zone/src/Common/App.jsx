@@ -1,4 +1,5 @@
 import Menu from "./Menu"
+import Footer from "./Footer";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
@@ -12,7 +13,7 @@ import area_equipos from './img/area_equipos.png'
 
 //CSS
 import './css/App.css'
-import Footer from "./Footer";
+
 
 function App() {
 
