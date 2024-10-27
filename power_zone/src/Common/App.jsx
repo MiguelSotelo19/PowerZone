@@ -20,7 +20,7 @@ function App() {
     return (
         <>
             <Menu />
-            <div className="">
+            <div>
 
             <div className="main-content d-flex justify-content-center">
                 <Card className="bg-dark text-white shadow-lg" style={{ minWidth: '70%', maxWidth: '80%' }}>
