@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Equipos_gimnasio {
+public class Equipos_gimnasioBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_equipo;

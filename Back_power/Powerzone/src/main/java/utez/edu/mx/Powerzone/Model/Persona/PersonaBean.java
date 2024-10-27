@@ -2,7 +2,7 @@ package utez.edu.mx.Powerzone.Model.Persona;
 
 import jakarta.persistence.*;
 @MappedSuperclass
-public class Persona {
+public class PersonaBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -13,7 +13,7 @@ public class Persona {
     private String rol;
     private String telefono;
 
-    public Persona(String nombre, String cotrasenia, String correo, String identificador_usuario, String rol, String telefono) {
+    public PersonaBean(String nombre, String cotrasenia, String correo, String identificador_usuario, String rol, String telefono) {
         this.nombre = nombre;
         this.cotrasenia = cotrasenia;
         this.correo = correo;
@@ -22,7 +22,7 @@ public class Persona {
         this.telefono = telefono;
     }
 
-    public Persona() {
+    public PersonaBean() {
     }
 
     public String getNombre() {

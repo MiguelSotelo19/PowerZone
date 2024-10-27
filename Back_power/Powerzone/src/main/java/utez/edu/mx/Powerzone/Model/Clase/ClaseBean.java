@@ -5,8 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
+import utez.edu.mx.Powerzone.Model.Planificacion.PlanificacionBean;
 
-import java.time.LocalTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "Clases")
@@ -14,7 +16,7 @@ import java.time.LocalTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Clase {
+public class ClaseBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,4 +32,7 @@ public class Clase {
 
     @Column(nullable = false, length = 150)
     private String nombre_profesor;
+
+    @OneToMany(mappedBy = "clase", fetch = FetchType.LAZY)
+    private Set<PlanificacionBean> planificacionBeans;
 }

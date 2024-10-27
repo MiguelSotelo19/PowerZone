@@ -2,17 +2,15 @@ package utez.edu.mx.Powerzone.Model.Empleado;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import utez.edu.mx.Powerzone.Model.Persona.Persona;
+import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 
 @Entity
 @Table(name = "Empleado")
 @Getter
 @Setter
-public class Empleado extends Persona {
+public class EmpleadoBean extends PersonaBean {
 
 
 }
