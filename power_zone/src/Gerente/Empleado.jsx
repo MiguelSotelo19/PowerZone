@@ -34,7 +34,7 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-function Clientes() {
+function Empleados() {
     const [ nombre, setNombre ] = useState("");
     const [ ape_p, setApe_p ] = useState("");
     const [ ape_m, setApe_m ] = useState("");    
@@ -85,21 +85,21 @@ function Clientes() {
                     src={cross}
                     alt='mas'
                     style={{ width: '2vh', height: '2vh' }}                    
-                    />&nbsp;&nbsp;Agregar clientes</Button>{' '}
+                    />&nbsp;&nbsp;Agregar empleados</Button>{' '}
                     <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" />
+                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar empleados" />
                 </div>
 
-                <h1 className="d-flex justify-content-center mt-5">Clientes</h1>
+                <h1 className="d-flex justify-content-center mt-5">Empleados</h1>
 
                 {/* Aquí iría un ciclo para cada cliente de la BD */}
                 <Contenedor 
-                title1={'Cliente'}
+                title1={'Nombre del empleado'}
                 text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title2={'Encargado de área'}
+                text2={'Limpieza'} 
+                title3={'Antigüedad'}
+                text3={'5 años'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -109,12 +109,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
+                title1={'Nombre del empleado'}
                 text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title2={'Encargado de área'}
+                text2={'Limpieza'} 
+                title3={'Antigüedad'}
+                text3={'5 años'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -124,12 +124,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
+                title1={'Nombre del empleado'}
                 text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title2={'Encargado de área'}
+                text2={'Limpieza'} 
+                title3={'Antigüedad'}
+                text3={'5 años'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -139,12 +139,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
+                title1={'Nombre del empleado'}
                 text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title2={'Encargado de área'}
+                text2={'Limpieza'} 
+                title3={'Antigüedad'}
+                text3={'5 años'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -153,36 +153,7 @@ function Clientes() {
                         <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
                     </>                    
                 } />
-                <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
-                title4={'Estado'}
-                acciones={
-                    <>
-                        <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                        <Button className='me-1' variant="success">Activar</Button>{' '}
-                        <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
-                    </>                    
-                } />
-                <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
-                title4={'Estado'}
-                acciones={
-                    <>
-                        <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                        <Button className='me-1' variant="success">Activar</Button>{' '}
-                        <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
-                    </>                    
-                } />                
+                                
                 
             </div>
 
@@ -191,9 +162,9 @@ function Clientes() {
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 style={customStyles}
-                contentLabel="Registrar Cliente"
+                contentLabel="Registrar Empleado"
             >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
+                <h2 style={{color: "black", fontSize: 35}}>Registrar Empleado</h2>
                 <form style={{
                     width: "90%",
                     display: "flex", 
@@ -231,7 +202,7 @@ function Clientes() {
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning">Registrar</Button>{' '}
                 </div>
                 
                 </form>
@@ -242,9 +213,9 @@ function Clientes() {
                 onAfterOpen={afterOpenModalAct}
                 onRequestClose={closeModalAct}
                 style={customStyles}
-                contentLabel="Actualizar Cliente"
+                contentLabel="Actualizar Empleado"
             >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar Cliente</h2>
+                <h2 style={{color: "black", fontSize: 35}}>Actualizar empleado</h2>
                 <form style={{
                     width: "90%",
                     display: "flex", 
@@ -277,12 +248,9 @@ function Clientes() {
                     <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
                 </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
-                </div>
-
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning">Actualizar</Button>{' '}
                 </div>
                 
                 </form>
@@ -292,4 +260,4 @@ function Clientes() {
     )
 }
 
-export default Clientes
+export default Empleados

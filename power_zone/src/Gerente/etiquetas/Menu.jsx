@@ -4,8 +4,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 //Imágenes
-import logo from '../img/logo.png'
-import user from '../img/user.png'
+import logo from '../../Common/img/logo.png'
+import user from '../../Common/img/user.png'
 
 function Menu() {
   return (
