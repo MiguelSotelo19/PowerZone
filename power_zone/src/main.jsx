@@ -5,14 +5,17 @@ import './index.css'
 
 //Páginas
 import App from './Common/App.jsx'
+import Acceso from './Common/Acceso.jsx';
 import Planes from './Common/Planes.jsx';
 import Clientes from './Gerente/Clientes.jsx'
+
 
 createRoot(document.getElementById('root')).render(
   <Router>
     <Routes>
       <Route path='/PowerZone' element={<App />} />
       <Route path='/PowerZone/Planes' element={<Planes />} />
+      <Route path='/PowerZone/Acceso' element={<Acceso />} />
       <Route path='/PowerZone/G/Clientes' element={<Clientes />} />
     </Routes>
   </Router>
