@@ -34,13 +34,13 @@ const customStyles = {
 
 Modal.setAppElement("#root");
 
-function Clientes() {
+function Equipos() {
     const [ nombre, setNombre ] = useState("");
-    const [ ape_p, setApe_p ] = useState("");
-    const [ ape_m, setApe_m ] = useState("");    
-    const [ num_telefonico, setNum ] = useState("");
-    const [ correo, setCorreo ] = useState("");
-    const [ contra, setContra ] = useState("");
+    const [ marca, setMarca ] = useState("");
+    const [ tipo_maquina, setTipo_maquina ] = useState("");    
+    const [ cantidad, setCantidad ] = useState("");
+    const [ estado, setEstado ] = useState("");
+    const [ area, setArea ] = useState("");
 
     //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
@@ -85,21 +85,21 @@ function Clientes() {
                     src={cross}
                     alt='mas'
                     style={{ width: '2vh', height: '2vh' }}                    
-                    />&nbsp;&nbsp;Agregar clientes</Button>{' '}
+                    />&nbsp;&nbsp;Agregar equipos</Button>{' '}
                     <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" />
+                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar equipos" />
                 </div>
 
-                <h1 className="d-flex justify-content-center mt-5">Clientes</h1>
+                <h1 className="d-flex justify-content-center mt-5">Equipos de Gimnasio</h1>
 
                 {/* Aquí iría un ciclo para cada cliente de la BD */}
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -109,12 +109,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -124,12 +124,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -139,12 +139,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -154,12 +154,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -169,12 +169,12 @@ function Clientes() {
                     </>                    
                 } />
                 <Contenedor 
-                title1={'Cliente'}
-                text1={'Bryan Alexis Miranda Durán'} 
-                title2={'Tipo de Membresía'}
-                text2={'Plus'} 
-                title3={'Número de membresía'}
-                text3={352478} 
+                title1={'Aparato'}
+                text1={'Caminadora'} 
+                title2={'Marca'}
+                text2={'Acme'} 
+                title3={'Cantidad'}
+                text3={'6 aparatos'} 
                 title4={'Estado'}
                 acciones={
                     <>
@@ -182,7 +182,8 @@ function Clientes() {
                         <Button className='me-1' variant="success">Activar</Button>{' '}
                         <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
                     </>                    
-                } />                
+                } />
+                                
                 
             </div>
 
@@ -191,9 +192,9 @@ function Clientes() {
                 onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 style={customStyles}
-                contentLabel="Registrar Cliente"
+                contentLabel="Registrar Equipo"
             >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
+                <h2 style={{color: "black", fontSize: 35}}>Registrar Equipo</h2>
                 <form style={{
                     width: "90%",
                     display: "flex", 
@@ -204,34 +205,37 @@ function Clientes() {
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" onChange={(e) => setNombre(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Nombre" onChange={(e) => setNombre(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" onChange={(e) => setApe_p(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Marca" onChange={(e) => setMarca(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" onChange={(e) => setApe_m(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Tipo de maquina" onChange={(e) => setTipo_maquina(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" onChange={(e) => setApe_p(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Cantidad" onChange={(e) => setCantidad(e.target.value)} />
                     </div>
                 </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setApe_m(e.target.value)} />
-                </div>
+                <div className="info-1">
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Estado" onChange={(e) => setEstado(e.target.value)} />
+                    </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" onChange={(e) => setApe_m(e.target.value)} />
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Área" onChange={(e) => setArea(e.target.value)} />
+                    </div>
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning">Registrar</Button>{' '}
                 </div>
                 
                 </form>
@@ -242,9 +246,9 @@ function Clientes() {
                 onAfterOpen={afterOpenModalAct}
                 onRequestClose={closeModalAct}
                 style={customStyles}
-                contentLabel="Actualizar Cliente"
+                contentLabel="Actualizar Equipo"
             >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar Cliente</h2>
+                <h2 style={{color: "black", fontSize: 35}}>Actualizar Equipo</h2>
                 <form style={{
                     width: "90%",
                     display: "flex", 
@@ -255,34 +259,37 @@ function Clientes() {
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Marca" value={marca} onChange={(e) => setMarca(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Tipo de maquina" value={tipo_maquina} onChange={(e) => setTipo_maquina(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Cantidad" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
                     </div>
                 </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                </div>
+                <div className="info-1">
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} />
+                    </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Área" value={area} onChange={(e) => setArea(e.target.value)} />
+                    </div>
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning">Actualizar</Button>{' '}
                 </div>
                 
                 </form>
@@ -292,4 +299,4 @@ function Clientes() {
     )
 }
 
-export default Clientes
+export default Equipos
