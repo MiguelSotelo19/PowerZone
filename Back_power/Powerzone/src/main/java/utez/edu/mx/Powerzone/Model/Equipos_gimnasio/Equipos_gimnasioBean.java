@@ -10,7 +10,6 @@ import lombok.Setter;
 @Table(name = "Equipos")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class Equipos_gimnasioBean {
     @Id
@@ -19,14 +18,27 @@ public class Equipos_gimnasioBean {
     @Column(nullable = false)
     private int cantidad;
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     private String estado;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String marca;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50)
     private String modelo;
 
+    public Equipos_gimnasioBean(int cantidad, String estado, String marca, String modelo) {
+        this.cantidad = cantidad;
+        this.estado = estado;
+        this.marca = marca;
+        this.modelo = modelo;
+    }
 
+    public Equipos_gimnasioBean(Long id_equipo, int cantidad, String estado, String marca, String modelo) {
+        this.id_equipo = id_equipo;
+        this.cantidad = cantidad;
+        this.estado = estado;
+        this.marca = marca;
+        this.modelo = modelo;
+    }
 }
