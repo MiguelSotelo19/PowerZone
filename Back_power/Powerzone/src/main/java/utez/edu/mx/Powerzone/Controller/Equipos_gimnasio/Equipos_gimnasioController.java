@@ -28,4 +28,9 @@ public class Equipos_gimnasioController {
     public ResponseEntity<ApiResponse> equiposUpdate(@RequestBody Equipos_gimnasioDTO dto, @PathVariable Long id){
         return service.UpdateEquipos(dto.toUpdate(), id);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse> equiposDelete(@PathVariable Long id){
+        return service.deleteEquipos(id);
+    }
 }

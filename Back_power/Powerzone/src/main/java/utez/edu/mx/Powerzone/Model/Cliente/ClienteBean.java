@@ -12,17 +12,23 @@ import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 @Table(name = "Clientes")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class ClienteBean extends PersonaBean {
     @Column(nullable = false)
     private int CVV;
 
     @Column(nullable = false, length = 16)
-    private int numero_tarjeta;
+    private String numero_tarjeta;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_id_membresia")
     private MembresiaBean membresia;
+
+    public ClienteBean(String nombre, String cotrasenia, String correo, String identificadorusuario, String rol, String telefono, int CVV, String numero_tarjeta, MembresiaBean membresia) {
+        super(nombre, cotrasenia, correo, identificadorusuario, rol, telefono);
+        this.CVV = CVV;
+        this.numero_tarjeta = numero_tarjeta;
+        this.membresia = membresia;
+    }
 }

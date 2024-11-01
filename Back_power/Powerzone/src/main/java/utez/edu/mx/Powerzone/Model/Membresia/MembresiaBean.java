@@ -33,15 +33,6 @@ public class MembresiaBean {
     @OneToMany(mappedBy = "membresia", fetch = FetchType.LAZY)
     private Set<ClienteBean> clienteBeans;
 
-    /*
-    *  @OneToMany(mappedBy = "pozoBean", fetch = FetchType.LAZY)
-    private Set<HistorialBean> datosPozoBeans;
-    *
-    * @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "fk_id_pozo")
-    private PozoBean pozoBean;
-    *
-    * */
+
 
 }
