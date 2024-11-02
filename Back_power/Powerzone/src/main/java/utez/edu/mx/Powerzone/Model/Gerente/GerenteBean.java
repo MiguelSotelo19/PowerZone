@@ -14,4 +14,7 @@ import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 @AllArgsConstructor
 public class GerenteBean extends PersonaBean {
 
+    public GerenteBean(String nombre, String cotrasenia, String correo, String identificadorusuario, String rol, String telefono) {
+        super(nombre, cotrasenia, correo, identificadorusuario, rol, telefono);
+    }
 }
