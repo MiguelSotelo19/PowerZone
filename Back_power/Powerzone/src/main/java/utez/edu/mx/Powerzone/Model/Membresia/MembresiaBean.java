@@ -19,7 +19,7 @@ import java.util.Set;
 public class MembresiaBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_membresia;
+    private Long id;
 
     @Column(nullable = false)
     private Double costo;
@@ -33,6 +33,10 @@ public class MembresiaBean {
     @OneToMany(mappedBy = "membresia", fetch = FetchType.LAZY)
     private Set<ClienteBean> clienteBeans;
 
-
-
+    public MembresiaBean(Double costo, String tipo_membresia, Historial_ventasBean historial, Set<ClienteBean> clienteBeans) {
+        this.costo = costo;
+        this.tipo_membresia = tipo_membresia;
+        this.historial = historial;
+        this.clienteBeans = clienteBeans;
+    }
 }
