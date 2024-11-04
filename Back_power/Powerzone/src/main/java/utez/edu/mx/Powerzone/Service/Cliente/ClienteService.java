@@ -35,9 +35,9 @@ public class ClienteService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<ApiResponse> saveCliente(ClienteBean cliente) throws Exception {
-        Optional<ClienteBean> foundCiente = repository.findByIdentificadorusuario(cliente.getIdentificadorusuario());
+        Optional<ClienteBean> foundCliente = repository.findByIdentificadorusuario(cliente.getIdentificadorusuario());
 
-        if(foundCiente.isPresent()){
+        if(foundCliente.isPresent()){
             return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, true, "Cliente ya registrado"), HttpStatus.BAD_REQUEST);
         }
 
