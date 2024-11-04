@@ -14,7 +14,7 @@ body, html {
   align-items: center;
   background: 
     linear-gradient(rgba(227, 213, 213, 0.811), rgba(143, 129, 129, 0.022)), 
-    url('../../assets/fondo.jpg'); /* Imagen de fondo */
+    url('../../assets/fondo.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -25,7 +25,7 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: calc(100vh - 50px); /* Ajusta para espacio del Footer, suponiendo que es de 50px */
+  
 
   
 }
@@ -36,8 +36,8 @@ body, html {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Mantener este ancho o ajustarlo según lo necesites */
-  max-width: 550px; /* Aumenta el ancho máximo para hacer el formulario más ancho */
+  width: 100%;
+  max-width: 550px; 
   background: rgba(255, 255, 255, 0.4); 
   padding: 2rem;
   border-radius: 30px;
@@ -106,9 +106,9 @@ body, html {
   transform: translateY(-50%);
   cursor: pointer;
   z-index: 100;
-  color: #6c757d; /* Color del ícono */
+  color: #6c757d; 
 }
-/* Media queries para hacer el diseño responsive */
+
 @media (max-width: 768px) {
   .formulario {
     max-width: 90%;

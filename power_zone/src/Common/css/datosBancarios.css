@@ -1,0 +1,98 @@
+body, html {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-body {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(227, 213, 213, 0.811), rgba(143, 129, 129, 0.022)),
+      url('../../assets/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top:5px;
+}
+
+
+.contLog {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    
+   
+  
+    
+  }
+
+.formulario {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 550px; 
+    background: rgba(255, 255, 255, 0.4); 
+    padding: 2rem;
+    border-radius: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 80px;
+}
+
+.formu {
+    width: 90%;
+    margin-top: 10%;
+}
+
+
+.info-1 {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-1 input {
+    width: 40%;
+}
+
+.field {
+    width: 20vw;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    align-items: center;    
+}
+
+.field input {
+    background-color: rgb(217, 217, 217);
+    text-align: center;
+    font-size: 18px;
+    width: 80%;
+    margin-top: 20px;
+}
+
+.field-1 {
+    width: 37vw;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    align-items: center;    
+}
+
+.field-1 input {
+    background-color: rgb(217, 217, 217);
+    text-align: center;
+    font-size: 18px;
+    width: 80%;
+    margin-top: 20px;
+}

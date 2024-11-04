@@ -1,31 +1,40 @@
-import React, { useState } from "react"; // Importa useState para gestionar el estado
+import React, { useState } from "react";
 import Footer from "./Footer";
 import Menu from "./Menu";
-import { Container, Form, Button } from "react-bootstrap"; // Asegúrate de importar estos componentes si aún no lo has hecho
+import { Container, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import "../Common/css/login.css";
+import { useNavigate } from 'react-router-dom';
+
 
 function Acceso() {
-  const [showPassword, setShowPassword] = useState(false); // Estado para la visibilidad de la contraseña
-
+  const [showPassword, setShowPassword] = useState(false); 
+  const navigate = useNavigate();
+  
   const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev); // Alterna el estado de visibilidad de la contraseña
+    setShowPassword((prev) => !prev); 
+  };
+
+  
+  
+  const handleRegisterClick = () => {
+    navigate('/PowerZone/DatosPersonales'); 
   };
 
   return (
     <>
       <Menu />
-      <div className="login-body">
-        <Container className="contLog">
+      <div className="login-body" >
+        <Container className="contLog" style={{margin:"50px"}}>
           <Form className="formulario">
             <Form.Group className="formu">
               <h1 className="ttl">Iniciar sesión</h1>
 
-              <Form.Label htmlFor="membresia" className="info">
+              <Form.Label htmlFor="membresia" className="info" >
                 Número de Membresía
               </Form.Label>
-              <Form.Control type="text" name="membresia" id="membresia" />
+              <Form.Control type="text" name="membresia" id="membresia" required />
 
               <Form.Label htmlFor="password" className="info">
                 Contraseña
@@ -35,6 +44,7 @@ function Acceso() {
                   type={showPassword ? "text" : "password"}
                   name="password"
                   id="password"
+                  required
                 />
                 <FontAwesomeIcon
                   icon={showPassword ? faEyeSlash : faEye}
@@ -49,9 +59,9 @@ function Acceso() {
 
               <p className="forgot-password">
                 ¿No tienes una cuenta?{" "}
-                <a href="#" className="register-link">
-                  Registrate aquí
-                </a>
+                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'p',color:'blue'}}>
+                  Regístrate aquí
+                </span>
               </p>
             </Form.Group>
           </Form>
