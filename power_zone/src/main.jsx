@@ -5,6 +5,7 @@ import './index.css'
 
 //Páginas
 import App from './Common/App.jsx'
+import Acceso from './Common/Acceso.jsx';
 import Planes from './Common/Planes.jsx';
 import Clientes from './Gerente/Clientes.jsx'
 import Clases from './Gerente/Clases.jsx'
@@ -12,6 +13,10 @@ import Membresias from './Gerente/Membresias.jsx';
 import Empleados from './Gerente/Empleado.jsx';
 import Equipos from './Gerente/Equipos.jsx';
 import Ingresos from './Gerente/Ingresos.jsx';
+import Personales from './Common/DatosPersoales.jsx'
+import Banco from './Common/DatosBancarios.jsx'
+
+
 
 createRoot(document.getElementById('root')).render(
   <Router>
@@ -29,6 +34,9 @@ createRoot(document.getElementById('root')).render(
 
       {/*Página por defecto*/}
       <Route path="/" element={<Navigate to="/PowerZone" replace />} />
+      <Route path='/PowerZone/Acceso' element={<Acceso />} />
+      <Route path='/PowerZone/DatosPersonales' element={<Personales />} />
+      <Route path='/PowerZone/DatosBancarios' element={<Banco />}/>
     </Routes>
   </Router>
 )
