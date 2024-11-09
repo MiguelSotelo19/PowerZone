@@ -11,7 +11,7 @@ import Button from 'react-bootstrap/Button';
 import Menu from "./etiquetas/Menu"
 import Contenedor from "./etiquetas/Contenedor"
 
-
+ 
 //CSS
 import './css/Clientes.css'
 
@@ -114,6 +114,11 @@ function Clientes () {
         setActIsOpen(false);
     }
 
+    function regresarModal() {
+        closMemModal();
+        openModal();
+    }
+
     //Envío de formulario
     const validar = (metodo) => {
         event.preventDefault();
@@ -122,7 +127,7 @@ function Clientes () {
         if(nombre.trim() === ""){
             show_alerta("Escribe el nombre del cliente", "warning");
         }else if(fecha_venc.trim() === ""){
-            show_alerta("Escribe el la fecha de vencimiento", "warning");
+            show_alerta("Escribe la fecha de vencimiento", "warning");
         } else if(tipo_tarjeta.trim() === ""){
             show_alerta("Escribe el tipo de tarjeta", "warning");
         } else if(cvv.trim() === ""){
@@ -187,6 +192,20 @@ function Clientes () {
         });
     }
 
+    //Filtrado
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Filtrar equipos
+    const filteredClientes = clientes.filter(cliente => 
+        cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        cliente.identificadorusuario.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    // Actualizar
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
     return (
         <>
             <Menu />
@@ -202,12 +221,12 @@ function Clientes () {
                     style={{ width: '2vh', height: '2vh' }}                    
                     />&nbsp;&nbsp;Agregar clientes</Button>{' '}
                     <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" />
+                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} />
                 </div>
 
                 <h1 className="d-flex justify-content-center mt-5">Clientes</h1>
 
-                {clientes.map((cliente, i) => {
+                {filteredClientes.map((cliente, i) => {
                     return (
                         <Contenedor 
                             key={cliente.id + i}
@@ -227,9 +246,7 @@ function Clientes () {
                             } 
                         />
                     );
-                })}
-
-                                
+                })}       
                 
             </div>
 
@@ -320,7 +337,8 @@ function Clientes () {
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={regresarModal}>Regresar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2 ms-5" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
                 </div>
                 
                 </form>
