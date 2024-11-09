@@ -9,7 +9,7 @@ public class PersonaBean {
     private String nombre;
     private String cotrasenia;
     private String correo;
-    @Column(name = "identificador_usuario")
+    @Column(name = "identificadorusuario")
     private String identificadorusuario;
     private String rol;
     private String telefono;

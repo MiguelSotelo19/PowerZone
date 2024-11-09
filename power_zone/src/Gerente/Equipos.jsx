@@ -48,7 +48,7 @@ function Equipos() {
     const [ estado, setEstado ] = useState("");
     const [ area, setArea ] = useState("");
 
-    //Traer datos de cliente
+    //Traer datos de equipo
     useEffect(() => {     
         getEquipos();
     }, [])
