@@ -20,10 +20,10 @@ function Menu() {
             />
           </Navbar.Brand>
           <Nav className="justify-content-end">
-            <Nav.Link className="m-1 me-3 fs-5" href="#home">Inicio</Nav.Link>
-            <Nav.Link className="m-1 me-3 fs-5" href="#features">Planes</Nav.Link>
-            <Nav.Link className="m-1 me-3 fs-5" href="#pricing">Acceso</Nav.Link>
-            <Button className="m-1 fs-5 fw-bold" variant="warning">¡Inscribite!</Button>{' '}
+            <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone">Inicio</Nav.Link>
+            <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone/Planes">Planes</Nav.Link>
+            <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone/Acceso">Acceso</Nav.Link>
+            <Button className="m-1 fs-5 fw-bold" variant="warning" href='/PowerZone/Inscribete'>¡Inscribete!</Button>{' '}
           </Nav>
         </Container>
       </Navbar>

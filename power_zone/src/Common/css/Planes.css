@@ -1,0 +1,27 @@
+.main-content th {
+    text-align: center;
+}
+
+.main-content .plus {
+    background-color: rgb(255, 182, 18);
+}
+
+.main-content .plus_th {
+    background-color: rgb(255, 182, 18);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.iconimage {
+    width: 5vh;
+    height: 5vh;
+}
+
+.iconimage2 {
+    width: 4vh;
+    height: 4vh;
+}
+
+.centerText {
+    text-align: center;
+}
