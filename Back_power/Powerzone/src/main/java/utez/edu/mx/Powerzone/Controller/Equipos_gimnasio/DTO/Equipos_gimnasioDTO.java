@@ -13,12 +13,13 @@ public class Equipos_gimnasioDTO {
     private String estado;
     private String marca;
     private String modelo;
+    private Boolean estatus;
 
     public Equipos_gimnasioBean toEntity(){
-        return new Equipos_gimnasioBean(cantidad, estado, marca, modelo);
+        return new Equipos_gimnasioBean(cantidad, estado, marca, modelo, estatus);
     }
 
     public Equipos_gimnasioBean toUpdate(){
-        return new Equipos_gimnasioBean(id_equipo,cantidad, estado, marca, modelo);
+        return new Equipos_gimnasioBean(id_equipo,cantidad, estado, marca, modelo, estatus);
     }
 }

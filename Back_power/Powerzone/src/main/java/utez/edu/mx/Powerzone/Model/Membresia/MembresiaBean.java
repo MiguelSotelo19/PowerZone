@@ -1,5 +1,8 @@
 package utez.edu.mx.Powerzone.Model.Membresia;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,24 +19,26 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class MembresiaBean {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Double costo;
 
-    @Column(nullable = false, length = 25)
+    @Column(nullable = true, length = 25)
     private String tipo_membresia;
 
-    @OneToOne(mappedBy = "membresia")
-    private Historial_ventasBean historial;
+    @OneToMany(mappedBy = "membresia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Historial_ventasBean> historial;
+
 
     @OneToMany(mappedBy = "membresia", fetch = FetchType.LAZY)
     private Set<ClienteBean> clienteBeans;
 
-    public MembresiaBean(Double costo, String tipo_membresia, Historial_ventasBean historial, Set<ClienteBean> clienteBeans) {
+    public MembresiaBean(Double costo, String tipo_membresia, Set<Historial_ventasBean> historial, Set<ClienteBean> clienteBeans) {
         this.costo = costo;
         this.tipo_membresia = tipo_membresia;
         this.historial = historial;
