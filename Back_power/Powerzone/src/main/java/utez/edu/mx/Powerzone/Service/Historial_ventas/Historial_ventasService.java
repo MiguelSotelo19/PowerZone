@@ -28,6 +28,11 @@ public class Historial_ventasService {
         return new ResponseEntity<>(new ApiResponse(repository.findAll(), HttpStatus.OK, "oki"), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<ApiResponse>Ganancia(Long membresia){
+        return new ResponseEntity<>(new ApiResponse(repository.findHistorialByMembresiaId(membresia), HttpStatus.OK,"oki"), HttpStatus.OK);
+    }
+
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<ApiResponse> SaveGanancias(MembresiaBean membresia) {
         Optional<MembresiaBean> foundMembresia = membresiaRepository.findById(membresia.getId());

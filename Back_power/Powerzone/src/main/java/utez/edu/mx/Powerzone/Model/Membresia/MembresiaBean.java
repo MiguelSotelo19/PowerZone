@@ -31,6 +31,7 @@ public class MembresiaBean {
     @Column(nullable = true, length = 25)
     private String tipo_membresia;
 
+
     @OneToMany(mappedBy = "membresia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Historial_ventasBean> historial;
 

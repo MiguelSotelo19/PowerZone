@@ -1,5 +1,6 @@
 package utez.edu.mx.Powerzone.Model.Historial_ventas;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Historial_ventasBean {
     @Column(nullable = true, columnDefinition = "DOUBLE")
     private Double ganancia;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_membresia")
     private MembresiaBean membresia;
