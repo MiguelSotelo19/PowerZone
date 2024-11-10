@@ -104,6 +104,7 @@ function DatosPersonales() {
                 required
                 type="email"
                 placeholder="Correo Electrónico"
+                className="w-50"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
               />
@@ -117,7 +118,7 @@ function DatosPersonales() {
                 value={contra}
                 onChange={(e) => setContra(e.target.value)}
                 icon={showPassword ? faEyeSlash : faEye}
-                className="password-toggle-icon"
+                className="password-toggle-icon w-50"
                 onClick={togglePasswordVisibility}
               />
             </div>

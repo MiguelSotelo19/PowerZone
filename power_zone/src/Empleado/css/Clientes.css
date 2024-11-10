@@ -1,0 +1,45 @@
+.info-1 {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.info-1 input {
+    width: 40%;
+}
+
+.field {
+    width: 20vw;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    align-items: center;    
+}
+
+.field input {
+    background-color: rgb(217, 217, 217);
+    text-align: center;
+    font-size: 18px;
+    width: 80%;
+    margin-top: 20px;
+}
+
+.field-1 {
+    width: 37vw;
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+    align-items: center;    
+}
+
+.field-1 input {
+    background-color: rgb(217, 217, 217);
+    text-align: center;
+    font-size: 18px;
+    width: 80%;
+    margin-top: 20px;
+}
+
+.acciones {
+    margin-top: 20px;
+}
