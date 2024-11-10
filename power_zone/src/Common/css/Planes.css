@@ -1,3 +1,17 @@
+table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-separated-columns {
+    border-collapse: separate; 
+    border-spacing: 15px 0;
+}
+
+.main-content th {
+    padding-top: 2vh;
+}
+
 .main-content th {
     text-align: center;
 }
@@ -24,4 +38,25 @@
 
 .centerText {
     text-align: center;
+}
+
+.planesth {
+    border-top: 2px solid rgb(255, 182, 18);
+    border-left: 2px solid rgb(255, 182, 18);
+    border-right: 2px solid rgb(255, 182, 18);
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.planes {
+    border-left: 2px solid rgb(255, 182, 18);
+    border-right: 2px solid rgb(255, 182, 18);
+}
+
+.planes2 {
+    border-bottom: 2px solid rgb(255, 182, 18);
+    border-left: 2px solid rgb(255, 182, 18);
+    border-right: 2px solid rgb(255, 182, 18);
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
 }
