@@ -35,4 +35,13 @@ public class ClaseBean {
 
     @OneToMany(mappedBy = "clase", fetch = FetchType.LAZY)
     private Set<PlanificacionBean> planificacionBeans;
+
+    public ClaseBean(int capacidad_maxima, String hora_inicio, String nombre_clase, String nombre_profesor) {
+        this.capacidad_maxima = capacidad_maxima;
+        this.hora_inicio = hora_inicio;
+        this.nombre_clase = nombre_clase;
+        this.nombre_profesor = nombre_profesor;
+    }
+
+
 }
