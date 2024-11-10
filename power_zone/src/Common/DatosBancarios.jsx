@@ -111,7 +111,7 @@ function DatosBancarios() {
                     color: "#495057", 
                   }}
                   >
-                  <option value="">Selecciona una opción</option>
+                  <option value="">Tipo de Membresia</option>
                   <option value="membresia1">Membresía 1</option>
                   <option value="membresia2">Membresía 2</option>
                   <option value="membresia3">Membresía 3</option>
