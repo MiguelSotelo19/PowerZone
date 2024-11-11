@@ -13,6 +13,7 @@ import utez.edu.mx.Powerzone.Config.ApiResponse;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteRepository;
 import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
+import utez.edu.mx.Powerzone.Service.Historial_ventas.Historial_ventasService;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,6 +27,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ClienteService {
     private final ClienteRepository repository;
+    private final Historial_ventasService service;
     private JavaMailSender mailSender;
 
     @Transactional(readOnly = true)
@@ -40,6 +42,11 @@ public class ClienteService {
         if(foundCliente.isPresent()){
             return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, true, "Cliente ya registrado"), HttpStatus.BAD_REQUEST);
         }
+
+        
+
+        service.SaveGanancias(cliente.getMembresia());
+
 
         enviarCorreo(cliente.getCorreo(), cliente.getNombre());
         return new ResponseEntity<>(new ApiResponse(repository.saveAndFlush(cliente), HttpStatus.OK, "oki"), HttpStatus.OK);

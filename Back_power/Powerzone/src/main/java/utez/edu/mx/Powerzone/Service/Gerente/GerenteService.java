@@ -52,4 +52,6 @@ public class GerenteService {
 
         return new ResponseEntity<>(new ApiResponse(HttpStatus.NOT_FOUND, true, "Gerente no encontrado"), HttpStatus.NOT_FOUND);
     }
+
+
 }

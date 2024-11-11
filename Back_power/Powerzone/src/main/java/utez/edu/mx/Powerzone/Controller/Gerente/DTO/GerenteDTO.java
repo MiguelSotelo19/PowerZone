@@ -14,12 +14,14 @@ public class GerenteDTO {
     private String identificadorusuario;
     private String rol;
     private String telefono;
+    private Boolean estatus;
+
 
     public GerenteBean toEntity(){
-        return new GerenteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono);
+        return new GerenteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus);
     }
 
     public GerenteBean toUpdate(){
-        return new GerenteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono);
+        return new GerenteBean(id,nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus);
     }
 }

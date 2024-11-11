@@ -33,6 +33,9 @@ public class ClaseBean {
     @Column(nullable = false, length = 150)
     private String nombre_profesor;
 
+    @Column(columnDefinition = "BOOLEAN")
+    private Boolean estatus;
+
     @OneToMany(mappedBy = "clase", fetch = FetchType.LAZY)
     private Set<PlanificacionBean> planificacionBeans;
 
