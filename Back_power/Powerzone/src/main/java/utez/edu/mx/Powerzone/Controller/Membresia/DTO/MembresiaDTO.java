@@ -17,7 +17,7 @@ public class MembresiaDTO {
     private Long id_membresia;
     private Double costo;
     private String tipo_membresia;
-    private Historial_ventasBean historial;
+    private Set<Historial_ventasBean> historial;
     private Set<ClienteBean> clienteBeans;
 
     public MembresiaBean toUpdate(){

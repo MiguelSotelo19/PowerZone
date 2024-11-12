@@ -40,9 +40,8 @@ function Empleados() {
     const urlEmpleados = "http://localhost:8080/api/power/empleado/";
     const [ empleados, setEmpleados ] = useState([]);
 
+    const [ idEmp, setIdEmp] = useState(0);
     const [ nombre, setNombre ] = useState("");
-    const [ ape_p, setApe_p ] = useState("");
-    const [ ape_m, setApe_m ] = useState("");    
     const [ num_telefonico, setNum ] = useState("");
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
@@ -68,17 +67,13 @@ function Empleados() {
         var parametros;
         if(nombre.trim() === ""){
             show_alerta("Escribe el nombre del empleado", "warning");
-        } else if(ape_p.trim() === ""){
-            show_alerta("Escribe el apellido paterno del empleado", "warning");
-        } else if(ape_m.trim() === ""){
-            show_alerta("Escribe el apellido materno del empleado", "warning");
         } else if(num_telefonico.trim() === ""){
             show_alerta("Escribe el número de teléfono del empleado", "warning");
         } else if(correo.trim() === ""){
             show_alerta("Escribe el correo del empleado", "warning");
         } else {
             parametros = {
-                nombre: nombre+' '+ape_p+' '+ape_m,
+                nombre: nombre,
                 contrasenia: `PowerPassEmp_${Math.random().toString(36).substring(2, 10)}`,
                 correo: correo,
                 identificadorusuario: `PowerEmp_${Math.random().toString(36).substring(2, 11)}`,
@@ -95,7 +90,7 @@ function Empleados() {
         event.preventDefault();
     
         if(metodo != "POST"){
-            url = url + id_equipo;
+            url = url + idEmp;
         } 
         await axios({
             method: metodo,
@@ -127,21 +122,19 @@ function Empleados() {
         setIsOpen(true);
     }
 
-    function afterOpenModal() {
-        subtitle.style.color = "#f00";
-    }
-
     function closeModal() {
         setIsOpen(false);
     }
 
     //Modal Actualizar empleado
-    function openActModal() {
-        setActIsOpen(true);
-    }
+    function openActModal(nombre_, telefono_, correo_, contrasenia_) {
+        setIdEmp(empleado_id);
+        setNombre(nombre_);
+        setNum(telefono_);
+        setCorreo(correo_);
+        setContra(contrasenia_);
 
-    function afterOpenModalAct() {
-        subtitle.style.color = "#f00";
+        setActIsOpen(true);
     }
 
     function closeModalAct() {
@@ -197,7 +190,7 @@ function Empleados() {
                         <>
                             <Button className='me-1' variant="danger">Desactivar</Button>{' '}
                             <Button className='me-1' variant="success">Activar</Button>{' '}
-                            <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
+                            <Button variant="warning" onClick={() => openActModal(empleado.id, empleado.nombre, empleado.telefono, empleado.correo, empleado.cotrasenia)}>Editar</Button>{' '}
                         </>                    
                     } />
                 ))}
@@ -207,7 +200,6 @@ function Empleados() {
 
             <Modal
                 isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
                 onRequestClose={closeModal}
                 style={customStyles}
                 contentLabel="Registrar Empleado"
@@ -221,29 +213,19 @@ function Empleados() {
 
                     
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" onChange={(e) => setNombre(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
+                <div className="field-1">
+                    <Form.Control required type="text" placeholder="Nombre Completo" onChange={(e) => setNombre(e.target.value)} />
                 </div>
 
                 <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
+                    <div className="field">      
                         <Form.Control required type="text" placeholder="Número telefónico" onChange={(e) => setNum(e.target.value)} />
                     </div>
-                </div>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setCorreo(e.target.value)} />
-                </div>
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setCorreo(e.target.value)} />
+                    </div>
+                </div>                
 
                 <div className="acciones">
                     <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
@@ -254,7 +236,6 @@ function Empleados() {
 
             <Modal
                 isOpen={modalActIsOpen}
-                onAfterOpen={afterOpenModalAct}
                 onRequestClose={closeModalAct}
                 style={customStyles}
                 contentLabel="Actualizar Empleado"
@@ -268,37 +249,27 @@ function Empleados() {
 
                     
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
+                <div className="field-1">
+                    <Form.Control required type="text" placeholder="Nombre Completo" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                 </div>
 
                 <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
+                    <div className="field">      
                         <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
                     </div>
-                </div>
+
+                    <div className="field">
+                        <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
+                    </div>
+                </div>      
 
                 <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" onChange={(e) => setContra(e.target.value)} />
+                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
                 </div>
 
                 <div className="acciones">
                     <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Actualizar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Actualizar</Button>{' '}
                 </div>
                 
                 </form>

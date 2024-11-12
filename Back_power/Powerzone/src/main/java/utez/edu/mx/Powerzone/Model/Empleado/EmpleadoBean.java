@@ -14,7 +14,7 @@ import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 @NoArgsConstructor
 public class EmpleadoBean extends PersonaBean {
 
-    public EmpleadoBean(String nombre, String cotrasenia, String correo, String identificadorusuario, String rol, String telefono) {
-        super(nombre, cotrasenia, correo, identificadorusuario, rol, telefono);
+    public EmpleadoBean(String nombre, String cotrasenia, String correo, String identificadorusuario, String rol, String telefono, Boolean estatus) {
+        super(nombre, cotrasenia, correo, identificadorusuario, rol, telefono,estatus);
     }
 }

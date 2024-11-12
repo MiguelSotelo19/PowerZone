@@ -27,18 +27,24 @@ public class Equipos_gimnasioBean {
     @Column(length = 50)
     private String modelo;
 
-    public Equipos_gimnasioBean(int cantidad, String estado, String marca, String modelo) {
+
+    @Column(columnDefinition = "BOOLEAN")
+    private Boolean estatus;
+
+    public Equipos_gimnasioBean(int cantidad, String estado, String marca, String modelo, Boolean estatus) {
         this.cantidad = cantidad;
         this.estado = estado;
         this.marca = marca;
         this.modelo = modelo;
+        this.estatus = estatus;
     }
 
-    public Equipos_gimnasioBean(Long id_equipo, int cantidad, String estado, String marca, String modelo) {
+    public Equipos_gimnasioBean(Long id_equipo, int cantidad, String estado, String marca, String modelo, Boolean estatus) {
         this.id_equipo = id_equipo;
         this.cantidad = cantidad;
         this.estado = estado;
         this.marca = marca;
         this.modelo = modelo;
+        this.estatus = estatus;
     }
 }

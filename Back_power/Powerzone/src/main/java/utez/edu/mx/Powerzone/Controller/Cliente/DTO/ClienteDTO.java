@@ -19,16 +19,17 @@ public class ClienteDTO {
     private String identificadorusuario;
     private String rol;
     private String telefono;
+    private Boolean estatus;
     private int CVV;
     private String numero_tarjeta;
     private MembresiaBean membresia;
 
     public ClienteBean toEntity(){
-        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,CVV,numero_tarjeta,membresia);
+        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,membresia);
     }
 
     public ClienteBean toUpdate(){
-        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,CVV,numero_tarjeta,membresia);
+        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,membresia);
     }
 
 }

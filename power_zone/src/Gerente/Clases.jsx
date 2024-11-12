@@ -39,9 +39,11 @@ function Clases() {
     const urlClases = "http://localhost:8080/api/power/clase/";
     const [ clases, setClases ] = useState([]);
 
+    const [ idClase, setIdClase ] = useState(0);
+    const [ hora_inicio, setHora_inicio] = useState(0);
     const[ instructor, setInstructor ] = useState('')
     const[ limite, setLimite ] = useState('')
-    const[ tipo, setTipo ] = useState('')
+    const[ nombre, setNombre ] = useState('')
 
     //Traer datos de equipo
     useEffect(() => {     
@@ -59,31 +61,67 @@ function Clases() {
 
     //Modal editar
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
-    const [modalIsOpen, setIsOpen] = React.useState(false);
 
-    function openActModal() {
+    function openActModal(id_, nombre_, instructor_, capacidad_, horas) {
+        setIdClase(id_);
+        setNombre(nombre_);
+        setInstructor(instructor_);
+        setLimite(capacidad_);
+        setHora_inicio(horas);
         setActIsOpen(true);
-    }
-
-    function afterOpenModalAct() {
-        subtitle.style.color = "#f00";
     }
 
     function closeModalAct() {
         setActIsOpen(false);
     }
 
-    //Modal añadir cliente
-    function openModal() {
-        setIsOpen(true);
+    //Envío de formulario
+    const validar = (metodo) => {
+        event.preventDefault();
+
+        var parametros;
+        if(nombre.trim() === ""){
+            show_alerta("Escribe el modelo del equipo", "warning");
+        }else if(instructor.trim() === ""){
+            show_alerta("Escribe el instructor", "warning");
+        } else if(limite === 0 || limite === null){
+            show_alerta("Escribe la capacidad máxima", "warning");
+        } else {
+            parametros = {
+                hora_inicio: hora_inicio,
+                nombre_clase: nombre,
+                nombre_profesor: instructor,
+                capacidad_maxima: limite
+            }
+
+            console.log(parametros)
+            enviarSolicitud(metodo, parametros, urlClases);
+        }
     }
 
-    function afterOpenModal() {
-        subtitle.style.color = "#f00";
-    }
+    const enviarSolicitud = async(metodo, parametros, url) => {
+        event.preventDefault();
+    
+        url = url + idClase;
 
-    function closeModal() {
-        setIsOpen(false);
+        await axios({
+            method: metodo,
+            url: url,
+            data: parametros
+        }).then(function (respuesta) {
+            var tipo = respuesta.data[0];
+            var msj = respuesta.data[1];
+            if(tipo === "success"){
+                show_alerta("Cambios realizados correctamente", "success");         
+            } 
+            closeModalAct();
+
+            getClases();
+        })
+        .catch(function (error) {
+            show_alerta("Error en la Solicitud", "error");
+            console.log(error);
+        });
     }
 
     //Filtrado
@@ -128,8 +166,8 @@ function Clases() {
                         title4={'Acciones'}
                         acciones={
                             <>
-                                <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
-                                <Button className='me-1' onClick={openModal} variant="success">Activar</Button>{' '}
+                                <Button variant="warning" onClick={() => openActModal(clase.id, clase.nombre_clase, clase.nombre_profesor, clase.capacidad_maxima, clase.hora_inicio)}>Editar</Button>{' '}
+                                <Button className='me-1' variant="success">Activar</Button>{' '}
                             </>                    
                         } 
                     />
@@ -139,7 +177,6 @@ function Clases() {
 
             <Modal
                 isOpen={modalActIsOpen}
-                onAfterOpen={afterOpenModalAct}
                 onRequestClose={closeModalAct}
                 style={customStyles}
                 contentLabel="Editar clase"
@@ -153,7 +190,7 @@ function Clases() {
 
                     
                 <div className="field-1">
-                    <Form.Control required type="text" placeholder="Instructor" value={instructor} onChange={(e) => setInstructor(e.target.value)} />
+                    <Form.Control required type="text" placeholder="Nombre de clase" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                 </div>
 
                 <div className="info-1">
@@ -162,52 +199,17 @@ function Clases() {
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo" value={tipo} onChange={(e) => setTipo(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Instructor" value={instructor} onChange={(e) => setInstructor(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Actualizar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Actualizar</Button>{' '}
                 </div>
                 
                 </form>
             </Modal>
 
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Añadir cliente"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Añadir cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
-
-                    
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Número de membresía" onChange={(e) => setNumMembresia(e.target.value)} />
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="0:00 am -0:00 pm" onChange={(e) => setHorario(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Zumba" onChange={(e) => setClase(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Añadir</Button>{' '}
-                </div>
-                
-                </form>
-            </Modal>
         </>
     )
 }

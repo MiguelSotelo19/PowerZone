@@ -13,12 +13,13 @@ public class EmpleadoDTO {
     private String identificadorusuario;
     private String rol;
     private String telefono;
+    private Boolean estatus;
 
     public EmpleadoBean toEntity(){
-        return new EmpleadoBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono);
+        return new EmpleadoBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus);
     }
 
     public EmpleadoBean toUpdate(){
-        return new EmpleadoBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono);
+        return new EmpleadoBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus);
     }
 }
