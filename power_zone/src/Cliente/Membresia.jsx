@@ -3,12 +3,13 @@ import Menu from "./etiquetas/menu";
 import Contenedor from "../Gerente/etiquetas/Contenedor";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
 import Planes from "../Common/Planes";
+import axios from "axios";
 
 function ModalMejorar({ show, onHide, datoscliente }) {
-    console.log("nivel membresía:", datoscliente.nivel_membresia);
+    //console.log("nivel membresía:", datoscliente.nivel_membresia);
     return (
         <Modal
           show={show}
@@ -50,13 +51,28 @@ function ModalMejorar({ show, onHide, datoscliente }) {
 
 function ClienteMembresias(){
     
-    
+    const urlMembresias = "http://localhost:8080/api/power/membresia/";
+    const [ membresias, setMembresias ] = useState([]);
     const [modalShow, setModalShow] = React.useState(false);
     const datos_cliente = {
         nombre: 'Bryan Alexis Miranda Durán', 
         nivel_membresia: 'Plus',
         renovacion: "Fecha jaja salu2"
     };
+
+    useEffect(() => {
+      getCliente();
+    }, []);
+    
+    const getCliente = async () => {
+      const respuesta = await axios({
+          method: 'GET',
+          url: urlMembresias
+      });
+      console.log(respuesta.data.data[0])
+      //setUser(respuesta.data.data);
+    }
+  
     return(
         
         <>
