@@ -84,7 +84,7 @@ public class ClienteService {
             newcliente.setTelefono(cliente.getTelefono());
             newcliente.setCVV(cliente.getCVV());
             newcliente.setNumero_tarjeta(cliente.getNumero_tarjeta());
-            newcliente.setMembresia(cliente.getMembresia());
+            newcliente.setEstatus(cliente.getEstatus());
             repository.save(newcliente);
             return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "oki"), HttpStatus.OK);
         }

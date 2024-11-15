@@ -1,131 +1,130 @@
+import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Menu from "./etiquetas/menu";
-import Contenedor from "../Gerente/etiquetas/Contenedor";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import React, { useEffect, useState } from "react";
+import { Modal, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import Planes from "../Common/Planes";
 import axios from "axios";
 
-function ModalClase({ show, onHide, datosclase }) {
-    console.log("nivel membresía:", datosclase.tipo_clase);
-    return (
-        <Modal
-          show={show}
-          onHide={onHide}
-          size="lg"
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title id="contained-modal-title-vcenter">
-              Inscribirse a clase
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <h5>Clase: {datosclase.nombre_clase}</h5>
-            <h5>Instructor que imparte: {datosclase.nombre_profesor}</h5>
-            <div style={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-            <p>Horas de la clase: {datosclase.hora_inicio}</p>
-            <p>Cupo: {datosclase.capacidad_maxima}</p>
-            </div>
-          </Modal.Body>
-          <Modal.Footer>
-          <Button 
-              variant="success" 
-              onClick={() => Swal.fire({
-                  title: 'Inscrito a clase',
-                  text:'Te has inscrito a la clase exitosamente',
-                  icon: 'success',
-                  confirmButtonText: 'Aceptar'
-              }).then({
-                //cerrar modal
-              })
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import esLocale from '@fullcalendar/core/locales/es';
 
-              
-                }
-            >
-              Inscribirse a clase
-            </Button>
-            <Button  onClick={onHide}>Cancelar</Button>
-          </Modal.Footer>
-        </Modal>
-    );
-}
-
-function ClienteClases() {
-    const [modalShow, setModalShow] = React.useState(false);
-    const [claseSelec, setClaseSelec] = React.useState(null);
-    const [ clases, setClases ] = useState([]);
+const ClienteClases = () => {
+    const [showModal, setShowModal] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [events, setEvents] = useState([]);
 
     const urlClases = "http://localhost:8080/api/power/clase/";
     useEffect(() => {
         getClase();
-      }, []);
-      
+    }, []);
+
     const getClase = async () => {
-    const respuesta = await axios({
-        method: 'GET',
-        url: urlClases
-    });
-    setClases(respuesta.data.data);
-    console.log("clases: ",clases)
-    }
+        try {
+            const respuesta = await axios.get(urlClases);
+            const clases = respuesta.data.data;
 
+            const eventos = clases.map(clase => {
+                const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
+                const [inicioHora, inicioMinuto] = horaInicio.split(':');
+                const [finHora, finMinuto] = horaFin.split(':');
 
-    const datos_clases = [
-        { nombre_inst: 'Bryan Alexis Miranda Durán', tipo_clase: 'Kick Boxing', limite_per: 20 },
-        { nombre_inst: 'Bryan Alexis Miranda Durán', tipo_clase: 'Zumba', limite_per: 10 },
-        { nombre_inst: 'Bryan Alexis Miranda Durán', tipo_clase: 'Otro', limite_per: 40 },
-        { nombre_inst: 'Bryan Alexis Miranda Durán', tipo_clase: 'Zumba', limite_per: 20 },
-        { nombre_inst: 'Bryan Alexis Miranda Durán', tipo_clase: 'Kick Boxing', limite_per: 10 }
-    ];
+                const startTime = `${inicioHora}:${inicioMinuto}:00`;
+                const endTime = `${finHora}:${finMinuto}:00`;
 
-    const handleShowModal = (clase) => {
-        setClaseSelec(clase);
-        setModalShow(true);
+                return {
+                    title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
+                    rrule: {
+                        freq: 'daily',  
+                        dtstart: new Date().toISOString().split('T')[0],
+                        until: '2024-12-31',
+                    },
+                    duration: `${finHora - inicioHora}:00`,
+                    startTime,
+                    endTime,
+                    extendedProps: {
+                        capacidad_maxima: clase.capacidad_maxima,
+                        estatus: clase.estatus,
+                        nombre_profesor: clase.nombre_profesor,
+                        nombre_clase: clase.nombre_clase,
+                    },
+                };
+            });
+
+            setEvents(eventos);
+        } catch (error) {
+            console.error('Error obteniendo las clases:', error);
+        }
+    };
+
+    const handleEventClick = (arg) => {
+        setSelectedEvent(arg.event.extendedProps); // Guarda los detalles del evento seleccionado
+        setShowModal(true); // Muestra el modal
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        setSelectedEvent(null);
     };
 
     return (
         <>
             <Menu />
-            <Container className="main-content d-flex flex-column align-items-center justify-content-center ">
-            <div style={{ width: '99vw' }}>
-                <h1 className="d-flex justify-content-center">Clases disponibles</h1>
-                
-                {clases.map((clase, index) => (
-                    <Contenedor 
-                        key={index}
-                        title1={'Nombre de la clase'}
-                        text1={clase.nombre_clase} 
-                        title2={'Cupo máximo'}
-                        text2={clase.capacidad_maxima} 
-                        title3={'Horas de la clase'}
-                        text3={clase.hora_inicio} 
-                        title4={'Estado'}
-                        acciones={
-                            <>
-                                <Button variant="success" onClick={() => handleShowModal(clase)}>
-                                    Inscribirse a clase
-                                </Button>{' '}
-                            </>                    
-                        }
+            <Container className="main-content d-flex flex-column align-items-center justify-content-center">
+                <div style={{ width: '99vw' }}>
+                    <h1 className="d-flex justify-content-center">Clases disponibles</h1>
+
+                    <FullCalendar
+                        plugins={[timeGridPlugin]}
+                        locale={esLocale}
+                        initialView="timeGridWeek"
+                        events={events}
+                        eventClick={handleEventClick} // Evento que se activa al hacer clic en un evento
+                        headerToolbar={{
+                            left: '',
+                            center: 'title',
+                            right: ''
+                        }}
+                        slotMinTime="07:00:00"
+                        slotMaxTime="19:00:00"
+                        height="auto"
+                        allDaySlot={false}
+                        contentHeight="auto"
+                        expandRows={true}
                     />
-                ))}
-                
-                {claseSelec && (
-                    <ModalClase
-                        show={modalShow}
-                        onHide={() => setModalShow(false)}
-                        datosclase={claseSelec}
-                    />
-                )}
-            </div>
-                
+
+                    <div className="mb-5"></div>
+
+                    {/* Modal para mostrar información del evento */}
+                    <Modal show={showModal} onHide={closeModal}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Detalles de la clase</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            {selectedEvent ? (
+                                <>
+                                    <h5>Clase: {selectedEvent.nombre_clase}</h5>
+                                    <h5>Instructor: {selectedEvent.nombre_profesor}</h5>
+                                    <p>Cupo máximo: {selectedEvent.capacidad_maxima}</p>
+                                    <p>Estado: {selectedEvent.estatus}</p>
+                                </>
+                            ) : (
+                                <p>Selecciona una clase en el calendario.</p>
+                            )}
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={closeModal}>
+                                Cerrar
+                            </Button>
+                            <Button variant="primary" onClick={() => alert('Agendar clase')}>
+                                Agendar clase
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                </div>
             </Container>
         </>
     );
-}
+};
 
 export default ClienteClases;
