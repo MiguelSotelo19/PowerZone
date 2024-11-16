@@ -12,12 +12,17 @@ import axios from "axios";
 
 function Acceso() {
   const urlClientes = "http://localhost:8080/api/power/cliente/";
-  const urlEmpleado = "http://localhost:8080/api/power/empleado/";
+  const urlEmpleados = "http://localhost:8080/api/power/empleado/";
+  const urlGerente = "http://localhost:8080/api/power/gerente/";
 
   const [ usuario, setUsuario ] = useState("");
   const [ contra, setContra ] = useState("");
   const [ showPassword, setShowPassword ] = useState(false); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getGerente();
+  }, [])
 
   const getClientes = async () => {
       const respuesta = await axios({
@@ -27,6 +32,26 @@ function Acceso() {
       console.log(respuesta.data.data);
 
       return respuesta.data.data;
+  }
+
+  const getEmpleados = async () => {
+    const respuesta = await axios({
+        method: 'GET',
+        url: urlEmpleados,
+    });
+    console.log(respuesta.data.data);
+
+    return respuesta.data.data;
+  }
+
+  const getGerente = async () => {
+    const respuesta = await axios({
+        method: 'GET',
+        url: urlGerente,
+    });
+    console.log(respuesta.data.data);
+
+    return respuesta.data.data;
   }
     
   const togglePasswordVisibility = () => {
@@ -39,24 +64,47 @@ function Acceso() {
     navigate('/PowerZone/DatosPersonales'); 
   };
 
-  const iniciarSesion = async() => {
-    const clientes = await getClientes();
+  const iniciarSesion = async () => {
     let usuarioIniciado = null;
 
-    usuarioIniciado = clientes.find(cliente => 
-      cliente.cotrasenia === contra && cliente.identificadorusuario === usuario
-    );
+    const roles = [
+        { nombre: "Cliente", getData: getClientes },
+        { nombre: "Empleado", getData: getEmpleados },
+        { nombre: "Gerente", getData: getGerente }
+    ];
 
-    if(usuarioIniciado != null || usuarioIniciado != undefined){ 
-      console.log("CLIENTE");
+    for (const rol of roles) {
+        const data = await rol.getData();
+        usuarioIniciado = data.find(persona =>
+            persona.cotrasenia === contra && persona.identificadorusuario === usuario
+        );
+
+        if (usuarioIniciado) {
+          localStorage.setItem("usuario", JSON.stringify(usuarioIniciado));
+
+            switch(rol.nombre){
+              case "Cliente":
+                navigate("/PowerZone/C/Membresias");
+                break;
+
+              case "Empleado":
+                navigate("/PowerZone/E/Cliente");
+                break;
+
+                case "Gerente":
+                  navigate("/PowerZone/G/Clientes");
+                break;
+            }
+            break;
+        }
     }
 
-    if(usuarioIniciado == null || usuarioIniciado == undefined){
-
+    if (!usuarioIniciado) {
+        console.log("El usuario y/o contraseña son incorrectos");
     }
 
     console.log(usuarioIniciado);
-  }
+  };
 
   return (
     <>
