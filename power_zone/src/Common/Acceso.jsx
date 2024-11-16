@@ -58,112 +58,9 @@ function Acceso() {
     setShowPassword((prev) => !prev); 
   };
 
-  useEffect(() => {
-    getCliente();
-  }, []);
-
-  const getCliente = async () => {
-    const respuesta = await axios({
-        method: 'GET',
-        url: urlClientes
-    });
-    console.log("Cliente: ",respuesta.data.data)
-    }
-
-    const getEmpleado = async () => {
-      const respuesta = await axios({
-          method: 'GET',
-          url: urlClientes
-      });
-      console.log("Empleado: ",respuesta.data.data)
-      }
-
-    const getGerente = async () => {
-      const respuesta = await axios({
-          method: 'GET',
-          url: urlClientes
-      });
-      console.log("Gerente: ",respuesta.data.data)
-      }
-
-    const getPersona = async () => {
-      const respuesta = await axios({
-          method: 'GET',
-          url: urlClientes
-      });
-      console.log("Persona: ",respuesta.data.data)
-      }
-
-  const iniciarSesion = async () => {
-    if (!numMem || !contra) {
-      Swal.fire(
-        "Error",
-        "Por favor, ingresa un número de membresía y contraseña",
-        "error"
-      );
-      return;
-    }
-
-    try {
-      const respuesta = await axios.get(urlPersonal);
-      const usuarios = respuesta.data.data;
-
-      if (usuarios.length > 0) {
-        const usuarioValido = usuarios.find((user) => user.email === email);
-
-        if (usuarioValido) {
-          const rol = usuarioValido.rol;
-          const nombre = usuarioValido.nombre;
-          console.log(`${rol} de ${nombre}`);
-          console.log(usuarioValido);
-
-          await axios({
-            method: "POST",
-            url: urlSignin,
-            data: {
-              username: usuarioValido.username,
-              password: password,
-            },
-          }).then(function (res) {
-            console.log(res);
-            if (res.data.status == "OK") {
-              localStorage.setItem("token", res.data.data);
-              localStorage.setItem("usuario", usuarioValido.idPersonal);
-              localStorage.setItem("rol", usuarioValido.rol);
-
-              switch (rol) {
-                case "Admin":
-                  navigate("/MesasAdm");
-                  break;
-                case "Caja":
-                  navigate("/MesasCaja");
-                  break;
-                case "Cocina":
-                  navigate("/MesasCocina");
-                  break;
-                default:
-                  Swal.fire({
-                    iconHtml: `<img src="${LogoTACO}" style="width: 250px; height: auto;">`,
-                    title: "Error",
-                    text: "El mesero no puede acceder a la interfaz web",
-                  });
-                  break;
-              }
-            }
-          });
-        } else {
-          Swal.fire("Error", "Correo y/o contraseña incorrectos", "error");
-        }
-      } else {
-        Swal.fire("Error", "No se encontraron usuarios", "error");
-      }
-    } catch (error) {
-      console.error("Error al iniciar sesión:", error);
-      Swal.fire("Error", "Correo y/o contraseña equivocados", "error");
-    }
-  };
   
-  const registro = () => {
+  
+  const handleRegisterClick = () => {
     navigate('/PowerZone/DatosPersonales'); 
   };
 
@@ -237,7 +134,7 @@ function Acceso() {
                 <FontAwesomeIcon
                   icon={showPassword ? faEyeSlash : faEye}
                   className="password-toggle-icon"
-                  onClick={contrasenaVisible}
+                  onClick={togglePasswordVisibility}
                 />
               </div>
 
@@ -245,9 +142,9 @@ function Acceso() {
                 Iniciar sesión
               </Button>
 
-              <p className="forgot-password mt-5 mb-1">
+              <p className="forgot-password">
                 ¿No tienes una cuenta?{" "}
-                <span onClick={registro} className="register-link" style={{cursor: 'pointer',color:'blue'}}>
+                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'p',color:'blue'}}>
                   Regístrate aquí
                 </span>
               </p>

@@ -22,6 +22,7 @@ function cerrarSesion(){
     }).then((result) => {
         if(result.isConfirmed){
           window.location = '/';
+          localStorage.clear();
         }   
     })
 }
@@ -51,7 +52,7 @@ function ClientePerfil(){
     const [precio, setPrecio]=useState("");
     const [tipoMembresia, setTipoMembresia]= useState("");
     const [idMembresia, setIdMembresia]=useState("");
-    //let user = localStorage.getItem("usuario");
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
         getCliente();
@@ -59,13 +60,7 @@ function ClientePerfil(){
       }, []);
       
     const getCliente = async () => {
-    const respuesta = await axios({
-        method: 'GET',
-        url: urlClientes
-    });
-    console.log("cliente:",respuesta.data.data[0])
-    setCliente(respuesta.data.data[0]); //Este [0] se cambiará cuando haya inicio de sesion que ya jale
-
+    setCliente(usuario);
     }
 
     const getMembresia = async () => {
@@ -73,47 +68,39 @@ function ClientePerfil(){
         method: 'GET',
         url: urlMembresias 
     });
-     setMembresias(respuesta.data.data[0]); 
+     setMembresias(respuesta.data.data); 
     }
     
-    const setCliente = async (cliente) => {
-
-    //for (let i = 0; i < cliente.length; i++) {
-        const element = cliente; //[i];
-        //console.log("Cliente setCliente:",element)
-        //if(element.idCliente == user){
-        setCorreo(element.correo);
-        setIdCliente(element.id);
-        setContra(element.cotrasenia);
-        setCVV(element.cvv);
-        setEstatus(element.estatus);
-        setMembresia(element.identificadorusuario);
-        setIdentUsuario(element.identificadorusuario);
-        setNombre(element.nombre);
-        setNumTarjeta(element.numero_tarjeta);
-        setRol(element.rol);
-        setNum(element.telefono)
-        // Verifica el valor después de asignarlo
-        //console.log("Identificador usuario:", identUsuario);
-        //}
-        }
-    //}
+    const setCliente = async (usuario) => {
+        setCorreo(usuario.correo);
+        setIdCliente(usuario.id);
+        setContra(usuario.cotrasenia);
+        setCVV(usuario.cvv);
+        setEstatus(usuario.estatus);
+        setIdentUsuario(usuario.identificadorusuario);
+        setNombre(usuario.nombre);
+        setNumTarjeta(usuario.numero_tarjeta);
+        setRol(usuario.rol);
+        setNum(usuario.telefono)
+    }
 
     const setMembresias = async (membresia) => {
 
-        //for (let i = 0; i < membresia.length; i++) {
-            const element = membresia//[i];
-            //console.log(element)
-            //const cliente = element.clienteBeans.find(cliente => cliente.identificadorusuario === identUsuario);
-            //console.log("cliente con membresia:",cliente)
-            //if(cliente){
-            setCliente(element.clienteBeans[0]);
+        for (let i = 0; i < membresia.length; i++) {
+            const element = membresia[i];
+            console.log(element)
+            console.log("id:",usuario.id)
+            const cliente = element.clienteBeans.find(cliente => cliente.id === usuario.id);
+            console.log("cliente con membresia:",cliente)
+            if(cliente){ //de todo esto la verdad nada mas que el tipo sirve jadjasdj
+            setClientes(element.clienteBeans); 
             setPrecio(element.costo);
             setTipoMembresia(element.tipo_membresia);
             setIdMembresia(element.id)
-            //}
+            break;
+            }
             //console.log("membresia ",i," :",element)
-        //}
+        }
     }
 
     const alertActualizar=()=>{
@@ -130,6 +117,7 @@ function ClientePerfil(){
             }   
         })
     }
+
     const validar = async () => {
         event.preventDefault();
         let parametros;
@@ -192,16 +180,6 @@ function ClientePerfil(){
         }
     }
 
-    const validarPrevEmail = (correo) => {
-        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        
-        if(emailRegex.test(correo)) {
-          setEmailStatus(true);
-        }else {
-          setEmailStatus(false);
-        }
-      }
-
     const contrasenaVisible = () => {
         setShowPassword((prev) => !prev); 
       };
@@ -238,7 +216,7 @@ function ClientePerfil(){
 
                         <Form.Group className="mb-3">
                             <Form.Label>Nivel de Membresía:</Form.Label><br/>
-                            <Form.Label className="mt-2">{tipoMembresia}</Form.Label>{/**/}
+                            <Form.Label className="mt-2">{tipoMembresia}</Form.Label>
                         </Form.Group>
                     </Form>
                 </Col>
