@@ -62,6 +62,10 @@ function Clientes () {
     const [ idMembresia, setIdMembresia ] = useState("");
     const [ estatus, setEstatus ] = useState(true);
 
+    let user = JSON.parse(localStorage.getItem("usuario"));
+    console.log("USUARIO INICIADO: ");
+    console.log(user);
+
     //Traer datos de cliente
     useEffect(() => {     
         getClientes();
