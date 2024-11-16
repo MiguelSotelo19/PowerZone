@@ -62,9 +62,9 @@ function ClientePerfil(){
         method: 'GET',
         url: urlClientes
     });
-    //console.log("cliente:",respuesta.data.data[0])
+    console.log("cliente:",respuesta.data.data[0])
     setCliente(respuesta.data.data[0]); //Este [0] se cambiará cuando haya inicio de sesion que ya jale
-    console.log("ident:",identUsuario)
+
     }
 
     const getMembresia = async () => {
@@ -72,16 +72,17 @@ function ClientePerfil(){
         method: 'GET',
         url: urlMembresias 
     });
-     setMembresias(respuesta.data.data); 
+     setMembresias(respuesta.data.data[0]); 
     }
     
     const setCliente = async (cliente) => {
 
     //for (let i = 0; i < cliente.length; i++) {
         const element = cliente; //[i];
-        console.log("Cliente setCliente:",element)
+        //console.log("Cliente setCliente:",element)
         //if(element.idCliente == user){
         setCorreo(element.correo);
+        setIdCliente(element.id);
         setContra(element.cotrasenia);
         setCVV(element.cvv);
         setEstatus(element.estatus);
@@ -92,31 +93,81 @@ function ClientePerfil(){
         setRol(element.rol);
         setNum(element.telefono)
         // Verifica el valor después de asignarlo
-        console.log("Identificador usuario:", identUsuario);
+        //console.log("Identificador usuario:", identUsuario);
         //}
         }
     //}
 
     const setMembresias = async (membresia) => {
 
-        for (let i = 0; i < membresia.length; i++) {
-            const element = membresia[i];
+        //for (let i = 0; i < membresia.length; i++) {
+            const element = membresia//[i];
             //console.log(element)
-            const cliente = element.clienteBeans.find(cliente => cliente.identificadorusuario === identUsuario);
-            console.log("cliente con membresia:",cliente)
-            if(cliente){
-            setCliente(element.clienteBeans);
+            //const cliente = element.clienteBeans.find(cliente => cliente.identificadorusuario === identUsuario);
+            //console.log("cliente con membresia:",cliente)
+            //if(cliente){
+            setCliente(element.clienteBeans[0]);
             setPrecio(element.costo);
             setTipoMembresia(element.tipo_membresia);
             setIdMembresia(element.id)
-            }
+            //}
             //console.log("membresia ",i," :",element)
+        //}
+    }
+
+    const validar = async () => {
+        event.preventDefault();
+        let parametros;
+
+        if(correo.trim() == '' || correo == undefined) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío","warning")
+        } else if(nombre.trim() == '' || nombre == undefined){
+            Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+        }else if(num_telefonico.trim() == '' || num_telefonico == undefined){
+            Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
+        }else if(contra.trim() == '' || contra == undefined){
+            Swal.fire("Contraseña vacía","El campo de contraseña se encuentra vacío","warning")
+        } else {
+            parametros = {
+            id: idCliente,
+            correo: correo,
+            nombre: nombre,
+            cotrasenia: contra,
+            telefono: num_telefonico,
+            identificadorusuario: identUsuario,
+            rol: rol,
+            estatus:estatus,
+            cvv: cvv,
+            numero_tarjeta:num_tarjeta
+          }
+          console.log(parametros)
         }
+    
+        actualizar(parametros);
+    }
+    
+    const actualizar = async (parametros) => {
+        event.preventDefault();
+
+        await axios({
+            method: 'PUT',
+            url: urlClientes+ parametros.id,
+            data: parametros
+        }).then(function (res) {
+            //console.log(res);
+            if(res.data.data == 'OK'){
+            //console.log(res.data.data); 
+            Swal.fire("Datos Actualizados","Los datos se han actualizado correctamente","success")
+            }
+        }).catch(function (error) {
+            //console.log(error);
+        })
     }
 
     const contrasenaVisible = () => {
         setShowPassword((prev) => !prev); 
       };
+    
     return(
         
         <>
@@ -141,13 +192,15 @@ function ClientePerfil(){
 
                         <Form.Group className="mb-3">
                             <Form.Label>Número de Teléfono:</Form.Label>
-                            <Form.Control type="number" inputMode="numeric" placeholder="7771436571" value={num_telefonico} onChange={(e) => setTelefono(e.target.value)}
-                            maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)}/>
+                            <Form.Control type="number" placeholder="7771436571" value={num_telefonico}
+                             onChange={(e) => setTelefono(e.target.value)}
+                            />
+                            <Form.Control
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Nivel de Membresía:</Form.Label><br/>
-                            <Form.Label >Mondongo</Form.Label>{/*value={tipoMembresia}*/}
+                            <Form.Label className="mt-2">{tipoMembresia}</Form.Label>{/**/}
                         </Form.Group>
                     </Form>
                 </Col>
@@ -160,14 +213,14 @@ function ClientePerfil(){
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Número de Cliente:</Form.Label>
-                            <Form.Control type="number" inputMode="numeric" placeholder="Número de cliente" value={identUsuario} onChange={(e) => setIdentUsuario(e.target.value)} readOnly />{/*Aca es agregar si hay limite de digitos, idk*/}
+                            <Form.Label>Número de Cliente:</Form.Label><br/>
+                            <Form.Label className="mt-2">{identUsuario}</Form.Label>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
                             <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
-                                <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña" 
+                                <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
                                 value={contra} onChange={(e) => setContra(e.target.value)} />
                                 <FontAwesomeIcon
                                 icon={showPassword ? faEyeSlash : faEye}
@@ -182,7 +235,7 @@ function ClientePerfil(){
             </Row>
 
             <div className="d-flex justify-content-center mt-4">
-                <Button variant="warning" className="me-3">Editar información</Button>
+                <Button variant="warning" className="me-3" type="submit" onClick={() => validar()}>Editar información</Button>
                 <Button variant="danger" onClick={()=>cerrarSesion()}>Cerrar sesión</Button>
             </div>
         </Container>

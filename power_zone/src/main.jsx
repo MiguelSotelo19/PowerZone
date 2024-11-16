@@ -18,6 +18,7 @@ import Clase from './Empleado/Clases.jsx';
 import Membresia from './Empleado/Membresias.jsx'
 import ClienteMembresias from './Cliente/Membresia.jsx';
 import ClienteClases from './Cliente/Clases.jsx';
+import ClientePerfil from './Cliente/Perfil.jsx';
 
 
 createRoot(document.getElementById('root')).render(
