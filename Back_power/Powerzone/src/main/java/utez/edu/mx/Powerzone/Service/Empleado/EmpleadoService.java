@@ -40,9 +40,9 @@ public class EmpleadoService {
             EmpleadoBean newempleado = foundEmpleado.get();
             newempleado.setNombre(empleado.getNombre());
             newempleado.setCotrasenia(empleado.getCotrasenia());
-            newempleado.setIdentificador_usuario(empleado.getIdentificadorusuario());
             newempleado.setRol(empleado.getRol());
             newempleado.setTelefono(empleado.getTelefono());
+            newempleado.setEstatus(empleado.getEstatus());
 
             repository.save(newempleado);
             return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "oki"), HttpStatus.OK);

@@ -72,14 +72,12 @@ function ClienteMembresias(){
       console.log(respuesta.data.data[0])
       //setUser(respuesta.data.data);
     }
-  
+   
     return(
         
         <>
         <Menu/>
-        <Container 
-                className="main-content pb-5"
-            >
+        <div className="main-content pb-5">
                 
             <h1 className="d-flex justify-content-center">Membresía</h1>
             <div style={{ width: '99vw' }}>
@@ -107,7 +105,7 @@ function ClienteMembresias(){
                 />
             </div>
         
-        </Container>
+        </div>
         </>
     )
 }

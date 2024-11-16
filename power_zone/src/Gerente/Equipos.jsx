@@ -121,7 +121,8 @@ function Equipos() {
                 modelo: nombre,
                 marca: marca,
                 estado: estado,
-                cantidad: cantidad
+                cantidad: cantidad,
+                estatus: true
             }
 
             console.log(parametros)
@@ -129,12 +130,14 @@ function Equipos() {
         }
     }
 
-    const enviarSolicitud = async(metodo, parametros, url) => {
+    const enviarSolicitud = async(metodo, parametros, url, id_) => {
         event.preventDefault();
     
         if(metodo != "POST"){
-            url = url + id_equipo;
+            (id_ == undefined) ? url = url + id_equipo : url = url + id_;
         } 
+        console.log(parametros);
+        console.log(url);
         await axios({
             method: metodo,
             url: url,
@@ -172,6 +175,18 @@ function Equipos() {
         setSearchTerm(e.target.value);
     };
 
+    const activarE = (id_, modelo_, marca_, cantidad_, estado_, estatus_) => {
+        var parametros = {
+            modelo: modelo_,
+            marca: marca_,
+            estado: estado_,
+            cantidad: cantidad_,
+            estatus: estatus_ == true ? false : true,
+        }
+
+        enviarSolicitud("PUT", parametros, urlEquipos, id_);
+    }
+
     return (
         <>
             <Menu />
@@ -204,8 +219,11 @@ function Equipos() {
                     title4={'Estado'}
                     acciones={
                         <>
-                            <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                            <Button className='me-1' variant="success">Activar</Button>{' '}
+                            {equipo.estatus ? (
+                                <Button className='me-1' variant="danger" onClick={() => activarE(equipo.id_equipo, equipo.modelo, equipo.marca, equipo.cantidad, equipo.estado, equipo.estatus)}>Desactivar</Button>
+                            ) : (
+                                <Button className='me-1' variant="success" onClick={() => activarE(equipo.id_equipo, equipo.modelo, equipo.marca, equipo.cantidad, equipo.estado, equipo.estatus)}>Activar</Button>
+                            )}
                             <Button variant="warning" onClick={() => openActModal(equipo.id_equipo, equipo.modelo, equipo.marca, equipo.cantidad, equipo.estado)}>Editar</Button>{' '}
                         </>                    
                     }

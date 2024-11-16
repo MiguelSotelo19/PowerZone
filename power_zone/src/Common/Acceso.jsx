@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Menu from "./Menu";
+import axios from "axios";
+
+import { show_alerta } from "../Common/js/funciones";
 import { Container, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import "../Common/css/login.css";
 import { useNavigate } from 'react-router-dom';
 
-import axios from "axios";
+//CSS
+import "../Common/css/login.css";
 
 
 function Acceso() {
@@ -79,7 +82,7 @@ function Acceso() {
             persona.cotrasenia === contra && persona.identificadorusuario === usuario
         );
 
-        if (usuarioIniciado) {
+        if (usuarioIniciado.estatus) {
           localStorage.setItem("usuario", JSON.stringify(usuarioIniciado));
 
             switch(rol.nombre){
@@ -96,6 +99,8 @@ function Acceso() {
                 break;
             }
             break;
+        } else {
+          show_alerta("El usuario ingresado no se encuentra activo", "warning");
         }
     }
 

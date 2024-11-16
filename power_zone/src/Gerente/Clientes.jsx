@@ -166,16 +166,16 @@ function Clientes () {
         } else {
             parametros = {
                 nombre: nombre,
-                cotrasenia: contra == null ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
+                cotrasenia: contra == "" ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
                 correo: correo,
-                identificadorusuario: identificador == null ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
+                identificadorusuario: identificador == "" ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
                 rol: 'cliente',
                 telefono: num_telefonico,
                 cvv: parseInt(cvv),
                 estatus: estatus,
                 numero_tarjeta: num_tarjeta,
                 membresia: {
-                    id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
+                    id: idMembresia == '' ? parseInt(membresia, 10) : idMembresia
                 }
             }
 
@@ -209,8 +209,6 @@ function Clientes () {
         if(metodo != "POST"){
             (id_ == undefined) ? url = url + idCliente : url = url + id_;
         } 
-        console.log(metodo);
-        console.log(url);
         console.log(parametros);
         await axios({
             method: metodo,
@@ -251,7 +249,7 @@ function Clientes () {
     return (
         <>
             <Menu />
-
+ 
             <div className='main-content pb-5'>
                 <div style={{ width: '99vw' }}></div>
 
