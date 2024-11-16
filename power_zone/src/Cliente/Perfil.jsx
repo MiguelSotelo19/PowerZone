@@ -31,6 +31,7 @@ function ClientePerfil(){
     const urlClientes = "http://localhost:8080/api/power/cliente/";
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [showPassword, setShowPassword] = useState(false); 
+    const [ emailStatus, setEmailStatus ] = useState(false);
     //cliente
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
@@ -115,12 +116,26 @@ function ClientePerfil(){
         //}
     }
 
+    const alertActualizar=()=>{
+        Swal.fire({
+            title: 'Actualizar datos',
+            icon: 'warning',
+            text:'Verifique su información antes de actualizarla.',
+            confirmButtonText: 'Actualizar',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if(result.isConfirmed){
+                validar()
+            }   
+        })
+    }
     const validar = async () => {
         event.preventDefault();
         let parametros;
 
-        if(correo.trim() == '' || correo == undefined) {
-            Swal.fire("Correo vacío","El campo de correo se encuentra vacío","warning")
+        if(correo.trim() == '' || correo == undefined || emailStatus==false) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
         } else if(nombre.trim() == '' || nombre == undefined){
             Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
         }else if(num_telefonico.trim() == '' || num_telefonico == undefined){
@@ -140,10 +155,9 @@ function ClientePerfil(){
             cvv: cvv,
             numero_tarjeta:num_tarjeta
           }
-          console.log(parametros)
+            console.log(parametros)
+            actualizar(parametros);
         }
-    
-        actualizar(parametros);
     }
     
     const actualizar = async (parametros) => {
@@ -163,6 +177,30 @@ function ClientePerfil(){
             //console.log(error);
         })
     }
+
+    const validarEmail = (e) => {
+        let campo = e;
+            
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if (emailRegex.test(campo.value)) {  
+            console.log("SI")
+          setEmailStatus(true);
+        } else {
+            console.log("NO")
+          setEmailStatus(false);
+        }
+    }
+
+    const validarPrevEmail = (correo) => {
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if(emailRegex.test(correo)) {
+          setEmailStatus(true);
+        }else {
+          setEmailStatus(false);
+        }
+      }
 
     const contrasenaVisible = () => {
         setShowPassword((prev) => !prev); 
@@ -187,15 +225,15 @@ function ClientePerfil(){
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Nombre:</Form.Label>
-                            <Form.Control type="text" placeholder="Nombre del cliente" value={nombre} onChange={(e) => setNombre(e.target.value)}/>
+                            <Form.Control type="text" placeholder="Nombre del cliente" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Número de Teléfono:</Form.Label>
-                            <Form.Control type="number" placeholder="7771436571" value={num_telefonico}
-                             onChange={(e) => setTelefono(e.target.value)}
+                            <Form.Control type="number" placeholder="1112223333" value={num_telefonico}
+                             onChange={(e) => setNum(e.target.value)}
+                             maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required 
                             />
-                            <Form.Control
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -209,7 +247,9 @@ function ClientePerfil(){
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Correo Electrónico:</Form.Label>
-                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" value={correo} onChange={(e) => setCorreo(e.target.value)}/>
+                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" value={correo} 
+                            onChange={(e) => setCorreo(e.target.value)} required 
+                            onInput={(e) => { validarEmail(e.target); }}/>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -221,7 +261,7 @@ function ClientePerfil(){
                             <Form.Label>Contraseña:</Form.Label>
                             <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
                                 <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
-                                value={contra} onChange={(e) => setContra(e.target.value)} />
+                                value={contra} onChange={(e) => setContra(e.target.value)} required />
                                 <FontAwesomeIcon
                                 icon={showPassword ? faEyeSlash : faEye}
                                 className="password-toggle-icon p-2"
@@ -235,7 +275,7 @@ function ClientePerfil(){
             </Row>
 
             <div className="d-flex justify-content-center mt-4">
-                <Button variant="warning" className="me-3" type="submit" onClick={() => validar()}>Editar información</Button>
+                <Button variant="warning" className="me-3" type="submit" onClick={() => alertActualizar()}>Editar información</Button>
                 <Button variant="danger" onClick={()=>cerrarSesion()}>Cerrar sesión</Button>
             </div>
         </Container>
