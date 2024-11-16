@@ -1,6 +1,10 @@
 package utez.edu.mx.Powerzone.Model.Persona;
 
 import jakarta.persistence.*;
+import utez.edu.mx.Powerzone.Model.Planificacion.PlanificacionBean;
+
+import java.util.Set;
+
 @MappedSuperclass
 public class PersonaBean {
     @Id
@@ -15,6 +19,8 @@ public class PersonaBean {
     private String telefono;
 
     private Boolean estatus;
+
+
 
     public PersonaBean(String nombre, String cotrasenia, String correo, String identificadorusuario, String rol, String telefono, Boolean estatus) {
         this.nombre = nombre;

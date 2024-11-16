@@ -37,20 +37,32 @@ public class ClienteService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<ApiResponse> saveCliente(ClienteBean cliente) throws Exception {
+        // Verificar si el cliente ya existe por su identificador de usuario
         Optional<ClienteBean> foundCliente = repository.findByIdentificadorusuario(cliente.getIdentificadorusuario());
 
-        if(foundCliente.isPresent()){
+        if (foundCliente.isPresent()) {
             return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST, true, "Cliente ya registrado"), HttpStatus.BAD_REQUEST);
         }
 
-        
+        // Calcular fechas de adquisición y vencimiento si no están definidas
+        if (cliente.getAdquisicion() == null) {
+            cliente.setAdquisicion(LocalDate.now());
+        }
+        if (cliente.getVencimiento() == null) {
+            cliente.setVencimiento(cliente.getAdquisicion().plusDays(30));
+        }
 
+        // Actualizar ganancias basadas en la membresía del cliente
         service.SaveGanancias(cliente.getMembresia());
 
-
+        // Enviar un correo de bienvenida al cliente
         enviarCorreo(cliente.getCorreo(), cliente.getNombre());
-        return new ResponseEntity<>(new ApiResponse(repository.saveAndFlush(cliente), HttpStatus.OK, "oki"), HttpStatus.OK);
+
+        // Guardar cliente y devolver respuesta exitosa
+        ClienteBean savedCliente = repository.saveAndFlush(cliente);
+        return new ResponseEntity<>(new ApiResponse(savedCliente, HttpStatus.OK, "Registro exitoso"), HttpStatus.OK);
     }
+
 
     public void enviarCorreo(String correo, String nombre)
             throws Exception {

@@ -11,6 +11,7 @@ import lombok.Setter;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
 import utez.edu.mx.Powerzone.Model.Historial_ventas.Historial_ventasBean;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -30,6 +31,7 @@ public class MembresiaBean {
 
     @Column(nullable = true, length = 25)
     private String tipo_membresia;
+
 
 
     @OneToMany(mappedBy = "membresia", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
