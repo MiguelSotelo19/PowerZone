@@ -18,6 +18,7 @@ import Clase from './Empleado/Clases.jsx';
 import Membresia from './Empleado/Membresias.jsx'
 import ClienteMembresias from './Cliente/Membresia.jsx';
 import ClienteClases from './Cliente/Clases.jsx';
+import ClientePerfil from './Cliente/Perfil.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -42,6 +43,7 @@ createRoot(document.getElementById('root')).render(
       {/*Páginas del cliente*/}
       <Route path='/PowerZone/C/Membresias' element={<ClienteMembresias />} />
       <Route path='/PowerZone/C/Clases' element={<ClienteClases />} />
+      <Route path='/PowerZone/C/Perfil' element={<ClientePerfil />} />
 
       {/*Página por defecto*/}
       <Route path="/" element={<Navigate to="/PowerZone" replace />} />

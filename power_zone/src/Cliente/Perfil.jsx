@@ -4,10 +4,12 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";
 import Swal from 'sweetalert2';
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 import User from '../assets/user.png'
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 function cerrarSesion(){
@@ -20,6 +22,7 @@ function cerrarSesion(){
     }).then((result) => {
         if(result.isConfirmed){
           window.location = '/';
+          localStorage.clear();
         }   
     })
 }
@@ -27,52 +30,160 @@ function cerrarSesion(){
 
 function ClientePerfil(){
     const urlClientes = "http://localhost:8080/api/power/cliente/";
+    const urlMembresias = "http://localhost:8080/api/power/membresia/";
+    const [showPassword, setShowPassword] = useState(false); 
+    const [ emailStatus, setEmailStatus ] = useState(false);
+    //cliente
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
-    const [ ape_p, setApe_p ] = useState("");
-    const [ ape_m, setApe_m ] = useState("");    
     const [ num_telefonico, setNum ] = useState("");
     const [ correo, setCorreo ] = useState("");
     const [ membresia, setMembresia ] = useState([]);
     const [ contra, setContra ] = useState("");
     const [ num_tarjeta, setNumTarjeta ] = useState("");
     const [ cvv, setCVV ] = useState(0);
-    const [ tipo_tarjeta, setTipoTarjeta ] = useState("");
-    const [ fecha_venc, setFechaVenc ] = useState("");
     const [estatus, setEstatus]= useState(true);
     const [rol, setRol]= useState("");
     const [telefono, setTelefono]= useState("");
-    let user = localStorage.getItem("usuario");
+    const [identUsuario, setIdentUsuario] = useState("")
+
+    //Membresia
+    const [cliente, setClientes]= useState([]);
+    const [precio, setPrecio]=useState("");
+    const [tipoMembresia, setTipoMembresia]= useState("");
+    const [idMembresia, setIdMembresia]=useState("");
+    let usuario = JSON.parse(localStorage.getItem("usuario"));
+
     useEffect(() => {
         getCliente();
+        getMembresia();
       }, []);
       
     const getCliente = async () => {
-    const respuesta = await axios({
-        method: 'GET',
-        url: urlClientes
-    });
-    console.log(respuesta.data.data[0])
-    setCliente(respuesta.data.data);
+    setCliente(usuario);
     }
-    const setCliente = async (cliente) => {
 
-    for (let i = 0; i < cliente.length; i++) {
-        const element = cliente[i];
-        console.log("elemento: ",element)
-        if(element.idCliente == user){
-        setCorreo(element.correo);
-        setContra(element.cotrasenia);
-        setCVVt(element.cvv);
-        setEstatus(element.estatus);
-        setMembresia(element.identificadorusuario);
-        setNombre(element.nombre);
-        setNumTarjeta(element.numero_tarjeta);
-        setRol(element.rol);
-        setTelefono(element.telefono)
+    const getMembresia = async () => {
+        const respuesta = await axios({
+        method: 'GET',
+        url: urlMembresias 
+    });
+     setMembresias(respuesta.data.data); 
+    }
+    
+    const setCliente = async (usuario) => {
+        setCorreo(usuario.correo);
+        setIdCliente(usuario.id);
+        setContra(usuario.cotrasenia);
+        setCVV(usuario.cvv);
+        setEstatus(usuario.estatus);
+        setIdentUsuario(usuario.identificadorusuario);
+        setNombre(usuario.nombre);
+        setNumTarjeta(usuario.numero_tarjeta);
+        setRol(usuario.rol);
+        setNum(usuario.telefono)
+    }
+
+    const setMembresias = async (membresia) => {
+
+        for (let i = 0; i < membresia.length; i++) {
+            const element = membresia[i];
+            console.log(element)
+            console.log("id:",usuario.id)
+            const cliente = element.clienteBeans.find(cliente => cliente.id === usuario.id);
+            console.log("cliente con membresia:",cliente)
+            if(cliente){ //de todo esto la verdad nada mas que el tipo sirve jadjasdj
+            setClientes(element.clienteBeans); 
+            setPrecio(element.costo);
+            setTipoMembresia(element.tipo_membresia);
+            setIdMembresia(element.id)
+            break;
+            }
+            //console.log("membresia ",i," :",element)
         }
     }
+
+    const alertActualizar=()=>{
+        Swal.fire({
+            title: 'Actualizar datos',
+            icon: 'warning',
+            text:'Verifique su información antes de actualizarla.',
+            confirmButtonText: 'Actualizar',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if(result.isConfirmed){
+                validar()
+            }   
+        })
     }
+
+    const validar = async () => {
+        event.preventDefault();
+        let parametros;
+
+        if(correo.trim() == '' || correo == undefined || emailStatus==false) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
+        } else if(nombre.trim() == '' || nombre == undefined){
+            Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+        }else if(num_telefonico.trim() == '' || num_telefonico == undefined){
+            Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
+        }else if(contra.trim() == '' || contra == undefined){
+            Swal.fire("Contraseña vacía","El campo de contraseña se encuentra vacío","warning")
+        } else {
+            parametros = {
+            id: idCliente,
+            correo: correo,
+            nombre: nombre,
+            cotrasenia: contra,
+            telefono: num_telefonico,
+            identificadorusuario: identUsuario,
+            rol: rol,
+            estatus:estatus,
+            cvv: cvv,
+            numero_tarjeta:num_tarjeta
+          }
+            console.log(parametros)
+            actualizar(parametros);
+        }
+    }
+    
+    const actualizar = async (parametros) => {
+        event.preventDefault();
+
+        await axios({
+            method: 'PUT',
+            url: urlClientes+ parametros.id,
+            data: parametros
+        }).then(function (res) {
+            //console.log(res);
+            if(res.data.data == 'OK'){
+            //console.log(res.data.data); 
+            Swal.fire("Datos Actualizados","Los datos se han actualizado correctamente","success")
+            }
+        }).catch(function (error) {
+            //console.log(error);
+        })
+    }
+
+    const validarEmail = (e) => {
+        let campo = e;
+            
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if (emailRegex.test(campo.value)) {  
+            console.log("SI")
+          setEmailStatus(true);
+        } else {
+            console.log("NO")
+          setEmailStatus(false);
+        }
+    }
+
+    const contrasenaVisible = () => {
+        setShowPassword((prev) => !prev); 
+      };
+    
     return(
         
         <>
@@ -92,17 +203,20 @@ function ClientePerfil(){
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Nombre:</Form.Label>
-                            <Form.Control type="text" placeholder="Nombre del cliente" />
+                            <Form.Control type="text" placeholder="Nombre del cliente" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Número de Teléfono:</Form.Label>
-                            <Form.Control type="number" inputMode="numeric" placeholder="7771436571" maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)}/>
+                            <Form.Control type="number" placeholder="1112223333" value={num_telefonico}
+                             onChange={(e) => setNum(e.target.value)}
+                             maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required 
+                            />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Nivel de Membresía:</Form.Label>
-                            <Form.Control type="text" placeholder="Nivel de membresia" readOnly/>
+                            <Form.Label>Nivel de Membresía:</Form.Label><br/>
+                            <Form.Label className="mt-2">{tipoMembresia}</Form.Label>
                         </Form.Group>
                     </Form>
                 </Col>
@@ -111,24 +225,35 @@ function ClientePerfil(){
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Correo Electrónico:</Form.Label>
-                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" />
+                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" value={correo} 
+                            onChange={(e) => setCorreo(e.target.value)} required 
+                            onInput={(e) => { validarEmail(e.target); }}/>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Número de Cliente:</Form.Label>
-                            <Form.Control type="number" inputMode="numeric" placeholder="Número de cliente" readOnly />{/*Aca es agregar si hay limite de digitos, idk*/}
+                            <Form.Label>Número de Cliente:</Form.Label><br/>
+                            <Form.Label className="mt-2">{identUsuario}</Form.Label>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
-                            <Form.Control type="password" placeholder="Constraseña" />
+                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                                <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
+                                value={contra} onChange={(e) => setContra(e.target.value)} required />
+                                <FontAwesomeIcon
+                                icon={showPassword ? faEyeSlash : faEye}
+                                className="password-toggle-icon p-2"
+                                onClick={contrasenaVisible}
+                                />
+                            </div>
+                            
                         </Form.Group>
                     </Form>
                 </Col>
             </Row>
 
             <div className="d-flex justify-content-center mt-4">
-                <Button variant="warning" className="me-3">Editar información</Button>
+                <Button variant="warning" className="me-3" type="submit" onClick={() => alertActualizar()}>Editar información</Button>
                 <Button variant="danger" onClick={()=>cerrarSesion()}>Cerrar sesión</Button>
             </div>
         </Container>
