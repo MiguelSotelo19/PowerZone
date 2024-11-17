@@ -9,6 +9,8 @@ import lombok.Data;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
 import utez.edu.mx.Powerzone.Model.Membresia.MembresiaBean;
 
+import java.time.LocalDate;
+
 @Data
 public class ClienteDTO {
 
@@ -22,14 +24,16 @@ public class ClienteDTO {
     private Boolean estatus;
     private int CVV;
     private String numero_tarjeta;
+    private LocalDate adquisicion;
+    private LocalDate vencimiento;
     private MembresiaBean membresia;
 
     public ClienteBean toEntity(){
-        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,membresia);
+        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,adquisicion,vencimiento,membresia);
     }
 
     public ClienteBean toUpdate(){
-        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,membresia);
+        return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,adquisicion,vencimiento,membresia);
     }
 
 }
