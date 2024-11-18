@@ -43,10 +43,13 @@ const ClienteClases = () => {
                     startTime,
                     endTime,
                     extendedProps: {
+                        id: clase.id,
                         capacidad_maxima: clase.capacidad_maxima,
                         estatus: clase.estatus,
                         nombre_profesor: clase.nombre_profesor,
                         nombre_clase: clase.nombre_clase,
+                        horas: clase.hora_inicio,
+                        planificacion: clase.planificacionBeans                        
                     },
                 };
             });
@@ -58,14 +61,24 @@ const ClienteClases = () => {
     };
 
     const handleEventClick = (arg) => {
-        setSelectedEvent(arg.event.extendedProps); // Guarda los detalles del evento seleccionado
-        setShowModal(true); // Muestra el modal
+        const fechaSeleccionada = arg.event.start;
+        console.log("Fecha seleccionada:", fechaSeleccionada);
+    
+        setSelectedEvent({
+            ...arg.event.extendedProps,
+            fecha: fechaSeleccionada,
+        });
+        setShowModal(true); 
     };
 
     const closeModal = () => {
         setShowModal(false);
         setSelectedEvent(null);
     };
+
+    const agendarClase = () => {
+        
+    }
 
     return (
         <>
@@ -79,7 +92,7 @@ const ClienteClases = () => {
                         locale={esLocale}
                         initialView="timeGridWeek"
                         events={events}
-                        eventClick={handleEventClick} // Evento que se activa al hacer clic en un evento
+                        eventClick={handleEventClick}
                         headerToolbar={{
                             left: '',
                             center: 'title',
@@ -95,7 +108,7 @@ const ClienteClases = () => {
 
                     <div className="mb-5"></div>
 
-                    {/* Modal para mostrar información del evento */}
+                    {/* Modal para mostrar información de la clase */}
                     <Modal show={showModal} onHide={closeModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Detalles de la clase</Modal.Title>
@@ -107,6 +120,8 @@ const ClienteClases = () => {
                                     <h5>Instructor: {selectedEvent.nombre_profesor}</h5>
                                     <p>Cupo máximo: {selectedEvent.capacidad_maxima}</p>
                                     <p>Estado: {selectedEvent.estatus}</p>
+                                    <p>Fecha seleccionada: {selectedEvent.fecha.toLocaleDateString()}</p>
+                                    <p>Hora de inicio: {selectedEvent.fecha.toLocaleTimeString()}</p>
                                 </>
                             ) : (
                                 <p>Selecciona una clase en el calendario.</p>
@@ -116,7 +131,7 @@ const ClienteClases = () => {
                             <Button variant="secondary" onClick={closeModal}>
                                 Cerrar
                             </Button>
-                            <Button variant="primary" onClick={() => alert('Agendar clase')}>
+                            <Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
                                 Agendar clase
                             </Button>
                         </Modal.Footer>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Footer from "./Footer";
 import Menu from "./Menu";
 import axios from "axios";
-
 import { show_alerta } from "../Common/js/funciones";
 import { Container, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,10 +21,6 @@ function Acceso() {
   const [ contra, setContra ] = useState("");
   const [ showPassword, setShowPassword ] = useState(false); 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    getGerente();
-  }, [])
 
   const getClientes = async () => {
       const respuesta = await axios({
@@ -52,17 +47,18 @@ function Acceso() {
         method: 'GET',
         url: urlGerente,
     });
+    console.log("GET GERENTE");
     console.log(respuesta.data.data);
 
     return respuesta.data.data;
   }
-    
+
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev); 
   };
 
-  
-  
+
+
   const handleRegisterClick = () => {
     navigate('/PowerZone/DatosPersonales'); 
   };
@@ -77,23 +73,27 @@ function Acceso() {
     ];
 
     for (const rol of roles) {
-        const data = await rol.getData();
-        usuarioIniciado = data.find(persona =>
-            persona.cotrasenia === contra && persona.identificadorusuario === usuario
-        );
 
+      console.log("GET DATA");
+      const data = await rol.getData();
+      console.log(data);
+      usuarioIniciado = data.find(persona =>
+          persona.cotrasenia === contra && persona.identificadorusuario === usuario
+      );
+
+      if(usuarioIniciado != null && usuarioIniciado != undefined){
         if (usuarioIniciado.estatus) {
           localStorage.setItem("usuario", JSON.stringify(usuarioIniciado));
-
+  
             switch(rol.nombre){
               case "Cliente":
                 navigate("/PowerZone/C/Membresias");
                 break;
-
+  
               case "Empleado":
                 navigate("/PowerZone/E/Cliente");
                 break;
-
+  
                 case "Gerente":
                   navigate("/PowerZone/G/Clientes");
                 break;
@@ -102,6 +102,7 @@ function Acceso() {
         } else {
           show_alerta("El usuario ingresado no se encuentra activo", "warning");
         }
+      }      
     }
 
     if (!usuarioIniciado) {
