@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Menu from "./etiquetas/menu";
 import { Modal, Button } from 'react-bootstrap';
-import Swal from 'sweetalert2';
+import { show_alerta } from "../Common/js/funciones";
 import axios from "axios";
 
 import FullCalendar from '@fullcalendar/react';
@@ -10,11 +10,16 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import esLocale from '@fullcalendar/core/locales/es';
 
 const ClienteClases = () => {
+    const urlClases = "http://localhost:8080/api/power/clase/";
+    const urlPlanificacion = "http://localhost:8080/api/power/planificacion/";
+
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [events, setEvents] = useState([]);
 
-    const urlClases = "http://localhost:8080/api/power/clase/";
+    let user = JSON.parse(localStorage.getItem("usuario"));
+    console.log(user);
+    
     useEffect(() => {
         getClase();
     }, []);
@@ -23,6 +28,7 @@ const ClienteClases = () => {
         try {
             const respuesta = await axios.get(urlClases);
             const clases = respuesta.data.data;
+            console.log(clases);
 
             const eventos = clases.map(clase => {
                 const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
@@ -60,6 +66,16 @@ const ClienteClases = () => {
         }
     };
 
+    const getClaseP = async () => {
+        const respuesta = await axios({
+            method: 'GET',
+            url: urlPlanificacion
+        });
+
+        console.log(respuesta.data.data);
+        return respuesta.data.data;
+    }
+
     const handleEventClick = (arg) => {
         const fechaSeleccionada = arg.event.start;
         console.log("Fecha seleccionada:", fechaSeleccionada);
@@ -76,8 +92,50 @@ const ClienteClases = () => {
         setSelectedEvent(null);
     };
 
-    const agendarClase = () => {
+    const agendarClase = async (idClase, fecha, hora) => {
+        var clasePlanificacion = await getClaseP();
+        var parametros;
+
+        if(clasePlanificacion.length > 0){
+            clasePlanificacion = clasePlanificacion.find(claseP => claseP.fk_id_clase === idClase);
+            
+            console.log(clasePlanificacion);
+        } else {
+            console.log("HOLA");
+
+            parametros = {
+                dia: fecha + " " + hora,
+                clase: {
+                    id: idClase
+                },
+                cliente: {
+                    id: user.id
+                },
+            }
+            enviarSolicitud("POST", parametros, urlPlanificacion);
+        }
+    }
+
+    const enviarSolicitud = async (metodo, parametros, urlPlanificacion) => {
+        event.preventDefault();
+
+        console.log(parametros);
         
+        await axios({
+            method: metodo,
+            url: urlPlanificacion,
+            data: parametros
+        }).then(function (respuesta) {
+            var tipo = respuesta.data[0];
+            var msj = respuesta.data[1];
+            if(tipo === "success"){
+                show_alerta("Cambios realizados correctamente", "success");         
+            }
+        })
+        .catch(function (error) {
+            show_alerta("Error en la Solicitud", "error");
+            console.log(error);
+        });
     }
 
     return (
