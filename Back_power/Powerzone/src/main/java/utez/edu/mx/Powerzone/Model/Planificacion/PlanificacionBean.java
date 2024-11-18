@@ -1,6 +1,8 @@
 package utez.edu.mx.Powerzone.Model.Planificacion;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,9 +31,14 @@ public class PlanificacionBean {
     @JoinColumn(name = "fk_id_clase")
     private ClaseBean clase;
 
-
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_id_persona")
     private ClienteBean cliente;
 
+    public PlanificacionBean(String dia, ClaseBean clase, ClienteBean cliente) {
+        this.dia=dia;
+        this.clase=clase;
+        this.cliente=cliente;
+    }
 }
