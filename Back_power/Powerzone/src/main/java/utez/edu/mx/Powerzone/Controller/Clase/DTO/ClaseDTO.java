@@ -20,4 +20,7 @@ public class ClaseDTO {
         return new ClaseBean(capacidad_maxima,hora_inicio,nombre_clase,nombre_profesor);
     }
 
+    public ClaseDTO(ClaseBean clase) {
+        this.id = clase.getId();
+    }
 }

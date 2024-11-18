@@ -7,13 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utez.edu.mx.Powerzone.Config.ApiResponse;
+import utez.edu.mx.Powerzone.Controller.Planificacion.DTO.PlanificacionDTO2;
 import utez.edu.mx.Powerzone.Model.Clase.ClaseRepository;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteRepository;
 import utez.edu.mx.Powerzone.Model.Planificacion.PlanificacionBean;
 import utez.edu.mx.Powerzone.Model.Planificacion.PlanificacionRepository;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -27,7 +30,10 @@ public class PlanificacionService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse> getPlanificaciones(){
-        return new ResponseEntity<>(new ApiResponse(repository.findAll(), HttpStatus.OK,"oki"),HttpStatus.OK);
+        List<PlanificacionDTO2> planificacionesDTO = repository.findAll().stream()
+                .map(PlanificacionDTO2::new)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(new ApiResponse(planificacionesDTO, HttpStatus.OK,"oki"),HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})

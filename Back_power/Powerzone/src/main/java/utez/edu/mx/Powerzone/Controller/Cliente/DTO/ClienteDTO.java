@@ -36,4 +36,7 @@ public class ClienteDTO {
         return new ClienteBean(nombre,cotrasenia,correo,identificadorusuario,rol,telefono,estatus,CVV,numero_tarjeta,adquisicion,vencimiento,membresia);
     }
 
+    public ClienteDTO(ClienteBean cliente) {
+        this.id = cliente.getId();
+    }
 }
