@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import utez.edu.mx.Powerzone.Model.Clase.ClaseBean;
-import utez.edu.mx.Powerzone.Model.Membresia.MembresiaBean;
+import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
+import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 
 @Entity
 @Table(name = "Planificacion")
@@ -27,4 +28,10 @@ public class PlanificacionBean {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "fk_id_clase")
     private ClaseBean clase;
+
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "fk_id_persona")
+    private ClienteBean cliente;
+
 }

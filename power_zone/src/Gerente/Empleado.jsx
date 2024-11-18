@@ -86,11 +86,11 @@ function Empleados() {
         }
     }
 
-    const enviarSolicitud = async(metodo, parametros, url) => {
+    const enviarSolicitud = async(metodo, parametros, url, id_) => {
         event.preventDefault();
     
         if(metodo != "POST"){
-            url = url + idEmp;
+            (id_ == undefined) ? url = url + idEmp : url = url + id_;
         } 
         await axios({
             method: metodo,
@@ -127,7 +127,7 @@ function Empleados() {
     }
 
     //Modal Actualizar empleado
-    function openActModal(nombre_, telefono_, correo_, contrasenia_) {
+    function openActModal(empleado_id, nombre_, telefono_, correo_, contrasenia_) {
         setIdEmp(empleado_id);
         setNombre(nombre_);
         setNum(telefono_);
@@ -155,6 +155,19 @@ function Empleados() {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
+
+    const activarC = (id_, nombre_, telefono_, correo_, cotrasenia_, estatus_) => {
+        var parametros = {
+            nombre: nombre_,
+            contrasenia: cotrasenia_,
+            correo: correo_,
+            rol: 'Empleado',
+            telefono: telefono_,
+            estatus: estatus_ == true ? false : true,
+        }
+
+        enviarSolicitud("PUT", parametros, urlEmpleados, id_);
+    }
 
     return (
         <>
@@ -188,8 +201,11 @@ function Empleados() {
                     title4={'Estado'}
                     acciones={
                         <>
-                            <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                            <Button className='me-1' variant="success">Activar</Button>{' '}
+                            {empleado.estatus ? (
+                                        <Button className='me-1' variant="danger" onClick={() => { activarC(empleado.id, empleado.nombre, empleado.telefono, empleado.correo, empleado.cotrasenia, empleado.estatus) }} >Desactivar</Button>
+                                    ) : (
+                                        <Button className='me-1' variant="success" onClick={() => { activarC(empleado.id, empleado.nombre, empleado.telefono, empleado.correo, empleado.cotrasenia, empleado.estatus) }}>Activar</Button>
+                                    )} 
                             <Button variant="warning" onClick={() => openActModal(empleado.id, empleado.nombre, empleado.telefono, empleado.correo, empleado.cotrasenia)}>Editar</Button>{' '}
                         </>                    
                     } />

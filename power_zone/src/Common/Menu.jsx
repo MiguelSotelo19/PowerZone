@@ -23,7 +23,7 @@ function Menu() {
             <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone">Inicio</Nav.Link>
             <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone/Planes">Planes</Nav.Link>
             <Nav.Link className="m-1 me-3 fs-5" href="/PowerZone/Acceso">Acceso</Nav.Link>
-            <Button className="m-1 fs-5 fw-bold" variant="warning" href='/PowerZone/Inscribete'>¡Inscribete!</Button>{' '}
+            <Button className="m-1 fs-5 fw-bold" variant="warning" href='/PowerZone/DatosPersonales'>¡Inscribete!</Button>{' '}
           </Nav>
         </Container>
       </Navbar>

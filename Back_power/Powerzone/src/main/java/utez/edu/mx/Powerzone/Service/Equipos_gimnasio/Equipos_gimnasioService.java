@@ -47,6 +47,7 @@ public class Equipos_gimnasioService {
             found.setEstado(equipos.getEstado());
             found.setMarca(equipos.getMarca());
             found.setModelo(equipos.getModelo());
+            found.setEstatus(equipos.getEstatus());
 
             return new ResponseEntity<>(new ApiResponse((repository.save(found)), HttpStatus.OK, "oki"), HttpStatus.OK);
         }

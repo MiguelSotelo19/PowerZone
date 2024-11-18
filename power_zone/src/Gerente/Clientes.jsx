@@ -58,6 +58,13 @@ function Clientes () {
     const [ cvv, setCVV ] = useState(0);
     const [ tipo_tarjeta, setTipoTarjeta ] = useState("");
     const [ fecha_venc, setFechaVenc ] = useState("");
+    const [ identificador, setIdentificador] = useState("");
+    const [ idMembresia, setIdMembresia ] = useState("");
+    const [ estatus, setEstatus ] = useState(true);
+
+    let user = JSON.parse(localStorage.getItem("usuario"));
+    console.log("USUARIO INICIADO: ");
+    console.log(user);
 
     //Traer datos de cliente
     useEffect(() => {     
@@ -89,6 +96,7 @@ function Clientes () {
 
     //Modal Registrar Cliente
     function openModal() {
+        setEstatus(true);
         setIsOpen(true);
     }
 
@@ -105,8 +113,19 @@ function Clientes () {
         setMemIsOpen(false);
     }
 
-    //Modal Actualizar Cliente
-    function openActModal() {
+    //Modal Actualizar Cliente 
+    function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_) {
+        setIdCliente(id_);
+        setNombre(nombre_);
+        setCorreo(correo_);
+        setContra(contrasenia_);
+        setIdentificador(identificadorusuario_);
+        setNum(telefono_);
+        setIdMembresia(1);
+        setCVV(cvv_);
+        setNumTarjeta(numero_tarjeta_);
+        setEstatus(estatus);
+
         setActIsOpen(true);
     }
 
@@ -126,17 +145,17 @@ function Clientes () {
         var parametros;
         if(nombre.trim() === ""){
             show_alerta("Escribe el nombre del cliente", "warning");
-        }else if(fecha_venc.trim() === ""){
+        }else if(fecha_venc.trim() === "" && metodo=="POST"){
             show_alerta("Escribe la fecha de vencimiento", "warning");
-        } else if(tipo_tarjeta.trim() === ""){
+        } else if(tipo_tarjeta.trim() === "" && metodo=="POST"){
             show_alerta("Escribe el tipo de tarjeta", "warning");
-        } else if(cvv.trim() === ""){
+        } else if(cvv === null){
             show_alerta("Escribe el CVV", "warning");
         } else if(num_tarjeta.trim() === ""){
             show_alerta("Escribe el número de tarjeta", "warning");
-        } else if(ape_p.trim() === ""){
+        } else if(ape_p.trim() === "" && metodo=="POST"){
             show_alerta("Escribe el apellido paterno del cliente", "warning");
-        } else if(ape_m.trim() === ""){
+        } else if(ape_m.trim() === "" && metodo=="POST"){
             show_alerta("Escribe el apellido materno del cliente", "warning");
         } else if(num_telefonico.trim() === ""){
             show_alerta("Escribe el número de teléfono del cliente", "warning");
@@ -147,15 +166,16 @@ function Clientes () {
         } else {
             parametros = {
                 nombre: nombre,
-                contrasenia: `PowerPass_${Math.random().toString(36).substring(2, 10)}`,
+                cotrasenia: contra == "" ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
                 correo: correo,
-                identificadorusuario: `PowerClient_${Math.random().toString(36).substring(2, 11)}`,
+                identificadorusuario: identificador == "" ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
                 rol: 'cliente',
                 telefono: num_telefonico,
                 cvv: parseInt(cvv),
+                estatus: estatus,
                 numero_tarjeta: num_tarjeta,
                 membresia: {
-                    id: parseInt(membresia, 10)
+                    id: idMembresia == '' ? parseInt(membresia, 10) : idMembresia
                 }
             }
 
@@ -164,12 +184,32 @@ function Clientes () {
         }
     }
 
-    const enviarSolicitud = async(metodo, parametros, url) => {
+    const activarC = (id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_) => {
+        console.log(estatus_);
+        var parametros = {
+            nombre: nombre_,
+            cotrasenia: contrasenia_,
+            correo: correo_,
+            identificadorusuario: identificadorusuario_,
+            rol: 'cliente',
+            telefono: telefono_,
+            cvv: parseInt(cvv_),
+            estatus: estatus_ == true ? false : true,
+            numero_tarjeta: numero_tarjeta_
+        }
+
+        console.log(parametros);
+
+        enviarSolicitud("PUT", parametros, urlClientes, id_);
+    }
+
+    const enviarSolicitud = async(metodo, parametros, url, id_) => {
         event.preventDefault();
     
         if(metodo != "POST"){
-            url = url + '';
+            (id_ == undefined) ? url = url + idCliente : url = url + id_;
         } 
+        console.log(parametros);
         await axios({
             method: metodo,
             url: url,
@@ -209,7 +249,7 @@ function Clientes () {
     return (
         <>
             <Menu />
-
+ 
             <div className='main-content pb-5'>
                 <div style={{ width: '99vw' }}></div>
 
@@ -239,9 +279,12 @@ function Clientes () {
                             title4={'Estado'}
                             acciones={
                                 <>
-                                    <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                                    <Button className='me-1' variant="success">Activar</Button>{' '}
-                                    <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
+                                    {cliente.estatus ? (
+                                        <Button className='me-1' variant="danger" onClick={() => { activarC(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }} >Desactivar</Button>
+                                    ) : (
+                                        <Button className='me-1' variant="success" onClick={() => { activarC(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }}>Activar</Button>
+                                    )} 
+                                    <Button variant="warning" onClick={() => { openActModal(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }}>Editar</Button>{' '}
                                 </>                    
                             } 
                         />
@@ -359,24 +402,8 @@ function Clientes () {
 
                     
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
-                    </div>
+                <div className="field-1">
+                    <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                 </div>
 
                 <div className="field-1">
@@ -388,7 +415,7 @@ function Clientes () {
                 </div>
 
                 <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Siguiente</Button>{' '}
                 </div>
                 
                 </form>
