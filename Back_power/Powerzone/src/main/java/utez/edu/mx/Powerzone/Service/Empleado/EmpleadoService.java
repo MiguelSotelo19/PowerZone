@@ -43,7 +43,7 @@ public class EmpleadoService {
             newempleado.setIdentificador_usuario(empleado.getIdentificadorusuario());
             newempleado.setRol(empleado.getRol());
             newempleado.setTelefono(empleado.getTelefono());
-
+            newempleado.setCorreo(empleado.getCorreo());
             repository.save(newempleado);
             return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "oki"), HttpStatus.OK);
         }

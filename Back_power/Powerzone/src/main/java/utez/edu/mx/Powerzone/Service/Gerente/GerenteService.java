@@ -46,6 +46,7 @@ public class GerenteService {
             newgerente.setIdentificador_usuario(gerente.getIdentificadorusuario());
             newgerente.setRol(gerente.getRol());
             newgerente.setTelefono(gerente.getTelefono());
+            newgerente.setCorreo(gerente.getCorreo());
             repository.save(newgerente);
             return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "oki"), HttpStatus.OK);
         }

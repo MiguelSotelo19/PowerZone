@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/esm/Container";
-import Menu from "./etiquetas/menu";
+import Menu from "./etiquetas/Menu";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";
@@ -28,93 +28,53 @@ function cerrarSesion(){
 }
 
 
-function ClientePerfil(){
-    const urlClientes = "http://localhost:8080/api/power/cliente/";
-    const urlMembresias = "http://localhost:8080/api/power/membresia/";
-    const [showPassword, setShowPassword] = useState(false); 
+function Perfil(){
+    const urlGerente = "http://localhost:8080/api/power/gerente/";
+    const [ showPassword, setShowPassword] = useState(false); 
     const [ emailStatus, setEmailStatus ] = useState(false);
-    //cliente
-    const [ idCliente, setIdCliente ] = useState("");
-    const [ nombre, setNombre ] = useState("");
-    const [ num_telefonico, setNum ] = useState("");
+    //Gerente
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
-    const [ num_tarjeta, setNumTarjeta ] = useState("");
-    const [ cvv, setCVV ] = useState(0);
-    const [estatus, setEstatus]= useState(true);
-    const [rol, setRol]= useState("");
-    const [identUsuario, setIdentUsuario] = useState("")
+    const [ estatus, setEstatus]= useState(true);
+    const [ idGerente, setIdGerente ] = useState("");
+    const [ identUsuario, setIdentUsuario] = useState("")
+    const [ nombre, setNombre ] = useState("");
+    const [ rol, setRol]= useState("");
+    const [ telefono, setTelefono]= useState("");
 
-    //Membresia
-    const [cliente, setClientes]= useState([]);
-    const [precio, setPrecio]=useState("");
-    const [tipoMembresia, setTipoMembresia]= useState("");
-    const [idMembresia, setIdMembresia]=useState("");
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
-        getCliente();
-        getMembresia();
+        getGerente();
       }, []);
-
-    const getCliente = async () => {
+      
+    const getGerente = async () => {
         const respuesta = await axios({
         method: 'GET',
-        url: urlClientes 
-    });
+        url: urlGerente 
+    });    
     console.log("login:",usuarioIniciado)
-    setCliente(respuesta.data.data); 
+    setGerente(respuesta.data.data); 
     }
 
-    const getMembresia = async () => {
-        const respuesta = await axios({
-        method: 'GET',
-        url: urlMembresias 
-    });
-     setMembresias(respuesta.data.data); 
-    }
-    
-    const setCliente = async (usuario) => {
+    const setGerente = async (usuario) => {
         console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
-                console.log("cliente:",element)
                 setCorreo(element.correo);
-                setIdCliente(element.id);
-                setContra(element.cotrasenia);
-                setCVV(element.cvv);
                 setEstatus(element.estatus);
+                setIdGerente(element.id);
                 setIdentUsuario(element.identificadorusuario);
-                setNombre(element.nombre);
-                setNumTarjeta(element.numero_tarjeta);
+                setNombre(element.nombre);       
+                setContra(element.cotrasenia);
                 setRol(element.rol);
-                setNum(element.telefono)
+                setTelefono(element.telefono)
                 validarPrevEmail(element.correo);
                 break;
             }
         }
     }
-
-    const setMembresias = async (membresia) => {
-
-        for (let i = 0; i < membresia.length; i++) {
-            const element = membresia[i];
-            //console.log(element)
-            //console.log("id:",usuarioIniciado.id)
-            const cliente = element.clienteBeans.find(cliente => cliente.id === usuarioIniciado.id);
-            //console.log("cliente con membresia:",cliente)
-            if(cliente){ //de todo esto la verdad nada mas que el tipo sirve jadjasdj
-            setClientes(element.clienteBeans); 
-            setPrecio(element.costo);
-            setTipoMembresia(element.tipo_membresia);
-            setIdMembresia(element.id)
-            break;
-            }
-            //console.log("membresia ",i," :",element)
-        }
-    }
-
     const alertActualizar=()=>{
         Swal.fire({
             title: 'Actualizar datos',
@@ -138,22 +98,20 @@ function ClientePerfil(){
             Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
         } else if(nombre.trim() == '' || nombre == undefined){
             Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
-        }else if(num_telefonico.trim() == '' || num_telefonico == undefined){
+        }else if(telefono.trim() == '' || telefono == undefined){
             Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
         }else if(contra.trim() == '' || contra == undefined){
             Swal.fire("Contraseña vacía","El campo de contraseña se encuentra vacío","warning")
         } else {
             parametros = {
-            id: idCliente,
-            correo: correo,
-            nombre: nombre,
-            cotrasenia: contra,
-            telefono: num_telefonico,
-            identificadorusuario: identUsuario,
-            rol: rol,
-            estatus:estatus,
-            cvv: cvv,
-            numero_tarjeta:num_tarjeta
+                correo: correo,
+                cotrasenia: contra,
+                estatus: estatus,
+                id: idGerente,
+                identificadorusuario: identUsuario,
+                nombre: nombre,
+                rol: rol,
+                telefono: telefono,
           }
             console.log(parametros)
             actualizar(parametros);
@@ -165,7 +123,7 @@ function ClientePerfil(){
 
         await axios({
             method: 'PUT',
-            url: urlClientes+ parametros.id,
+            url: urlGerente+ parametros.id,
             data: parametros
         }).then(function (res) {
             //console.log(res);
@@ -203,7 +161,7 @@ function ClientePerfil(){
           setEmailStatus(false);
         }
       }
-
+    
     const contrasenaVisible = () => {
         setShowPassword((prev) => !prev); 
       };
@@ -211,6 +169,7 @@ function ClientePerfil(){
     return(
         
         <>
+        
         <Menu/>
         <Container className="main-content pb-5">
             <h1 className="d-flex justify-content-center">Perfil</h1>
@@ -227,21 +186,17 @@ function ClientePerfil(){
                     <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>Nombre:</Form.Label>
-                            <Form.Control type="text" placeholder="Nombre del cliente" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
+                            <Form.Control type="text" placeholder="Nombre del empleado" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
                         </Form.Group>
 
                         <Form.Group className="mb-3">
                             <Form.Label>Número de Teléfono:</Form.Label>
-                            <Form.Control type="number" placeholder="1112223333" value={num_telefonico}
-                             onChange={(e) => setNum(e.target.value)}
+                            <Form.Control type="number" placeholder="1112223333" value={telefono}
+                             onChange={(e) => setTelefono(e.target.value)}
                              maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required 
                             />
                         </Form.Group>
 
-                        <Form.Group className="mb-3">
-                            <Form.Label>Nivel de Membresía:</Form.Label><br/>
-                            <Form.Label className="mt-2">{tipoMembresia}</Form.Label>
-                        </Form.Group>
                     </Form>
                 </Col>
 
@@ -255,11 +210,16 @@ function ClientePerfil(){
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Número de Cliente:</Form.Label><br/>
+                            <Form.Label>Identificador de usuario:</Form.Label><br/>
                             <Form.Label className="mt-2">{identUsuario}</Form.Label>
                         </Form.Group>
+                    </Form>
+                </Col>
 
-                        <Form.Group className="mb-3">
+            </Row>
+            <Row className="d-flex justify-content-center mt-2 ms-5 ps-5">
+                <Col md={4}>
+                    <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
                             <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
                                 <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
@@ -271,8 +231,7 @@ function ClientePerfil(){
                                 />
                             </div>
                             
-                        </Form.Group>
-                    </Form>
+                    </Form.Group>
                 </Col>
             </Row>
 
@@ -285,4 +244,4 @@ function ClientePerfil(){
     )
 }
 
-export default ClientePerfil;
+export default Perfil;
