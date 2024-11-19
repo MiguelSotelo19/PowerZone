@@ -98,10 +98,10 @@ function ModalMejorar({ show, onHide, datosCliente,datosMembresia }) {
 }
 
 function ClienteMembresias(){
-    
+    const urlClientes = "http://localhost:8080/api/power/cliente/";
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [modalShow, setModalShow] = React.useState(false);
-    let usuario = JSON.parse(localStorage.getItem("usuario"));
+    let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
     //cliente
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
@@ -115,7 +115,6 @@ function ClienteMembresias(){
     const [rol, setRol]= useState("");
     const [telefono, setTelefono]= useState("");
     const [identUsuario, setIdentUsuario] = useState("")
-
     //Membresia
     const [cliente, setClientes]= useState([]);
     const [precio, setPrecio]=useState("");
@@ -127,19 +126,62 @@ function ClienteMembresias(){
       getMembresia();
     }, []);
     
-  const getCliente = async () => {
-    setCliente(usuario);
-  }
-
-  const getMembresia = async () => {
-      const respuesta = await axios({
-          method: 'GET',
-          url: urlMembresias
-      });
-      console.log(respuesta.data.data[0])
-      //setUser(respuesta.data.data);
+    const getCliente = async () => {
+        const respuesta = await axios({
+        method: 'GET',
+        url: urlClientes 
+    });
+    console.log("login:",usuarioIniciado)
+    setCliente(respuesta.data.data); 
     }
-   
+
+    const getMembresia = async () => {
+        const respuesta = await axios({
+        method: 'GET',
+        url: urlMembresias 
+        });
+        
+        setMembresias(respuesta.data.data); 
+    }
+    
+    const setCliente = async (usuario) => {
+        console.log(usuario)
+        for (let i = 0; i < usuario.length; i++) {  
+            const element = usuario[i];
+            if(element.id == usuarioIniciado.id){
+                console.log("cliente:",element)
+                setCorreo(element.correo);
+                setIdCliente(element.id);
+                setContra(element.cotrasenia);
+                setCVV(element.cvv);
+                setEstatus(element.estatus);
+                setIdentUsuario(element.identificadorusuario);
+                setNombre(element.nombre);
+                setNumTarjeta(element.numero_tarjeta);
+                setRol(element.rol);
+                setNum(element.telefono)
+                break;
+            }
+        }
+    }
+
+    const setMembresias = async (membresia) => {
+
+        for (let i = 0; i < membresia.length; i++) {
+            const element = membresia[i];
+            const cliente = element.clienteBeans.find(cliente => cliente.id === usuarioIniciado.id);
+            if(cliente){
+            setMembresia(element)
+            console.log("membresia:",element)
+            setClientes(element.clienteBeans); 
+            setPrecio(element.costo);
+            setTipoMembresia(element.tipo_membresia);
+            setIdMembresia(element.id)
+            break;
+            }
+            //console.log("membresia ",i," :",element)
+        }
+    } 
     return(
         
         <>
@@ -168,7 +210,7 @@ function ClienteMembresias(){
                 <ModalMejorar
                             show={modalShow}
                             onHide={() => setModalShow(false)}
-                            datosCliente={usuario} datosMembresia={membresia}
+                            datosCliente={cliente} datosMembresia={membresia}
                 />
                 <div className='mt-4 d-flex justify-content-center'>
                     <Table className='table-separated-columns' style={{ width: '80%' }}>

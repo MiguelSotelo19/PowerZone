@@ -24,7 +24,7 @@ function Menu() {
             <Nav.Link className="m-1 me-2 fs-5 fw-bold" href="/PowerZone/E/Clases">Clases</Nav.Link>
             <Nav.Link className="m-1 me-2 fs-5 fw-bold" href="/PowerZone/E/Membresias">Membresías</Nav.Link>
     
-            <Navbar.Brand href="/PowerZone//Perfil">
+            <Navbar.Brand href="/PowerZone/E/Perfil">
                 <img 
                     src={user}
                     alt='user_PowerZone'

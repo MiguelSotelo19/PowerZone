@@ -44,6 +44,7 @@ public class EmpleadoService {
             newempleado.setTelefono(empleado.getTelefono());
             newempleado.setEstatus(empleado.getEstatus());
 
+            newempleado.setCorreo(empleado.getCorreo());
             repository.save(newempleado);
             return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "oki"), HttpStatus.OK);
         }
