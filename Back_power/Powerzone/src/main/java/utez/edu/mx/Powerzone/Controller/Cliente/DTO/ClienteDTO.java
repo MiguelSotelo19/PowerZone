@@ -39,4 +39,7 @@ public class ClienteDTO {
     public ClienteDTO(ClienteBean cliente) {
         this.id = cliente.getId();
     }
+
+    public ClienteDTO() {
+    }
 }

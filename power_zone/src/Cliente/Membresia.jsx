@@ -140,7 +140,7 @@ function ClienteMembresias(){
         method: 'GET',
         url: urlMembresias 
         });
-        
+
         setMembresias(respuesta.data.data); 
     }
     
@@ -179,7 +179,6 @@ function ClienteMembresias(){
             setIdMembresia(element.id)
             break;
             }
-            //console.log("membresia ",i," :",element)
         }
     } 
     return(

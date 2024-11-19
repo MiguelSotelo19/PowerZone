@@ -16,7 +16,6 @@ const ClienteClases = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [events, setEvents] = useState([]);
-    const [ planificacion, setPlanificacion ] = useState([]);
 
     let user = JSON.parse(localStorage.getItem("usuario"));
     console.log(user);
@@ -107,6 +106,8 @@ const ClienteClases = () => {
 
         if(clasePlanificacion.length > 0){
             clasePlanificacion = clasePlanificacion.filter(claseP => claseP.clase.id === idClase && claseP.dia === (fecha + " " + hora));
+
+            console.log("CANTIDAD ENCONTRADA: "+clasePlanificacion.length);
             
             if(clasePlanificacion.find(claseP => claseP.cliente.id == user.id) != undefined) {
                 closeModal();
@@ -146,13 +147,10 @@ const ClienteClases = () => {
 
     const cancelarInscripcion = async (idClase_, fecha_) => {
         var clasePlanificacion = await getClaseP();
-        console.log("ANTES DE CANCELAR");
 
         if(clasePlanificacion.length > 0){
             clasePlanificacion = clasePlanificacion.find(claseP => claseP.clase.id === idClase_ && claseP.dia === fecha_);
             
-            console.log("LATER DE CANCELAR");
-            console.log(clasePlanificacion);
             enviarSolicitud("DELETE", null, urlPlanificacion, clasePlanificacion.id);
         }
     }

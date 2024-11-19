@@ -89,13 +89,26 @@ function Clientes () {
         setMembresias(respuesta.data.data);
     }
 
+    const limpiar = () => {
+        setIdCliente(null);
+        setNombre(null);
+        setCorreo(null);
+        setContra(null);
+        setIdentificador(null);
+        setNum(null);
+        setIdMembresia(null);
+        setCVV(null);
+        setNumTarjeta(null);
+        setEstatus(null);
+    }
+
     //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalMemIsOpen, setMemIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
 
     //Modal Registrar Cliente
-    function openModal() {
+    function openModal() {  
         setEstatus(true);
         setIsOpen(true);
     }
@@ -166,16 +179,18 @@ function Clientes () {
         } else {
             parametros = {
                 nombre: nombre,
-                cotrasenia: contra == "" ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
+                cotrasenia: contra == null ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
                 correo: correo,
-                identificadorusuario: identificador == "" ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
+                identificadorusuario: identificador == null ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
                 rol: 'cliente',
                 telefono: num_telefonico,
-                cvv: parseInt(cvv),
                 estatus: estatus,
+                cvv: parseInt(cvv),
                 numero_tarjeta: num_tarjeta,
+                adquisicion: "",
+                vencimiento: "",
                 membresia: {
-                    id: idMembresia == '' ? parseInt(membresia, 10) : idMembresia
+                    id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
                 }
             }
 
@@ -193,8 +208,8 @@ function Clientes () {
             identificadorusuario: identificadorusuario_,
             rol: 'cliente',
             telefono: telefono_,
-            cvv: parseInt(cvv_),
             estatus: estatus_ == true ? false : true,
+            cvv: parseInt(cvv_),
             numero_tarjeta: numero_tarjeta_
         }
 
@@ -254,7 +269,7 @@ function Clientes () {
                 <div style={{ width: '99vw' }}></div>
 
                 <div className='d-flex justify-content-evenly'>
-                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={openModal}>
+                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={() => { limpiar(); openModal(); }}>
                     <img 
                     src={cross}
                     alt='mas'
@@ -308,26 +323,26 @@ function Clientes () {
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" onChange={(e) => setNombre(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" onChange={(e) => setApe_p(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" onChange={(e) => setApe_m(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" onChange={(e) => setNum(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setCorreo(e.target.value)} />
+                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
                 </div>
 
                 <div className="acciones">
@@ -361,21 +376,21 @@ function Clientes () {
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Número de tarjeta" onChange={(e) => setNumTarjeta(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Número de tarjeta" value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="CVV" onChange={(e) => setCVV(e.target.value)} />
+                        <Form.Control required type="text" placeholder="CVV" value={cvv} onChange={(e) => setCVV(e.target.value)} />
                     </div>
                 </div>
 
                 <div className="info-1">
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de Tarjeta" onChange={(e) => setTipoTarjeta(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Tipo de Tarjeta" value={tipo_tarjeta} onChange={(e) => setTipoTarjeta(e.target.value)} />
                     </div>
 
                     <div className="field">
-                        <Form.Control required type="text" placeholder="Fecha de vencimiento" onChange={(e) => setFechaVenc(e.target.value)} />
+                        <Form.Control required type="text" placeholder="Fecha de vencimiento" value={fecha_venc} onChange={(e) => setFechaVenc(e.target.value)} />
                     </div>
                 </div>
 
