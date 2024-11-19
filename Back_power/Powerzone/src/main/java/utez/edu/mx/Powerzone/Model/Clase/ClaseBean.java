@@ -1,5 +1,6 @@
 package utez.edu.mx.Powerzone.Model.Clase;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class ClaseBean {
     @Column(columnDefinition = "BOOLEAN")
     private Boolean estatus;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "clase", fetch = FetchType.LAZY)
     private Set<PlanificacionBean> planificacionBeans;
 

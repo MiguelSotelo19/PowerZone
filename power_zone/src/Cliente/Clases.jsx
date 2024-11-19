@@ -16,6 +16,7 @@ const ClienteClases = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [events, setEvents] = useState([]);
+    const [ planificacion, setPlanificacion ] = useState([]);
 
     let user = JSON.parse(localStorage.getItem("usuario"));
     console.log(user);
@@ -28,15 +29,22 @@ const ClienteClases = () => {
         try {
             const respuesta = await axios.get(urlClases);
             const clases = respuesta.data.data;
-            console.log(clases);
 
-            const eventos = clases.map(clase => {
+            const eventos = await Promise.all(clases.map(async clase => {
                 const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
                 const [inicioHora, inicioMinuto] = horaInicio.split(':');
                 const [finHora, finMinuto] = horaFin.split(':');
 
                 const startTime = `${inicioHora}:${inicioMinuto}:00`;
                 const endTime = `${finHora}:${finMinuto}:00`;
+
+                var claseVP = await getClaseP();
+                var agenda = false;
+                claseVP = claseVP.filter(clas => clas.clase.id == clase.id && clas.cliente.id == user.id);
+                
+                if(claseVP.length !== 0){
+                    agenda = true;
+                }
 
                 return {
                     title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
@@ -55,10 +63,11 @@ const ClienteClases = () => {
                         nombre_profesor: clase.nombre_profesor,
                         nombre_clase: clase.nombre_clase,
                         horas: clase.hora_inicio,
-                        planificacion: clase.planificacionBeans                        
+                        planificacion: clase.planificacionBeans,
+                        agendado: agenda                   
                     },
                 };
-            });
+            }));
 
             setEvents(eventos);
         } catch (error) {
@@ -78,7 +87,7 @@ const ClienteClases = () => {
 
     const handleEventClick = (arg) => {
         const fechaSeleccionada = arg.event.start;
-        console.log("Fecha seleccionada:", fechaSeleccionada);
+        console.log("Evento seleccionado:", arg.event.extendedProps); 
     
         setSelectedEvent({
             ...arg.event.extendedProps,
@@ -97,12 +106,29 @@ const ClienteClases = () => {
         var parametros;
 
         if(clasePlanificacion.length > 0){
-            clasePlanificacion = clasePlanificacion.find(claseP => claseP.fk_id_clase === idClase);
+            clasePlanificacion = clasePlanificacion.filter(claseP => claseP.clase.id === idClase && claseP.dia === (fecha + " " + hora));
             
-            console.log(clasePlanificacion);
-        } else {
-            console.log("HOLA");
+            if(clasePlanificacion.find(claseP => claseP.cliente.id == user.id) != undefined) {
+                closeModal();
+                show_alerta("Ya te encuentras inscrito a esta clase", "warning");                
+            } else {
+                if(clasePlanificacion.length === 0) {
+                    parametros = {
+                        dia: fecha + " " + hora,
+                        clase: {
+                            id: idClase
+                        },
+                        cliente: {
+                            id: user.id
+                        },
+                    }
 
+                    enviarSolicitud("POST", parametros, urlPlanificacion);
+                    closeModal();
+                    show_alerta("Te has inscrito correctamente", "success"); 
+                }
+            }            
+        } else {
             parametros = {
                 dia: fecha + " " + hora,
                 clase: {
@@ -113,17 +139,34 @@ const ClienteClases = () => {
                 },
             }
             enviarSolicitud("POST", parametros, urlPlanificacion);
+            closeModal();
+            show_alerta("Te has inscrito correctamente", "success"); 
         }
     }
 
-    const enviarSolicitud = async (metodo, parametros, urlPlanificacion) => {
+    const cancelarInscripcion = async (idClase_, fecha_) => {
+        var clasePlanificacion = await getClaseP();
+        console.log("ANTES DE CANCELAR");
+
+        if(clasePlanificacion.length > 0){
+            clasePlanificacion = clasePlanificacion.find(claseP => claseP.clase.id === idClase_ && claseP.dia === fecha_);
+            
+            console.log("LATER DE CANCELAR");
+            console.log(clasePlanificacion);
+            enviarSolicitud("DELETE", null, urlPlanificacion, clasePlanificacion.id);
+        }
+    }
+
+    const enviarSolicitud = async (metodo, parametros, url_, id_) => {
         event.preventDefault();
 
-        console.log(parametros);
+        if(metodo != "POST" && id_) {
+            url_ = url_ + id_;
+        }
         
         await axios({
             method: metodo,
-            url: urlPlanificacion,
+            url: url_,
             data: parametros
         }).then(function (respuesta) {
             var tipo = respuesta.data[0];
@@ -136,6 +179,8 @@ const ClienteClases = () => {
             show_alerta("Error en la Solicitud", "error");
             console.log(error);
         });
+        closeModal();
+        getClase();
     }
 
     return (
@@ -166,7 +211,6 @@ const ClienteClases = () => {
 
                     <div className="mb-5"></div>
 
-                    {/* Modal para mostrar información de la clase */}
                     <Modal show={showModal} onHide={closeModal}>
                         <Modal.Header closeButton>
                             <Modal.Title>Detalles de la clase</Modal.Title>
@@ -174,9 +218,15 @@ const ClienteClases = () => {
                         <Modal.Body>
                             {selectedEvent ? (
                                 <>
-                                    <h5>Clase: {selectedEvent.nombre_clase}</h5>
+                                    <div className="d-flex justify-content-evenly">
+                                        <h5>Clase: {selectedEvent.nombre_clase}</h5>
+                                        {selectedEvent.agendado ? (
+                                            <Button variant="danger" onClick={() => cancelarInscripcion(selectedEvent.id, selectedEvent.fecha.toLocaleDateString()+" "+selectedEvent.fecha.toLocaleTimeString())} >Cancelar Inscripción</Button>
+                                        ) : (<></>)}
+                                    </div>
                                     <h5>Instructor: {selectedEvent.nombre_profesor}</h5>
                                     <p>Cupo máximo: {selectedEvent.capacidad_maxima}</p>
+                                    <p>ID: {selectedEvent.id}</p>
                                     <p>Estado: {selectedEvent.estatus}</p>
                                     <p>Fecha seleccionada: {selectedEvent.fecha.toLocaleDateString()}</p>
                                     <p>Hora de inicio: {selectedEvent.fecha.toLocaleTimeString()}</p>
@@ -189,9 +239,13 @@ const ClienteClases = () => {
                             <Button variant="secondary" onClick={closeModal}>
                                 Cerrar
                             </Button>
-                            <Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
+                            {
+                                selectedEvent && selectedEvent.agendado ? 
+                                (<div>Ya te encuentras inscrito</div>) 
+                                : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
                                 Agendar clase
-                            </Button>
+                            </Button>)
+                            }
                         </Modal.Footer>
                     </Modal>
                 </div>

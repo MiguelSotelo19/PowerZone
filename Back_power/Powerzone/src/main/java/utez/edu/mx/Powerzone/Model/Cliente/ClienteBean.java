@@ -40,6 +40,7 @@ public class ClienteBean extends PersonaBean {
     @JsonIgnore
     private MembresiaBean membresia;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     private Set<PlanificacionBean> planificacionBeans;
 
