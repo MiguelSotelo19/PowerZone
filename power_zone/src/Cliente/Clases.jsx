@@ -102,47 +102,45 @@ const ClienteClases = () => {
 
     const agendarClase = async (idClase, fecha, hora) => {
         var clasePlanificacion = await getClaseP();
-        var parametros;
 
         if(clasePlanificacion.length > 0){
             clasePlanificacion = clasePlanificacion.filter(claseP => claseP.clase.id === idClase && claseP.dia === (fecha + " " + hora));
 
-            console.log("CANTIDAD ENCONTRADA: "+clasePlanificacion.length);
-            
             if(clasePlanificacion.find(claseP => claseP.cliente.id == user.id) != undefined) {
                 closeModal();
                 show_alerta("Ya te encuentras inscrito a esta clase", "warning");                
             } else {
                 if(clasePlanificacion.length === 0) {
-                    parametros = {
-                        dia: fecha + " " + hora,
-                        clase: {
-                            id: idClase
-                        },
-                        cliente: {
-                            id: user.id
-                        },
+                    enviarInscripcion(fecha + " " + hora, idClase); 
+                } else {
+                    var claseFind = events.find(claseE => claseE.extendedProps.id === clasePlanificacion[0].clase.id);
+                    console.log(claseFind);
+                    if(clasePlanificacion.length < claseFind.extendedProps.capacidad_maxima){
+                        enviarInscripcion(fecha + " " + hora, idClase);
+                    } else {
+                        show_alerta("Cupo máximo alcanzado", "warning");
                     }
-
-                    enviarSolicitud("POST", parametros, urlPlanificacion);
-                    closeModal();
-                    show_alerta("Te has inscrito correctamente", "success"); 
                 }
             }            
         } else {
-            parametros = {
-                dia: fecha + " " + hora,
-                clase: {
-                    id: idClase
-                },
-                cliente: {
-                    id: user.id
-                },
-            }
-            enviarSolicitud("POST", parametros, urlPlanificacion);
-            closeModal();
-            show_alerta("Te has inscrito correctamente", "success"); 
+            enviarInscripcion(fecha + " " + hora, idClase);
         }
+    }
+
+    const enviarInscripcion = (fecha_, idClase_) => {
+        var parametros = {
+            dia: fecha_,
+            clase: {
+                id: idClase_
+            },
+            cliente: {
+                id: user.id
+            },
+        }
+
+        enviarSolicitud("POST", parametros, urlPlanificacion);
+        closeModal();
+        show_alerta("Te has inscrito correctamente", "success"); 
     }
 
     const cancelarInscripcion = async (idClase_, fecha_) => {
@@ -218,7 +216,7 @@ const ClienteClases = () => {
                                 <>
                                     <div className="d-flex justify-content-evenly">
                                         <h5>Clase: {selectedEvent.nombre_clase}</h5>
-                                        {selectedEvent.agendado ? (
+                                        {/*selectedEvent.agendado*/false ? (
                                             <Button variant="danger" onClick={() => cancelarInscripcion(selectedEvent.id, selectedEvent.fecha.toLocaleDateString()+" "+selectedEvent.fecha.toLocaleTimeString())} >Cancelar Inscripción</Button>
                                         ) : (<></>)}
                                     </div>
@@ -238,7 +236,7 @@ const ClienteClases = () => {
                                 Cerrar
                             </Button>
                             {
-                                selectedEvent && selectedEvent.agendado ? 
+                                /*selectedEvent && selectedEvent.agendado*/false ? 
                                 (<div>Ya te encuentras inscrito</div>) 
                                 : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
                                 Agendar clase
