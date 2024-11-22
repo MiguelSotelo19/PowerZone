@@ -23,7 +23,6 @@ const ClienteClases = () => {
     const gris = "#e0e1ce";
 
     let user = JSON.parse(localStorage.getItem("usuario"));
-    console.log(user);
     
     useEffect(() => {
         getClase();
@@ -149,13 +148,11 @@ const ClienteClases = () => {
             url: urlPlanificacion
         });
 
-        console.log(respuesta.data.data);
         return respuesta.data.data;
     }
 
     const handleEventClick = (arg) => {
         const fechaSeleccionada = arg.event.start;
-        console.log("Evento seleccionado:", arg.event.extendedProps); 
     
         setSelectedEvent({
             ...arg.event.extendedProps,
@@ -183,7 +180,6 @@ const ClienteClases = () => {
                     enviarInscripcion(fecha + " " + hora, idClase); 
                 } else {
                     var claseFind = events.find(claseE => claseE.extendedProps.id === clasePlanificacion[0].clase.id);
-                    console.log(claseFind);
                     if(clasePlanificacion.length < claseFind.extendedProps.capacidad_maxima){
                         enviarInscripcion(fecha + " " + hora, idClase);
                     } else {
@@ -242,7 +238,7 @@ const ClienteClases = () => {
         })
         .catch(function (error) {
             show_alerta("Error en la Solicitud", "error");
-            console.log(error);
+            console.error(error);
         });
         closeModal();
         getClase();
