@@ -9,6 +9,8 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import esLocale from '@fullcalendar/core/locales/es';
 
+import './css/calendario.css';
+
 const ClienteClases = () => {
     const urlClases = "http://localhost:8080/api/power/clase/";
     const urlPlanificacion = "http://localhost:8080/api/power/planificacion/";
@@ -16,12 +18,38 @@ const ClienteClases = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [events, setEvents] = useState([]);
+    const amarillo = "#ffcd6c";
+    const azul = "#64b7d4";
+    const gris = "#e0e1ce";
 
     let user = JSON.parse(localStorage.getItem("usuario"));
     console.log(user);
     
     useEffect(() => {
         getClase();
+
+        const customSymbolButton = document.querySelector('.fc-customSymbol-button');
+        if (customSymbolButton) {
+            customSymbolButton.innerHTML = `
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 15px; height: 15px; background-color: ${amarillo}; margin-right: 5px; border: 1px solid #000;"></div>
+                        <span>Inscrito</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 15px; height: 15px; background-color: ${azul}; margin-right: 5px; border: 1px solid #000;"></div>
+                        <span>Disponible</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div style="width: 15px; height: 15px; background-color: ${gris}; margin-right: 5px; border: 1px solid #000;"></div>
+                        <span>No disponible</span>
+                    </div>
+                </div>
+            `;
+            customSymbolButton.style.display = 'flex';
+            customSymbolButton.style.justifyContent = 'flex-end';
+            customSymbolButton.style.alignItems = 'center';
+        }
     }, []);
 
     const getClase = async () => {
@@ -39,10 +67,13 @@ const ClienteClases = () => {
 
                 var claseVP = await getClaseP();
                 var agenda = false;
-                claseVP = claseVP.filter(clas => clas.clase.id == clase.id && clas.cliente.id == user.id);
+                var color = azul;
+
+                claseVP = claseVP.filter(clas => clas.clase.id == clase.id && clas.cliente.id == user.id );
                 
                 if(claseVP.length !== 0){
                     agenda = true;
+                    color = amarillo;
                 }
 
                 return {
@@ -53,6 +84,9 @@ const ClienteClases = () => {
                         until: '2024-12-31',
                     },
                     duration: `${finHora - inicioHora}:00`,
+                    backgroundColor: color,
+                    borderColor: color,
+                    textColor: "black",
                     startTime,
                     endTime,
                     extendedProps: {
@@ -64,7 +98,7 @@ const ClienteClases = () => {
                         horas: clase.hora_inicio,
                         planificacion: clase.planificacionBeans,
                         agendado: agenda                   
-                    },
+                    },                    
                 };
             }));
 
@@ -189,13 +223,18 @@ const ClienteClases = () => {
                     <FullCalendar
                         plugins={[timeGridPlugin]}
                         locale={esLocale}
-                        initialView="timeGridWeek"
+                        initialView="timeGridDay"
                         events={events}
                         eventClick={handleEventClick}
                         headerToolbar={{
-                            left: '',
+                            left: 'prev,next today',
                             center: 'title',
-                            right: ''
+                            right: 'customSymbol'
+                        }}
+                        customButtons={{
+                            customSymbol: {
+                                text: '',
+                            },
                         }}
                         slotMinTime="07:00:00"
                         slotMaxTime="19:00:00"
@@ -203,6 +242,14 @@ const ClienteClases = () => {
                         allDaySlot={false}
                         contentHeight="auto"
                         expandRows={true}
+                        validRange={{
+                            start: new Date().toISOString().split('T')[0], 
+                            end: (() => {
+                                const today = new Date();
+                                const endOfWeek = new Date(today.setDate(today.getDate() + (7 - today.getDay()))); 
+                                return endOfWeek.toISOString().split('T')[0];
+                            })(),
+                        }}
                     />
 
                     <div className="mb-5"></div>
@@ -216,7 +263,7 @@ const ClienteClases = () => {
                                 <>
                                     <div className="d-flex justify-content-evenly">
                                         <h5>Clase: {selectedEvent.nombre_clase}</h5>
-                                        {/*selectedEvent.agendado*/false ? (
+                                        {selectedEvent.agendado ? (
                                             <Button variant="danger" onClick={() => cancelarInscripcion(selectedEvent.id, selectedEvent.fecha.toLocaleDateString()+" "+selectedEvent.fecha.toLocaleTimeString())} >Cancelar Inscripción</Button>
                                         ) : (<></>)}
                                     </div>
@@ -236,7 +283,7 @@ const ClienteClases = () => {
                                 Cerrar
                             </Button>
                             {
-                                /*selectedEvent && selectedEvent.agendado*/false ? 
+                                selectedEvent && selectedEvent.agendado ? 
                                 (<div>Ya te encuentras inscrito</div>) 
                                 : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
                                 Agendar clase
