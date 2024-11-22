@@ -52,61 +52,96 @@ const ClienteClases = () => {
         }
     }, []);
 
+    function convertirFechaPersonalizada(fechaStr) {
+        const regex = /(\d{2})\/(\d{2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2}) (a\.m\.|p\.m\.)/i;
+        const match = fechaStr.match(regex);
+    
+        if (!match) return null;
+    
+        let [_, dia, mes, anio, horas, minutos, segundos, ampm] = match;
+    
+        horas = parseInt(horas);
+        if (ampm.toLowerCase() === "p.m." && horas !== 12) horas += 12;
+        if (ampm.toLowerCase() === "a.m." && horas === 12) horas = 0;
+    
+        const isoString = `${anio}-${mes}-${dia}T${horas.toString().padStart(2, "0")}:${minutos}:${segundos}`;
+        return new Date(isoString);
+    }
+    
+
     const getClase = async () => {
         try {
             const respuesta = await axios.get(urlClases);
             const clases = respuesta.data.data;
+    
+            const today = new Date();
+            const startOfWeek = new Date(today);
+            const daysOfWeek = Array.from({ length: 7 - today.getDay() }, (_, i) => {
+                const date = new Date(startOfWeek);
+                date.setDate(today.getDate() + i);
+                return date;
+            });
+    
+            const eventos = [];
+            
+            for (let day of daysOfWeek) {
+                const fechaActual = day.toISOString().split('T')[0];
+                const dayEventos = await Promise.all(clases.map(async clase => {
+                    const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
+                    const [inicioHora, inicioMinuto] = horaInicio.split(':');
+                    const [finHora, finMinuto] = horaFin.split(':');
+    
+                    const startTime = `${inicioHora}:${inicioMinuto}:00`;
+                    const endTime = `${finHora}:${finMinuto}:00`;
+    
+                    var claseVP = await getClaseP();
+                    var agenda = "Disponible";
+                    var color = azul;
 
-            const eventos = await Promise.all(clases.map(async clase => {
-                const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
-                const [inicioHora, inicioMinuto] = horaInicio.split(':');
-                const [finHora, finMinuto] = horaFin.split(':');
+                    claseVP = claseVP.filter(clas => clas.clase.id === clase.id && clas.cliente.id === user.id && new Date(convertirFechaPersonalizada(clas.dia)).setHours(0,0,0,0) === new Date(day).setHours(0,0,0,0));
+                    
+                    if (claseVP.length !== 0) {
+                        agenda = "Agendado";
+                        color = amarillo;
+                    }
 
-                const startTime = `${inicioHora}:${inicioMinuto}:00`;
-                const endTime = `${finHora}:${finMinuto}:00`;
-
-                var claseVP = await getClaseP();
-                var agenda = false;
-                var color = azul;
-
-                claseVP = claseVP.filter(clas => clas.clase.id == clase.id && clas.cliente.id == user.id );
-                
-                if(claseVP.length !== 0){
-                    agenda = true;
-                    color = amarillo;
-                }
-
-                return {
-                    title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
-                    rrule: {
-                        freq: 'daily',  
-                        dtstart: new Date().toISOString().split('T')[0],
-                        until: '2024-12-31',
-                    },
-                    duration: `${finHora - inicioHora}:00`,
-                    backgroundColor: color,
-                    borderColor: color,
-                    textColor: "black",
-                    startTime,
-                    endTime,
-                    extendedProps: {
-                        id: clase.id,
-                        capacidad_maxima: clase.capacidad_maxima,
-                        estatus: clase.estatus,
-                        nombre_profesor: clase.nombre_profesor,
-                        nombre_clase: clase.nombre_clase,
-                        horas: clase.hora_inicio,
-                        planificacion: clase.planificacionBeans,
-                        agendado: agenda                   
-                    },                    
-                };
-            }));
-
+                    if( new Date(`${fechaActual}T${startTime}`).setHours(0,0,0,0) == today.setHours(0,0,0,0)){
+                        if(new Date(`${fechaActual}T${startTime}`) < new Date()){
+                            agenda = "No disponible";
+                            color = gris;
+                        }
+                    }
+    
+                    return {
+                        title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
+                        start: `${fechaActual}T${startTime}`,
+                        end: `${fechaActual}T${endTime}`,
+                        backgroundColor: color,
+                        borderColor: color,
+                        textColor: "black",
+                        extendedProps: {
+                            id: clase.id,
+                            capacidad_maxima: clase.capacidad_maxima,
+                            estatus: clase.estatus,
+                            nombre_profesor: clase.nombre_profesor,
+                            nombre_clase: clase.nombre_clase,
+                            horas: clase.hora_inicio,
+                            planificacion: clase.planificacionBeans,
+                            agendado: agenda,
+                        },
+                    };
+                }));
+    
+                eventos.push(...dayEventos);
+            }
+    
             setEvents(eventos);
         } catch (error) {
             console.error('Error obteniendo las clases:', error);
         }
     };
+    
+    
 
     const getClaseP = async () => {
         const respuesta = await axios({
@@ -263,7 +298,7 @@ const ClienteClases = () => {
                                 <>
                                     <div className="d-flex justify-content-evenly">
                                         <h5>Clase: {selectedEvent.nombre_clase}</h5>
-                                        {selectedEvent.agendado ? (
+                                        {selectedEvent.agendado == "Agendado" ? (
                                             <Button variant="danger" onClick={() => cancelarInscripcion(selectedEvent.id, selectedEvent.fecha.toLocaleDateString()+" "+selectedEvent.fecha.toLocaleTimeString())} >Cancelar Inscripción</Button>
                                         ) : (<></>)}
                                     </div>
@@ -283,11 +318,11 @@ const ClienteClases = () => {
                                 Cerrar
                             </Button>
                             {
-                                selectedEvent && selectedEvent.agendado ? 
+                                selectedEvent && selectedEvent.agendado == "Agendado" ? 
                                 (<div>Ya te encuentras inscrito</div>) 
-                                : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
+                                : ( selectedEvent && selectedEvent.agendado == "No disponible" ? (<div>No disponible</div>) : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
                                 Agendar clase
-                            </Button>)
+                            </Button>) )
                             }
                         </Modal.Footer>
                     </Modal>
