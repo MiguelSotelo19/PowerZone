@@ -16,6 +16,7 @@ function Footer() {
                 src={derecho_c}
                 alt='derecho_c'
                 className='me-3'
+                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             PowerZone</div>
@@ -24,24 +25,28 @@ function Footer() {
                 src={facebook}
                 alt='Facebook'
                 className='me-4'
+                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={instagram}
                 alt='Instagram'
                 className='me-4'
+                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={twitter}
                 alt='Twitter'
                 className='me-4'
+                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={Gmail}
                 alt='Gmail'
                 className='me-4'
+                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
         </div>

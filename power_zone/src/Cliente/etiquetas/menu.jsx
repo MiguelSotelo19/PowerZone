@@ -17,6 +17,7 @@ function Menu() {
                 src={logo}
                 alt='logo_PowerZone'
                 style={{ width: '17vh', height: '7vh' }}
+                draggable="false"
             />
           </Navbar.Brand>
           <Nav className="w-50 justify-content-between align-items-center">
@@ -27,6 +28,7 @@ function Menu() {
                     src={user}
                     alt='user_PowerZone'
                     style={{ width: '7vh', height: '7vh' }}
+                    draggable="false"
                 />
           </Navbar.Brand>
           </Nav>

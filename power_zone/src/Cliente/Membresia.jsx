@@ -222,33 +222,33 @@ function ClienteMembresias(){
                         <tbody>
                             <tr style={{ border: 0 }}>
                                 <td className='fs-4'>Acceso General al gimnasio</td> 
-                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>    
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>                          
+                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>    
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>                          
                             </tr>
                             <tr style={{ border: 0 }}>
                                 <td className='fs-4'>Acceso al área de máquinas</td>
-                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
+                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
                             </tr>
                             <tr style={{ border: 0 }}>
                                 <td className='fs-4'>Acceso a clases especiales</td>
-                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} alt='equis' className='iconimage2' /> </td>
+                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} draggable="false" alt='equis' className='iconimage2' /> </td>
                             </tr>
                             <tr style={{ border: 0 }}>
                                 <td className='fs-4'>Reserva tu asistencia a clases</td>
-                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td> 
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} alt='equis' className='iconimage2' /> </td>  
+                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td> 
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} draggable="false" alt='equis' className='iconimage2' /> </td>  
                             </tr>
                             <tr style={{ border: 0 }}>
                                 <td className='fs-4'>Acceso exclusivo al sauna</td>
-                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} alt='check' className='iconimage' /> </td>   
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} alt='equis' className='iconimage2' /> </td>
-                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} alt='equis' className='iconimage2' /> </td>   
+                                <td className='plus' style={{ textAlign: 'center' }}> <img src={check} draggable="false" alt='check' className='iconimage' /> </td>   
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} draggable="false" alt='equis' className='iconimage2' /> </td>
+                                <td className='planes' style={{ textAlign: 'center' }}> <img src={equis} draggable="false" alt='equis' className='iconimage2' /> </td>   
                             </tr>
                             <tr>
                                 <td style={{ border: 0 }}></td>

@@ -51,6 +51,7 @@ function App() {
                                 src={reloj}
                                 alt='reloj'
                                 style={{ width: '5vh', height: 'auto' }}
+                                draggable="false"
                             />
                             <p className="ms-4 fs-5 fw-bold">Duración: </p>
                             <p className="ms-4 fs-5">60 min</p>
@@ -74,6 +75,7 @@ function App() {
                                 src={reloj}
                                 alt='reloj'
                                 style={{ width: '5vh', height: 'auto' }}
+                                draggable="false"
                             />
                             <p className="ms-4 fs-5 fw-bold">Duración: </p>
                             <p className="ms-4 fs-5">60 min</p>
@@ -99,6 +101,7 @@ function App() {
                                 src={sauna}
                                 alt="sauna"
                                 style={{ width: '100%', height: 'auto' }} 
+                                draggable="false"
                             />
                         </div>
                         <div className="text-center p-4">
@@ -119,6 +122,7 @@ function App() {
                                 src={area_equipos}
                                 alt='area_equipos'
                                 style={{ width: '100%', height: 'auto' }}
+                                draggable="false"
                             />
                         </div>
                         <div style={{ textAlign: 'center', padding: '20px' }}>
