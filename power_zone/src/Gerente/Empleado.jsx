@@ -181,7 +181,8 @@ function Empleados() {
                     <img 
                     src={cross}
                     alt='mas'
-                    style={{ width: '2vh', height: '2vh' }}                    
+                    style={{ width: '2vh', height: '2vh' }} 
+                    draggable="false"                   
                     />&nbsp;&nbsp;Agregar empleados</Button>{' '}
                     <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
                     backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar empleados" value={searchTerm} onChange={handleSearchChange} />

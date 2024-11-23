@@ -17,6 +17,7 @@ function Menu() {
                 src={logo}
                 alt='logo_PowerZone'
                 style={{ minWidth: '30%', maxWidth: '35%', height: 'auto' }}
+                draggable="false"
             />
           </Navbar.Brand>
           <Nav className="justify-content-end">

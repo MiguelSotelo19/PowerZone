@@ -219,7 +219,7 @@ function ClientePerfil(){
 
                 <Col md={3} className="d-flex justify-content-center align-items-center">
                     <div style={{ width: '40%', height: '50%' }}>
-                        <img src={User} alt="User" />
+                        <img src={User} alt="User" draggable="false" />
                     </div>
                 </Col>
 
