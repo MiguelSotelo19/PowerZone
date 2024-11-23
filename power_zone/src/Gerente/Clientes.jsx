@@ -214,25 +214,25 @@ function Clientes () {
         event.preventDefault();
 
         var parametros;
-        if(nombre.trim() === ""){
+        if(nombre.trim() === "" || nombre == undefined){
             show_alerta("Escribe el nombre del cliente", "warning");
-        }else if(fecha_venc.trim() === "" && metodo=="POST"){
+        }else if((fecha_venc.trim() === "" || fecha_venc == undefined) && metodo=="POST"){
             show_alerta("Escribe la fecha de vencimiento", "warning");
-        } else if(tipo_tarjeta.trim() === "" && metodo=="POST"){
+        } else if((tipo_tarjeta.trim() === "" || tipo_tarjeta == undefined) && metodo=="POST"){
             show_alerta("Escribe el tipo de tarjeta", "warning");
-        } else if(cvv === null){
+        } else if(cvv === null || cvv == undefined){
             show_alerta("Escribe el CVV", "warning");
-        } else if(num_tarjeta.trim() === ""){
+        } else if(num_tarjeta.trim() === "" || num_tarjeta == undefined){
             show_alerta("Escribe el número de tarjeta", "warning");
-        } else if(ape_p.trim() === "" && metodo=="POST"){
+        } else if((ape_p.trim() === "" || ape_p == undefined) && metodo=="POST"){
             show_alerta("Escribe el apellido paterno del cliente", "warning");
-        } else if(ape_m.trim() === "" && metodo=="POST"){
+        } else if((ape_m.trim() === "" || ape_m == undefined) && metodo=="POST"){
             show_alerta("Escribe el apellido materno del cliente", "warning");
-        } else if(num_telefonico.trim() === ""){
+        } else if(num_telefonico.trim() === "" || num_telefonico == undefined){
             show_alerta("Escribe el número de teléfono del cliente", "warning");
-        } else if(correo.trim() === ""){
+        } else if(correo.trim() === "" || correo == undefined || setEmailStatus==false){
             show_alerta("Escribe el correo del cliente", "warning");
-        } else if(membresia === null){
+        } else if(membresia === null || membresia == undefined){
             show_alerta("Selecciona un tipo de membresía", "warning");
         } else {
             parametros = {
@@ -296,7 +296,8 @@ function Clientes () {
             closMemModal();
             closeModal();
             closeModalAct();
-
+            closeActMemModal();
+            limpiar();
             getClientes();
         })
         .catch(function (error) {
