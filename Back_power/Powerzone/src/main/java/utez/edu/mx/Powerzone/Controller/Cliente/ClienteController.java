@@ -29,4 +29,9 @@ public class ClienteController {
     public ResponseEntity<ApiResponse> ClienteUpdate(@RequestBody ClienteDTO dto, @PathVariable Long id){
         return service.updateCliente(dto.toUpdate(), id);
     }
+
+    @PutMapping("/updatem/{fk}")
+    public ResponseEntity<ApiResponse>MembresiaUpdate(@RequestBody ClienteDTO dto, @PathVariable Long fk){
+        return service.UpdateMembresia(dto.toEntity(),fk);
+    }
 }

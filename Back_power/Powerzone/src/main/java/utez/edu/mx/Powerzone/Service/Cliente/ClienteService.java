@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import utez.edu.mx.Powerzone.Config.ApiResponse;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteBean;
 import utez.edu.mx.Powerzone.Model.Cliente.ClienteRepository;
+import utez.edu.mx.Powerzone.Model.Membresia.MembresiaBean;
+import utez.edu.mx.Powerzone.Model.Membresia.MembresiaRepository;
 import utez.edu.mx.Powerzone.Model.Persona.PersonaBean;
 import utez.edu.mx.Powerzone.Service.Historial_ventas.Historial_ventasService;
 
@@ -28,6 +30,7 @@ import java.util.Optional;
 public class ClienteService {
     private final ClienteRepository repository;
     private final Historial_ventasService service;
+    private final MembresiaRepository membresiaRepository;
     private JavaMailSender mailSender;
 
     @Transactional(readOnly = true)
@@ -104,5 +107,32 @@ public class ClienteService {
 
         return new ResponseEntity<>(new ApiResponse(HttpStatus.NOT_FOUND, true, "Cliente no encontrado"), HttpStatus.NOT_FOUND);
     }
+
+    public ResponseEntity<ApiResponse> UpdateMembresia(ClienteBean miembro, Long fkNuevaMembresia) {
+        Optional<ClienteBean> cliente = repository.findByIdentificadorusuario(miembro.getIdentificadorusuario());
+
+        if (cliente.isPresent()) {
+            ClienteBean clienteBean = cliente.get();
+
+            LocalDate nuevaAdquisicion = LocalDate.now();
+            LocalDate nuevaVencimiento = nuevaAdquisicion.plusDays(30);
+
+            Optional<MembresiaBean> nuevaMembresia = membresiaRepository.findById(fkNuevaMembresia);
+            if (nuevaMembresia.isPresent()) {
+                clienteBean.setMembresia(nuevaMembresia.get());
+                clienteBean.setAdquisicion(nuevaAdquisicion);
+                clienteBean.setVencimiento(nuevaVencimiento);
+
+                repository.save(clienteBean);
+
+                return new ResponseEntity<>(new ApiResponse(HttpStatus.OK, false, "Actualización exitosa"), HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(new ApiResponse(HttpStatus.NOT_FOUND, true, "Membresia no encontrada"), HttpStatus.NOT_FOUND);
+            }
+        } else {
+            return new ResponseEntity<>(new ApiResponse(HttpStatus.NOT_FOUND, true, "Cliente no encontrado"), HttpStatus.NOT_FOUND);
+        }
+    }
+
 
 }
