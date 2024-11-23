@@ -69,4 +69,6 @@ public class ClienteBean extends PersonaBean {
         this.vencimiento = vencimiento;
         this.membresia = membresia;
     }
+
+
 }
