@@ -102,11 +102,6 @@ function Clientes () {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        //Membresía
-                        idM: membresia.id,
-                        tipo_membresia: membresia.tipo_membresia,
-                        costo: membresia.costo,
-                        
                         //Cliente
                         idC: cliente.id,
                         nombre: cliente.nombre,
@@ -120,19 +115,22 @@ function Clientes () {
                         adquisicion: cliente.adquisicion,
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
+
+                        //Membresía
+                        idM: membresia.id,
+                        tipo_membresia: membresia.tipo_membresia,
+                        costo: membresia.costo,
                     };
                     clientesConMembresia.push(clienteMembresia);
                 }
             }
         }
-    
-        console.log("clientes:",clientesConMembresia)
+
         setMembresiaCliente(clientesConMembresia);
         console.log("membresiaCliente:",membresiaCliente)
+        console.log("clientes:",clientes)
     };
     
-    
-
     const limpiar = () => {
         setIdCliente(null);
         setNombre(null);
@@ -362,7 +360,7 @@ function Clientes () {
                 {filteredClientes.map((cliente, i) => {
                     return (
                         <Contenedor 
-                            key={cliente.id + i}
+                            key={cliente.idM + i}
                             title1={'Cliente'}
                             text1={cliente.nombre} 
                             title2={'Tipo de Membresía'}
@@ -506,7 +504,7 @@ function Clientes () {
                         <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>CVV:</Form.Label>
-                            <Form.Control requir type="number" placeholder="CVV"  value={cvv}
+                            <Form.Control required type="number" placeholder="CVV"  value={cvv}
                                 onChange={(e) => setCVV(e.target.value)} 
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
@@ -650,7 +648,7 @@ function Clientes () {
                         <Form>
                         <Form.Group className="mb-3">
                             <Form.Label>CVV:</Form.Label>
-                            <Form.Control requir type="number" placeholder="CVV"  value={cvv}
+                            <Form.Control required type="number" placeholder="CVV"  value={cvv}
                                 onChange={(e) => setCVV(e.target.value)} 
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
