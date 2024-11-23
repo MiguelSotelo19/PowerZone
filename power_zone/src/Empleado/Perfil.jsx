@@ -1,5 +1,4 @@
 import Container from "react-bootstrap/esm/Container";
-import Menu from "./etiquetas/menu";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import User from '../assets/user.png'
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Menu from "./etiquetas/Menu";
 
 
 function cerrarSesion(){

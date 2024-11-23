@@ -232,7 +232,7 @@ function ClientePerfil(){
 
                         <Form.Group className="mb-3">
                             <Form.Label>Número de Teléfono:</Form.Label>
-                            <Form.Control type="number" placeholder="1112223333" value={num_telefonico}
+                            <Form.Control type="number" placeholder="Número telefónico" value={num_telefonico}
                              onChange={(e) => setNum(e.target.value)}
                              maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required 
                             />

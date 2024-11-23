@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Modal from "react-modal";
+import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { show_alerta } from "../Common/js/funciones";
@@ -18,6 +18,7 @@ import './css/Clientes.css'
 //Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
+import { Col, Container, InputGroup, Row } from "react-bootstrap";
 
 const customStyles = {
     content: {
@@ -38,13 +39,12 @@ const customStyles = {
     }
 };
 
-Modal.setAppElement("#root");
-
 function Clientes () {
     const urlClientes = "http://localhost:8080/api/power/cliente/";
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [ clientes, setClientes ] = useState([]);
     const [ membresias, setMembresias ] = useState([]);
+    const [membresiaCliente, setMembresiaCliente] = useState([]);
 
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
@@ -61,10 +61,14 @@ function Clientes () {
     const [ identificador, setIdentificador] = useState("");
     const [ idMembresia, setIdMembresia ] = useState("");
     const [ estatus, setEstatus ] = useState(true);
+    const [adquisicion, setAdquisicion]= useState("");
+    const [tipo_membresia, setTipo_membresia]= useState("");
+
+    const [ emailStatus, setEmailStatus ] = useState(false);
 
     let user = JSON.parse(localStorage.getItem("usuario"));
-    console.log("USUARIO INICIADO: ");
-    console.log(user);
+    //console.log("USUARIO INICIADO: ");
+    //console.log(user);
 
     //Traer datos de cliente
     useEffect(() => {     
@@ -77,7 +81,7 @@ function Clientes () {
             method: 'GET',
             url: urlClientes,
         });
-        console.log(respuesta.data.data);
+        //console.log(respuesta.data.data);
         setClientes(respuesta.data.data);
     }
 
@@ -87,7 +91,47 @@ function Clientes () {
             url: urlMembresias,
         });
         setMembresias(respuesta.data.data);
+        setClienteMembresias(respuesta.data.data);
+        console.log(respuesta.data.data)
     }
+
+    const setClienteMembresias = async (membresias) => {
+        const clientesConMembresia = [];
+    
+        for (const membresia of membresias) {
+            if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
+                for (const cliente of membresia.clienteBeans) {
+                    const clienteMembresia = {
+                        //Membresía
+                        idM: membresia.id,
+                        tipo_membresia: membresia.tipo_membresia,
+                        costo: membresia.costo,
+                        
+                        //Cliente
+                        idC: cliente.id,
+                        nombre: cliente.nombre,
+                        correo: cliente.correo,
+                        telefono: cliente.telefono,
+                        numero_tarjeta: cliente.numero_tarjeta,
+                        vencimiento: cliente.vencimiento,
+                        cvv: cliente.cvv,
+                        identificadorusuario: cliente.identificadorusuario,
+                        rol: cliente.rol,
+                        adquisicion: cliente.adquisicion,
+                        cotrasenia: cliente.cotrasenia,
+                        estatus: cliente.estatus,
+                    };
+                    clientesConMembresia.push(clienteMembresia);
+                }
+            }
+        }
+    
+        console.log("clientes:",clientesConMembresia)
+        setMembresiaCliente(clientesConMembresia);
+        console.log("membresiaCliente:",membresiaCliente)
+    };
+    
+    
 
     const limpiar = () => {
         setIdCliente(null);
@@ -106,6 +150,7 @@ function Clientes () {
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalMemIsOpen, setMemIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
+    const [modalActMemIsOpen, setActMemIsOpen] = React.useState(false);
 
     //Modal Registrar Cliente
     function openModal() {  
@@ -127,18 +172,19 @@ function Clientes () {
     }
 
     //Modal Actualizar Cliente 
-    function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_) {
+    function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_, idM_,adquisicion_,tipo_membresia_) {
         setIdCliente(id_);
         setNombre(nombre_);
         setCorreo(correo_);
         setContra(contrasenia_);
         setIdentificador(identificadorusuario_);
         setNum(telefono_);
-        setIdMembresia(1);
+        setIdMembresia(idM_);
         setCVV(cvv_);
         setNumTarjeta(numero_tarjeta_);
-        setEstatus(estatus);
-
+        setEstatus(estatus_);
+        setAdquisicion(adquisicion_);
+        setTipo_membresia(tipo_membresia_);
         setActIsOpen(true);
     }
 
@@ -146,9 +192,23 @@ function Clientes () {
         setActIsOpen(false);
     }
 
+    function closeActMemModal() {
+        setActMemIsOpen(false);
+    }
+
+    function actualizarMembresia() {
+        closeModalAct();
+        setActMemIsOpen(true);
+    }
+
     function regresarModal() {
         closMemModal();
         openModal();
+    }
+
+    function regresarModalAct() {
+        closeActMemModal();
+        openActModal();
     }
 
     //Envío de formulario
@@ -251,9 +311,9 @@ function Clientes () {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Filtrar equipos
-    const filteredClientes = clientes.filter(cliente => 
+    const filteredClientes = membresiaCliente.filter(cliente => 
         cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cliente.identificadorusuario.toLowerCase().includes(searchTerm.toLowerCase())
+        cliente.identificadorUsuario.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Actualizar
@@ -261,6 +321,20 @@ function Clientes () {
         setSearchTerm(e.target.value);
     };
 
+    //Validar e-mail
+    const validarEmail = (e) => {
+        let campo = e;
+            
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if (emailRegex.test(campo.value)) {  
+            console.log("SI")
+          setEmailStatus(true);
+        } else {
+            console.log("NO")
+          setEmailStatus(false);
+        }
+    }
     return (
         <>
             <Menu />
@@ -273,11 +347,15 @@ function Clientes () {
                     <img 
                     src={cross}
                     alt='mas'
-                    style={{ width: '2vh', height: '2vh' }}                    
+                    style={{ width: '2vh', height: '2vh',marginTop:-4 }}                    
                     />&nbsp;&nbsp;Agregar clientes</Button>{' '}
-                    <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%' }}>
+                        <img src={lupa} alt="Buscar" style={{ width: '4vh', height: '3vh' }} />
+                        <Form.Control type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} 
+                            style={{ backgroundColor: 'rgb(217, 217, 217)', borderRadius: '12px',}}/>
+                    </div>
                 </div>
+            
 
                 <h1 className="d-flex justify-content-center mt-5">Clientes</h1>
 
@@ -288,18 +366,18 @@ function Clientes () {
                             title1={'Cliente'}
                             text1={cliente.nombre} 
                             title2={'Tipo de Membresía'}
-                            text2={'N/A'} 
+                            text2={cliente.tipo_membresia} 
                             title3={'Número de membresía'}
                             text3={cliente.identificadorusuario} 
                             title4={'Estado'}
                             acciones={
                                 <>
                                     {cliente.estatus ? (
-                                        <Button className='me-1' variant="danger" onClick={() => { activarC(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }} >Desactivar</Button>
+                                        <Button className='me-1' variant="danger" onClick={() => { activarC(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }} >Desactivar</Button>
                                     ) : (
-                                        <Button className='me-1' variant="success" onClick={() => { activarC(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }}>Activar</Button>
+                                        <Button className='me-1' variant="success" onClick={() => { activarC(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }}>Activar</Button>
                                     )} 
-                                    <Button variant="warning" onClick={() => { openActModal(cliente.id, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus) }}>Editar</Button>{' '}
+                                    <Button variant="warning" onClick={() => { openActModal(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus,cliente.idM,cliente.adquisicion,cliente.tipo_membresia) }}>Editar</Button>{' '}
                                 </>                    
                             } 
                         />
@@ -309,131 +387,291 @@ function Clientes () {
             </div>
 
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Registrar Cliente"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                show={modalIsOpen}
+                onHide={closeModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Registrar cliente
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre(s):</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre(s)" 
+                                                value={nombre} onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </div>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Apellido materno:</Form.Label>
+                                            <Form.Control type="text" placeholder="Apellido materno" 
+                                                value={ape_p} onChange={(e) => setApe_p(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
-                </div>
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Apellido paterno:</Form.Label>
+                                            <Form.Control type="text" placeholder="Apellido paterno" 
+                                                value={ape_m} onChange={(e) => setApe_m(e.target.value)} required/>
+                                        </Form.Group>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => registrarMembresia()}>Siguiente</Button>{' '}
-                </div>
-                
-                </form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                value={num_telefonico} onChange={(e) => setNum(e.target.value)} maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo} onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="warning" onClick={() => registrarMembresia()}>Siguiente</Button>{' '}
+                </Modal.Footer>
             </Modal>
 
             <Modal
-                isOpen={modalMemIsOpen}
-                onRequestClose={closMemModal}
-                style={customStyles}
-                contentLabel="Registrar Cliente"
+            show={modalMemIsOpen}
+            onHide={closMemModal}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
             >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Registrar cliente
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Container>
+                <Row className="d-flex justify-content-center mt-3">
+                    <Col md={12}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de membresía:</Form.Label>
+                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                    <option id="selected" value={null}>Selecciona una membresia</option>
+                                    {membresias.map((membresia => (
+                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                    )))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className="d-flex justify-content-center">
+                    <Col md={6}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Número de tarjeta:</Form.Label>
+                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                    value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} 
+                                    onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
+                                        if (e.target.value < 0) e.target.value = "";
+                                    }}/>
+                            </Form.Group>
 
-                <div className="field-1 mt-4 w-75">
-                    <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
-                        <option id="selected" value={null}>Selecciona una membresia</option>
-                        {membresias.map((membresia => (
-                            <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
-                        )))}
-                    </Form.Select>
-                </div>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de tarjeta:</Form.Label>
+                                <Form.Control required type="text" placeholder="Tipo de tarjeta" 
+                                    value={tipo_tarjeta} onChange={(e) => setTipoTarjeta(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número de tarjeta" value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} />
-                    </div>
+                    <Col md={6}>
+                        <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>CVV:</Form.Label>
+                            <Form.Control requir type="number" placeholder="CVV"  value={cvv}
+                                onChange={(e) => setCVV(e.target.value)} 
+                                onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
+                                    if (e.target.value < 0) e.target.value = "";
+                                    }}
+                            />
+                            </Form.Group>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="CVV" value={cvv} onChange={(e) => setCVV(e.target.value)} />
-                    </div>
-                </div>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
+                                <Form.Control required type="date"
+                                value={fecha_venc} onChange={(e) => setFechaVenc(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="fw-bold" variant="outline-secondary" onClick={regresarModal}>Regresar</Button>{' '}
+                <Button className="fw-bold" variant="warning"  onClick={() => validar("POST")}>Registrar</Button>{' '}
+            </Modal.Footer>
+            </Modal>
+            
+            <Modal
+                show={modalActIsOpen}
+                onHide={closeModalAct}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Actualizar cliente
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre(s):</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre(s)" 
+                                                value={nombre} onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de Tarjeta" value={tipo_tarjeta} onChange={(e) => setTipoTarjeta(e.target.value)} />
-                    </div>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Apellido materno:</Form.Label>
+                                            <Form.Control type="text" placeholder="Apellido materno" 
+                                                value={ape_p} onChange={(e) => setApe_p(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Fecha de vencimiento" value={fecha_venc} onChange={(e) => setFechaVenc(e.target.value)} />
-                    </div>
-                </div>
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Apellido paterno:</Form.Label>
+                                            <Form.Control type="text" placeholder="Apellido paterno" 
+                                                value={ape_m} onChange={(e) => setApe_m(e.target.value)} required/>
+                                        </Form.Group>
 
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={regresarModal}>Regresar</Button>{' '}
-                    <Button className="fw-bold fs-4 p-2 ms-5" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
-                </div>
-                
-                </form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                value={num_telefonico} onChange={(e) => setNum(e.target.value)} maxLength="10" onInput={(e) => e.target.value = e.target.value.slice(0, 10)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo} onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="warning" onClick={() => actualizarMembresia()}>Siguiente</Button>{' '}
+                </Modal.Footer>
             </Modal>
 
             <Modal
-                isOpen={modalActIsOpen}
-                onRequestClose={closeModalAct}
-                style={customStyles}
-                contentLabel="Actualizar Cliente"
+            show={modalActMemIsOpen}
+            onHide={closeActMemModal}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
             >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Actualizar cliente
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Container>
+                <Row className="d-flex justify-content-center mt-3">
+                    <Col md={12}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de membresía:</Form.Label>
+                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                    <option id="selected" value={tipo_membresia}>Selecciona una membresia</option>
+                                    {membresias.map((membresia => (
+                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                    )))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className="d-flex justify-content-center">
+                    <Col md={6}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Número de tarjeta:</Form.Label>
+                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                    value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} 
+                                    onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
+                                        if (e.target.value < 0) e.target.value = "";
+                                    }}/>
+                            </Form.Group>
 
-                    
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de tarjeta:</Form.Label>
+                                <Form.Control required type="text" placeholder="Tipo de tarjeta" 
+                                    value={tipo_tarjeta} onChange={(e) => setTipoTarjeta(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                </div>
+                    <Col md={6}>
+                        <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>CVV:</Form.Label>
+                            <Form.Control requir type="number" placeholder="CVV"  value={cvv}
+                                onChange={(e) => setCVV(e.target.value)} 
+                                onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
+                                    if (e.target.value < 0) e.target.value = "";
+                                    }}
+                            />
+                            </Form.Group>
 
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Siguiente</Button>{' '}
-                </div>
-                
-                </form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
+                                <Form.Control required type="date"
+                                value={fecha_venc} onChange={(e) => setFechaVenc(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="fw-bold" variant="outline-secondary" onClick={regresarModalAct}>Regresar</Button>{' '}
+                <Button className="fw-bold" variant="warning"  onClick={() => validar("PUT")}>Actualizar</Button>{' '}
+            </Modal.Footer>
             </Modal>
 
         </>
