@@ -23,7 +23,8 @@ function Clientes () {
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [ clientes, setClientes ] = useState([]);
     const [ membresias, setMembresias ] = useState([]);
-    const [membresiaCliente, setMembresiaCliente] = useState([]);
+    const [ membresiaCliente, setMembresiaCliente ] = useState([]);
+    const [ filteredClientes, setFilteredClientes ] = useState([]);
 
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
@@ -60,7 +61,6 @@ function Clientes () {
             method: 'GET',
             url: urlClientes,
         });
-        //console.log(respuesta.data.data);
         setClientes(respuesta.data.data);
     }
 
@@ -74,14 +74,20 @@ function Clientes () {
         console.log(respuesta.data.data)
     }
 
-    const setClienteMembresias = async (membresias) => {
+    const setClienteMembresias = async (membresiasB) => {
+        console.log("Valor recibido en membresiasB:", membresiasB);
+    
+        if (!Array.isArray(membresiasB)) {
+            membresiasB = [membresiasB];
+        }
+    
         const clientesConMembresia = [];
     
-        for (const membresia of membresias) {
+        for (const membresia of membresiasB) {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        //Cliente
+                        // Cliente
                         idC: cliente.id,
                         nombre: cliente.nombre,
                         correo: cliente.correo,
@@ -95,7 +101,7 @@ function Clientes () {
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
                         tipo_tarjeta: cliente.tipo_tarjeta,
-                        //Membresía
+                        // Membresía
                         idM: membresia.id,
                         tipo_membresia: membresia.tipo_membresia,
                         costo: membresia.costo,
@@ -104,9 +110,11 @@ function Clientes () {
                 }
             }
         }
-        console.log("clienteConM:",clientesConMembresia)
+    
+        console.log("Clientes con membresías:", clientesConMembresia);
         setMembresiaCliente(clientesConMembresia);
     };
+    
     
     const limpiar = () => {
         setIdCliente(null);
@@ -242,11 +250,13 @@ function Clientes () {
                 id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
             }
         };
+
+        console.log(parametros);
     
         enviarSolicitud(metodo, parametros, urlClientes);
     };
     
-    function activarDesactivarC(cliente, desactivar) {
+    const activarDesactivarC = async (cliente, desactivar) => {
         Swal.fire({
             title: desactivar ? '¿Desactivar Cliente?' : '¿Activar Cliente?',
             text: desactivar
@@ -256,7 +266,7 @@ function Clientes () {
             confirmButtonText: desactivar ? 'Desactivar Cliente' : 'Activar Cliente',
             showCancelButton: true,
             cancelButtonText: 'Cancelar',
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
                 activarC(
                     cliente.idC,
@@ -279,7 +289,6 @@ function Clientes () {
                     icon: 'success',
                     confirmButtonText: 'Aceptar',
                 });
-                getClientes();
             }
         });
     }
@@ -313,7 +322,7 @@ function Clientes () {
             method: metodo,
             url: url,
             data: parametros
-        }).then((result) =>{
+        }).then(async (result) =>{
             closMemModal();
             closeModal();
             closeModalAct();
@@ -323,9 +332,14 @@ function Clientes () {
             } 
             else if(result.data.status == "OK" && metodo=="PUT"){
                 Swal.fire("Cliente actualizado","Cliente Actualizado correctamente", "success");         
-            } 
-            getClientes();
-            limpiar();
+            }             
+            await getClientes();
+            await setClienteMembresias(getMembresias());
+            
+            setFilteredClientes(membresiaCliente.filter(cliente => 
+                (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (cliente.identificadorUsuario && cliente.identificadorUsuario.toLowerCase().includes(searchTerm.toLowerCase()))
+            ));
             
         })
         .catch(function (error) {
@@ -338,10 +352,15 @@ function Clientes () {
     const [searchTerm, setSearchTerm] = useState('');
 
     // Filtrar equipos
-    const filteredClientes = membresiaCliente.filter(cliente => 
-        (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (cliente.identificadorUsuario && cliente.identificadorUsuario.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    useEffect(() => {
+        setFilteredClientes(
+            membresiaCliente.filter(cliente =>
+                (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (cliente.identificadorusuario && cliente.identificadorusuario.toLowerCase().includes(searchTerm.toLowerCase()))
+            )
+        );
+    }, [membresiaCliente, searchTerm]);
+    
 
     // Actualizar búsqueda
     const handleSearchChange = (e) => {
@@ -403,7 +422,7 @@ function Clientes () {
                 {filteredClientes.map((cliente, i) => {
                     return (
                         <Contenedor 
-                            key={cliente.idM + i}
+                            key={i}
                             title1={'Cliente'}
                             text1={cliente.nombre} 
                             title2={'Tipo de Membresía'}
@@ -654,9 +673,8 @@ function Clientes () {
                             <Form.Group className="mb-3">
                                 <Form.Label>Tipo de membresía:</Form.Label>
                                 <Form.Select 
-                                    required 
-                                    value={idMembresia}
-                                    onChange={(e) => setMembresia(e.target.value)}
+                                    required
+                                    onChange={(e) => setIdMembresia(e.target.value)}
                                 >
                                     <option value="">Selecciona una membresía</option>
                                     {membresias.map((membresia) => (
@@ -710,6 +728,7 @@ function Clientes () {
                         <Form.Group className="mb-3">
                             <Form.Label>CVV:</Form.Label>
                             <Form.Control required type="number" placeholder="CVV"
+                                value={cvv}
                                 onChange={(e) => setCVV(e.target.value)} 
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
