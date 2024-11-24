@@ -237,7 +237,6 @@ function Perfil(){
 
             <div className="d-flex justify-content-center mt-4">
                 <Button variant="warning" className="me-3" type="submit" onClick={() => alertActualizar()}>Editar información</Button>
-                <Button variant="danger" onClick={()=>cerrarSesion()}>Cerrar sesión</Button>
             </div>
         </Container>
         </>

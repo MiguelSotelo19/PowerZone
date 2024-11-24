@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { show_alerta } from "../Common/js/funciones";
-
-import Modal from "react-modal";
+import Modal from 'react-bootstrap/Modal';
+import Swal from "sweetalert2";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Menu from "./etiquetas/Menu"
@@ -14,31 +14,12 @@ import './css/Clientes.css'
 //Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
-
-const customStyles = {
-    content: {
-      width: "auto",
-      height: "auto",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderWidth: 2,
-      borderColor: "blue",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center"
-    }
-};
-
-Modal.setAppElement("#root");
+import { Col, Container, Row } from "react-bootstrap";
 
 function Empleados() {
     const urlEmpleados = "http://localhost:8080/api/power/empleado/";
     const [ empleados, setEmpleados ] = useState([]);
+    const [ emailStatus, setEmailStatus ] = useState(false);
 
     const [ idEmp, setIdEmp] = useState(0);
     const [ nombre, setNombre ] = useState("");
@@ -65,12 +46,12 @@ function Empleados() {
         event.preventDefault();
 
         var parametros;
-        if(nombre.trim() === ""){
+        if(!nombre || nombre.trim() === ""){
             show_alerta("Escribe el nombre del empleado", "warning");
-        } else if(num_telefonico.trim() === ""){
+        } else if((!num_telefonico || num_telefonico.trim() === "" )|| num_telefonico.length < 10){
             show_alerta("Escribe el número de teléfono del empleado", "warning");
-        } else if(correo.trim() === ""){
-            show_alerta("Escribe el correo del empleado", "warning");
+        } else if((!correo ||correo.trim() === "") || emailStatus==false){
+            show_alerta("Escribe el correo del empleado en el formato requerido", "warning");
         } else {
             parametros = {
                 nombre: nombre,
@@ -96,11 +77,12 @@ function Empleados() {
             method: metodo,
             url: url,
             data: parametros
-        }).then(function (respuesta) {
-            var tipo = respuesta.data[0];
-            var msj = respuesta.data[1];
-            if(tipo === "success"){
-                show_alerta("Cambios realizados correctamente", "success");         
+        }).then(function (result) {
+            if(result.data.status == "OK" && metodo=="POST"){
+                Swal.fire("Empleado registrado","Empleado registrado correctamente", "success");         
+            } 
+            else if(result.data.status == "OK" && metodo=="PUT"){
+                Swal.fire("Empleado actualizado","Empleado Actualizado correctamente", "success");         
             } 
             closeModal();
             closeModalAct();
@@ -141,6 +123,14 @@ function Empleados() {
         setActIsOpen(false);
     }
 
+    const limpiar = () => {
+        setIdEmp(null);
+        setNombre(null);
+        setCorreo(null);
+        setContra(null);
+        setNum(null);
+    }
+
     //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -168,6 +158,31 @@ function Empleados() {
 
         enviarSolicitud("PUT", parametros, urlEmpleados, id_);
     }
+    const validarEmail = (e) => {
+        let campo = e;
+            
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if (emailRegex.test(campo.value)) {  
+            console.log("SI")
+          setEmailStatus(true);
+        } else {
+            console.log("NO")
+          setEmailStatus(false);
+        }
+    }
+
+    const validarPrevEmail = (correo) => {
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if(emailRegex.test(correo)) {
+            console.log("Si previo")
+          setEmailStatus(true);
+        }else {
+            console.log("No previo")
+          setEmailStatus(false);
+        }
+      }
 
     return (
         <>
@@ -177,15 +192,17 @@ function Empleados() {
                 <div style={{ width: '99vw' }}></div>
 
                 <div className='d-flex justify-content-evenly'>
-                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={openModal}>
+                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={() => { limpiar(); openModal(); }}>
                     <img 
                     src={cross}
                     alt='mas'
-                    style={{ width: '2vh', height: '2vh' }} 
-                    draggable="false"                   
-                    />&nbsp;&nbsp;Agregar empleados</Button>{' '}
-                    <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar empleados" value={searchTerm} onChange={handleSearchChange} />
+                    style={{ width: '2vh', height: '2vh',marginTop:-4}} draggable="false"                    
+                    />&nbsp;&nbsp;Agregar empleado</Button>{' '}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%' }}>
+                        <img src={lupa} draggable="false" alt="Buscar" style={{ width: '4vh', height: '3vh' }} />
+                        <Form.Control type="text" placeholder="Buscar empleado" value={searchTerm} onChange={handleSearchChange} 
+                            style={{ backgroundColor: 'rgb(217, 217, 217)', borderRadius: '12px',}}/>
+                    </div>
                 </div>
 
                 <h1 className="d-flex justify-content-center mt-5">Empleados</h1>
@@ -216,82 +233,129 @@ function Empleados() {
             </div>
 
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Registrar Empleado"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Empleado</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                show={modalIsOpen}
+                onHide={closeModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Registrar empleado
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={8}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre" 
+                                                 onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                    
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Nombre Completo" onChange={(e) => setNombre(e.target.value)} />
-                </div>
-
-                <div className="info-1">
-                    <div className="field">      
-                        <Form.Control required type="text" placeholder="Número telefónico" onChange={(e) => setNum(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setCorreo(e.target.value)} />
-                    </div>
-                </div>                
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
-                </div>
-                
-                </form>
+                                <Col md={4}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                onChange={(e) => setNum(e.target.value)} maxLength="10"
+                                                onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
+                                                    if (e.target.value < 0) e.target.value = "";
+                                                }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="warning" onClick={(e) => validar("POST",e)}>Registrar</Button>{' '}
+                </Modal.Footer>
             </Modal>
-
+            
             <Modal
-                isOpen={modalActIsOpen}
-                onRequestClose={closeModalAct}
-                style={customStyles}
-                contentLabel="Actualizar Empleado"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar empleado</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                show={modalActIsOpen}
+                onHide={closeModalAct}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Actualizar cliente
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre" 
+                                                value={nombre} onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                    
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Nombre Completo" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                </div>
-
-                <div className="info-1">
-                    <div className="field">      
-                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                    </div>
-                </div>      
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
-                </div>
-
-                <div className="acciones">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                value={num_telefonico} onChange={(e) => setNum(e.target.value)} maxLength="10" 
+                                                onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
+                                                    if (e.target.value < 0) e.target.value = "";
+                                                }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo} onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
                     <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
                     <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Actualizar</Button>{' '}
-                </div>
-                
-                </form>
+                </Modal.Footer>
             </Modal>
-
         </>
     )
 }
