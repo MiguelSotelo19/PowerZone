@@ -40,6 +40,7 @@ public class EmpleadoService {
             EmpleadoBean newempleado = foundEmpleado.get();
             newempleado.setNombre(empleado.getNombre());
             newempleado.setCotrasenia(empleado.getCotrasenia());
+            newempleado.setCorreo(empleado.getCorreo());
             newempleado.setRol(empleado.getRol());
             newempleado.setTelefono(empleado.getTelefono());
             newempleado.setEstatus(empleado.getEstatus());
