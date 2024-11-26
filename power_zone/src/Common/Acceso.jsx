@@ -116,7 +116,7 @@ function Acceso() {
       <Menu />
       <div className="login-body" >
         <Container className="contLog" style={{margin:"50px"}}>
-          <div className="formulario">
+          <div className="formulario-login">
             <Form.Group className="formu">
               <h1 className="ttl">Iniciar sesión</h1>
 
@@ -149,7 +149,7 @@ function Acceso() {
 
               <p className="forgot-password">
                 ¿No tienes una cuenta?{" "}
-                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'p',color:'blue'}}>
+                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'pointer',color:'blue'}}>
                   Regístrate aquí
                 </span>
               </p>

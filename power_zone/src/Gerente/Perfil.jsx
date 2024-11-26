@@ -41,7 +41,6 @@ function Perfil(){
     const [ nombre, setNombre ] = useState("");
     const [ rol, setRol]= useState("");
     const [ telefono, setTelefono]= useState("");
-
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
