@@ -43,6 +43,7 @@ public class GerenteService {
             GerenteBean newgerente = foundCliente.get();
             newgerente.setNombre(gerente.getNombre());
             newgerente.setCotrasenia(gerente.getCotrasenia());
+            newgerente.setCorreo(gerente.getCorreo());
             newgerente.setIdentificador_usuario(gerente.getIdentificadorusuario());
             newgerente.setRol(gerente.getRol());
             newgerente.setTelefono(gerente.getTelefono());
