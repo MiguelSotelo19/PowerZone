@@ -1,11 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 //Imágenes
-import facebook from './img/facebook.png'
-import instagram from './img/instagram.png'
-import twitter from './img/twitter.png'
-import Gmail from './img/mail.png'
-import derecho_c from './img/derecho_c.png'
+import facebook from '../img/facebook.png'
+import instagram from '../img/instagram.png'
+import twitter from '../img/twitter.png'
+import Gmail from '../img/mail.png'
+import derecho_c from '../img/derecho_c.png'
 
 function Footer() {
   return (
@@ -55,4 +55,4 @@ function Footer() {
   );
 }
 
-export default Footer;
+export default Footer; 

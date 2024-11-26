@@ -1,5 +1,5 @@
-import Menu from "./Menu"
-import Footer from "./Footer";
+import Menu from "./components/Menu"
+import Footer from "./components/Footer";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 

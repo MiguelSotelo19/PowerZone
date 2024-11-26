@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import "../Common/css/login.css";
-import Menu from "./Menu";
+import Menu from "./components/Menu";
 import { useNavigate } from "react-router-dom";
 
 function DatosBancarios() {

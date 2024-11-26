@@ -1,6 +1,6 @@
 import Container from "react-bootstrap/esm/Container";
-import Menu from "./etiquetas/menu";
-import Contenedor from "../Gerente/etiquetas/Contenedor";
+import Menu from "./components/menu";
+import Contenedor from "../Common/components/Contenedor";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";

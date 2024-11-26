@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
-import Menu from "./etiquetas/menu";
+import Menu from "./components/menu";
 import { Modal, Button } from 'react-bootstrap';
 import { show_alerta } from "../Common/js/funciones";
 import axios from "axios";

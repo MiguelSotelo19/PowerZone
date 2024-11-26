@@ -6,8 +6,8 @@ import Swal from "sweetalert2";
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "./etiquetas/Menu"
-import Contenedor from "./etiquetas/Contenedor"
+import Menu from "./components/Menu"
+import Contenedor from "../Common/components/Contenedor"
 
  
 //CSS
@@ -351,7 +351,7 @@ function Clientes () {
     //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar equipos
+    // Filtrar membresia
     useEffect(() => {
         setFilteredClientes(
             membresiaCliente.filter(cliente =>
@@ -525,12 +525,7 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label>Tipo de membresía:</Form.Label>
-                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
-                                    <option id="selected">Selecciona una membresia</option>
-                                    {membresias.map((membresia => (
-                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
-                                    )))}
-                                </Form.Select>
+                                
                             </Form.Group>
                         </Form>
                     </Col>

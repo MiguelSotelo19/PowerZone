@@ -1,5 +1,5 @@
 import Container from "react-bootstrap/esm/Container";
-import Menu from "./etiquetas/Menu";
+import Menu from "./components/Menu";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";

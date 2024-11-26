@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Footer from "./Footer";
-import Menu from "./Menu";
+import Footer from "./components/Footer";
+import Menu from "./components/Menu";
 import axios from "axios";
 import { show_alerta } from "../Common/js/funciones";
 import { Container, Form, Button } from "react-bootstrap";

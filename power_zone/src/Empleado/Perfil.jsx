@@ -1,4 +1,5 @@
 import Container from "react-bootstrap/esm/Container";
+import Menu from "./components/Menu";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import React, { useEffect, useState } from "react";
@@ -9,7 +10,6 @@ import User from '../assets/user.png'
 import { Row, Col, Form } from 'react-bootstrap';
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Menu from "./etiquetas/Menu";
 
 
 function cerrarSesion(){
@@ -28,15 +28,15 @@ function cerrarSesion(){
 }
 
 
-function EmpleadoPerfil(){
-    const urlEmpleado = "http://localhost:8080/api/power/empleado/";
+function Perfil(){
+    const urlGerente = "http://localhost:8080/api/power/gerente/";
     const [ showPassword, setShowPassword] = useState(false); 
     const [ emailStatus, setEmailStatus ] = useState(false);
-    //Empleado
+    //Gerente
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
     const [ estatus, setEstatus]= useState(true);
-    const [ idEmpleado, setIdEmpleado ] = useState("");
+    const [ idGerente, setIdGerente ] = useState("");
     const [ identUsuario, setIdentUsuario] = useState("")
     const [ nombre, setNombre ] = useState("");
     const [ rol, setRol]= useState("");
@@ -45,26 +45,26 @@ function EmpleadoPerfil(){
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
-        getEmpleado();
+        getGerente();
       }, []);
       
-    const getEmpleado = async () => {
+    const getGerente = async () => {
         const respuesta = await axios({
         method: 'GET',
-        url: urlEmpleado 
+        url: urlGerente 
     });    
     console.log("login:",usuarioIniciado)
-    setEmpleado(respuesta.data.data); 
+    setGerente(respuesta.data.data); 
     }
 
-    const setEmpleado = async (usuario) => {
+    const setGerente = async (usuario) => {
         console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
                 setCorreo(element.correo);
                 setEstatus(element.estatus);
-                setIdEmpleado(element.id);
+                setIdGerente(element.id);
                 setIdentUsuario(element.identificadorusuario);
                 setNombre(element.nombre);       
                 setContra(element.cotrasenia);
@@ -107,7 +107,7 @@ function EmpleadoPerfil(){
                 correo: correo,
                 cotrasenia: contra,
                 estatus: estatus,
-                id: idEmpleado,
+                id: idGerente,
                 identificadorusuario: identUsuario,
                 nombre: nombre,
                 rol: rol,
@@ -123,7 +123,7 @@ function EmpleadoPerfil(){
 
         await axios({
             method: 'PUT',
-            url: urlEmpleado+ parametros.id,
+            url: urlGerente+ parametros.id,
             data: parametros
         }).then(function (res) {
             //console.log(res);
@@ -178,7 +178,7 @@ function EmpleadoPerfil(){
 
                 <Col md={3} className="d-flex justify-content-center align-items-center">
                     <div style={{ width: '40%', height: '50%' }}>
-                        <img src={User} alt="User" />
+                        <img src={User} alt="User" draggable="false" />
                     </div>
                 </Col>
 
@@ -243,4 +243,4 @@ function EmpleadoPerfil(){
     )
 }
 
-export default EmpleadoPerfil;
+export default Perfil;
