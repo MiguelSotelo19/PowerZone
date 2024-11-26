@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 //CSS
 import "../Common/css/login.css";
+import Swal from "sweetalert2";
 
 
 function Acceso() {
@@ -84,29 +85,27 @@ function Acceso() {
       if(usuarioIniciado != null && usuarioIniciado != undefined){
         if (usuarioIniciado.estatus) {
           localStorage.setItem("usuario", JSON.stringify(usuarioIniciado));
-  
-            switch(rol.nombre){
+          switch (rol.nombre) {
               case "Cliente":
-                navigate("/PowerZone/C/Membresias");
-                break;
-  
+                  navigate("/PowerZone/C/Perfil");
+                  return;
               case "Empleado":
-                navigate("/PowerZone/E/Cliente");
-                break;
-  
-                case "Gerente":
+                  navigate("/PowerZone/E/Cliente");
+                  return;
+              case "Gerente":
                   navigate("/PowerZone/G/Clientes");
-                break;
-            }
-            break;
+                  return;
+          }
         } else {
-          show_alerta("El usuario ingresado no se encuentra activo", "warning");
+            Swal.fire("Usuario desactivado","El usuario ingresado no se encuentra activo","warning");
+            return;
         }
       }      
     }
 
     if (!usuarioIniciado) {
         console.log("El usuario y/o contraseña son incorrectos");
+        Swal.fire("Usuario no encontrado","El número de membresía y/o contraseña son incorrectos","error")
     }
 
     console.log(usuarioIniciado);

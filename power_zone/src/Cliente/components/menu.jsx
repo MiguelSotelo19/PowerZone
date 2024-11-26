@@ -39,7 +39,7 @@ function Menu() {
           <Nav className="w-50 justify-content-between align-items-center">
             <Nav.Link className="m-1 me-2 fs-5 fw-bold" href="/PowerZone/C/Clases">Clases</Nav.Link>
             <Nav.Link className="m-1 me-2 fs-5 fw-bold" href="/PowerZone/C/Membresias">Membresías</Nav.Link>
-            <Navbar.Brand href="/PowerZone/C/Perfil">
+            <Navbar.Brand>
             <Dropdown align="end" className="e-caret-hide">
                 <Dropdown.Toggle
                   variant="link"
