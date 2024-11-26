@@ -1,49 +1,30 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Modal from "react-modal";
-
-import { show_alerta } from "../Common/js/funciones";
+import Modal from 'react-bootstrap/Modal';
+import Swal from "sweetalert2";
 
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "../Empleado/etiquetas/Menu";
-import Contenedor from "../Empleado/etiquetas/Contenedor";
+import Menu from "./components/Menu"
+import Contenedor from "../Common/components/Contenedor"
 
  
 //CSS
-import './../Empleado/css/Clientes.css'
+import './css/Clientes.css'
 
 //Imágenes
-import cross from './../Gerente/img/cross.png'
-import lupa from './../Gerente/img/lupa.png'
+import cross from './img/cross.png'
+import lupa from './img/lupa.png'
+import { Col, Container, InputGroup, Row } from "react-bootstrap";
 
-const customStyles = {
-    content: {
-      width: "auto",
-      height: "auto",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderWidth: 2,
-      borderColor: "blue",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center"
-    }
-};
-
-Modal.setAppElement("#root");
-
-function Cliente () {
+function Clientes () {
     const urlClientes = "http://localhost:8080/api/power/cliente/";
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [ clientes, setClientes ] = useState([]);
     const [ membresias, setMembresias ] = useState([]);
+    const [ membresiaCliente, setMembresiaCliente ] = useState([]);
+    const [ filteredClientes, setFilteredClientes ] = useState([]);
 
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
@@ -57,6 +38,17 @@ function Cliente () {
     const [ cvv, setCVV ] = useState(0);
     const [ tipo_tarjeta, setTipoTarjeta ] = useState("");
     const [ fecha_venc, setFechaVenc ] = useState("");
+    const [ identificador, setIdentificador] = useState("");
+    const [ idMembresia, setIdMembresia ] = useState("");
+    const [ estatus, setEstatus ] = useState(true);
+    const [adquisicion, setAdquisicion]= useState("");
+    const [tipo_membresia, setTipo_membresia]= useState("");
+
+    const [ emailStatus, setEmailStatus ] = useState(false);
+
+    let user = JSON.parse(localStorage.getItem("Cliente"));
+    //console.log("Cliente INICIADO: ");
+    //console.log(user);
 
     //Traer datos de cliente
     useEffect(() => {     
@@ -69,7 +61,6 @@ function Cliente () {
             method: 'GET',
             url: urlClientes,
         });
-        console.log(respuesta.data.data);
         setClientes(respuesta.data.data);
     }
 
@@ -79,15 +70,77 @@ function Cliente () {
             url: urlMembresias,
         });
         setMembresias(respuesta.data.data);
+        setClienteMembresias(respuesta.data.data);
+        console.log(respuesta.data.data)
+    }
+
+    const setClienteMembresias = async (membresiasB) => {
+        console.log("Valor recibido en membresiasB:", membresiasB);
+    
+        if (!Array.isArray(membresiasB)) {
+            membresiasB = [membresiasB];
+        }
+    
+        const clientesConMembresia = [];
+    
+        for (const membresia of membresiasB) {
+            if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
+                for (const cliente of membresia.clienteBeans) {
+                    const clienteMembresia = {
+                        // Cliente
+                        idC: cliente.id,
+                        nombre: cliente.nombre,
+                        correo: cliente.correo,
+                        telefono: cliente.telefono,
+                        numero_tarjeta: cliente.numero_tarjeta,
+                        vencimiento: cliente.vencimiento,
+                        cvv: cliente.cvv,
+                        identificadorusuario: cliente.identificadorusuario,
+                        rol: cliente.rol,
+                        adquisicion: cliente.adquisicion,
+                        cotrasenia: cliente.cotrasenia,
+                        estatus: cliente.estatus,
+                        tipo_tarjeta: cliente.tipo_tarjeta,
+                        // Membresía
+                        idM: membresia.id,
+                        tipo_membresia: membresia.tipo_membresia,
+                        costo: membresia.costo,
+                    };
+                    clientesConMembresia.push(clienteMembresia);
+                }
+            }
+        }
+    
+        console.log("Clientes con membresías:", clientesConMembresia);
+        setMembresiaCliente(clientesConMembresia);
+    };
+    
+    
+    const limpiar = () => {
+        setIdCliente(null);
+        setNombre(null);
+        setCorreo(null);
+        setContra(null);
+        setIdentificador(null);
+        setNum(null);
+        setIdMembresia(null);
+        setCVV(null);
+        setNumTarjeta(null);
+        setEstatus(null);
+        setFechaVenc(null)
+        setTipoTarjeta(null);
+        setTipo_membresia(null)
     }
 
     //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalMemIsOpen, setMemIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
+    const [modalActMemIsOpen, setActMemIsOpen] = React.useState(false);
 
     //Modal Registrar Cliente
-    function openModal() {
+    function openModal() {  
+        setEstatus(true);
         setIsOpen(true);
     }
 
@@ -104,13 +157,35 @@ function Cliente () {
         setMemIsOpen(false);
     }
 
-    //Modal Actualizar Cliente
-    function openActModal() {
+    //Modal Actualizar Cliente 
+    function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_, idM_,adquisicion_,tipo_membresia_) {
+        setIdCliente(id_);
+        setNombre(nombre_);
+        setCorreo(correo_);
+        setContra(contrasenia_);
+        setIdentificador(identificadorusuario_);
+        setNum(telefono_);
+        setIdMembresia(idM_);
+        setCVV(cvv_);
+        setNumTarjeta(numero_tarjeta_);
+        setEstatus(estatus_);
+        setAdquisicion(adquisicion_);
+        setTipo_membresia(tipo_membresia_);
         setActIsOpen(true);
+        validarPrevEmail(correo_);
     }
 
     function closeModalAct() {
         setActIsOpen(false);
+    }
+
+    function closeActMemModal() {
+        setActMemIsOpen(false);
+    }
+
+    function actualizarMembresia() {
+        closeModalAct();
+        setActMemIsOpen(true);
     }
 
     function regresarModal() {
@@ -118,75 +193,157 @@ function Cliente () {
         openModal();
     }
 
-    //Envío de formulario
-    const validar = (metodo) => {
-        event.preventDefault();
-
-        var parametros;
-        if(nombre.trim() === ""){
-            show_alerta("Escribe el nombre del cliente", "warning");
-        }else if(fecha_venc.trim() === ""){
-            show_alerta("Escribe la fecha de vencimiento", "warning");
-        } else if(tipo_tarjeta.trim() === ""){
-            show_alerta("Escribe el tipo de tarjeta", "warning");
-        } else if(cvv.trim() === ""){
-            show_alerta("Escribe el CVV", "warning");
-        } else if(num_tarjeta.trim() === ""){
-            show_alerta("Escribe el número de tarjeta", "warning");
-        } else if(ape_p.trim() === ""){
-            show_alerta("Escribe el apellido paterno del cliente", "warning");
-        } else if(ape_m.trim() === ""){
-            show_alerta("Escribe el apellido materno del cliente", "warning");
-        } else if(num_telefonico.trim() === ""){
-            show_alerta("Escribe el número de teléfono del cliente", "warning");
-        } else if(correo.trim() === ""){
-            show_alerta("Escribe el correo del cliente", "warning");
-        } else if(membresia === null){
-            show_alerta("Selecciona un tipo de membresía", "warning");
-        } else {
-            parametros = {
-                nombre: nombre,
-                contrasenia: `PowerPass_${Math.random().toString(36).substring(2, 10)}`,
-                correo: correo,
-                identificadorusuario: `PowerClient_${Math.random().toString(36).substring(2, 11)}`,
-                rol: 'cliente',
-                telefono: num_telefonico,
-                cvv: parseInt(cvv),
-                numero_tarjeta: num_tarjeta,
-                membresia: {
-                    id: parseInt(membresia, 10)
-                }
-            }
-
-            console.log(parametros)
-            enviarSolicitud(metodo, parametros, urlClientes);
-        }
+    function regresarModalAct() {
+        closeActMemModal();
+        openActModal();
     }
 
-    const enviarSolicitud = async(metodo, parametros, url) => {
+    //Envío de formulario
+    const validar = (metodo,event) => {
         event.preventDefault();
     
+        if (!nombre || nombre.trim() === "") {
+            Swal.fire("Campo Nombre inválido", "Escribe el nombre del cliente", "warning");
+            return;
+        }
+        if (!num_telefonico || num_telefonico.trim() === "" || num_telefonico.length < 10) {
+            Swal.fire("Campo Teléfono inválido", "Escribe un número de teléfono válido para el cliente", "warning");
+            return;
+        }
+        if (!correo || correo.trim() === "" || !emailStatus) {
+            Swal.fire("Campo Correo inválido", "Escribe un correo válido del cliente", "warning");
+            return;
+        }
+        if (!membresia) {
+            Swal.fire("Campo Membresía vacío", "Selecciona un tipo de membresía", "warning");
+            return;
+        }
+        if (!num_tarjeta || num_tarjeta.trim() === "" || num_tarjeta.length < 16) {
+            Swal.fire("Campo Número de tarjeta inválido", "Escribe un número de tarjeta válido de 16 dígitos", "warning");
+            return;
+        }
+        if ((!cvv || cvv==="") || cvv.length < 3) {
+            Swal.fire("Campo CVV inválido", "Escribe un CVV válido de 3 digitos", "warning");
+            return;
+        }
+        if (!tipo_tarjeta || tipo_tarjeta.trim() === "") {
+            Swal.fire("Campo Tipo de tarjeta vacío", "Seleccione el tipo de tarjeta", "warning");
+            return;
+        }
+        if (!fecha_venc || fecha_venc.trim() === "") {
+            Swal.fire("Campo Fecha de vencimiento inválido", "Escribe la fecha de vencimiento", "warning");
+            return;
+        }
+        const parametros = {
+            nombre,
+            cotrasenia: contra == null ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
+            correo,
+            identificadorusuario: identificador == null ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
+            rol: 'Cliente',
+            telefono: num_telefonico,
+            estatus,
+            cvv: cvv,
+            numero_tarjeta: num_tarjeta,
+            adquisicion: "",
+            vencimiento: "",
+            membresia: {
+                id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
+            }
+        };
+
+        console.log(parametros);
+    
+        enviarSolicitud(metodo, parametros, urlClientes);
+    };
+    
+    const activarDesactivarC = async (cliente, desactivar) => {
+        Swal.fire({
+            title: desactivar ? '¿Desactivar Cliente?' : '¿Activar Cliente?',
+            text: desactivar
+                ? `El Cliente ${cliente.nombre} será desactivado.`
+                : `El Cliente ${cliente.nombre} será activado.`,
+            icon: 'warning',
+            confirmButtonText: desactivar ? 'Desactivar Cliente' : 'Activar Cliente',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                activarC(
+                    cliente.idC,
+                    cliente.nombre,
+                    cliente.correo,
+                    cliente.cotrasenia,
+                    cliente.identificadorusuario,
+                    cliente.telefono,
+                    cliente.membresia,
+                    cliente.cvv,
+                    cliente.numero_tarjeta,
+                    cliente.estatus
+                );
+    
+                Swal.fire({
+                    title: desactivar ? 'Cliente desactivado' : 'Cliente activado',
+                    text: desactivar
+                        ? `El Cliente ${cliente.nombre} ha sido desactivado con éxito.`
+                        : `El Cliente ${cliente.nombre} ha sido activado con éxito.`,
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar',
+                });
+            }
+        });
+    }
+    
+
+    const activarC = (id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_) => {
+        var parametros = {
+            nombre: nombre_,
+            cotrasenia: contrasenia_,
+            correo: correo_,
+            identificadorusuario: identificadorusuario_,
+            rol: 'Cliente',
+            telefono: telefono_,
+            estatus: !estatus_,
+            cvv: parseInt(cvv_),
+            numero_tarjeta: numero_tarjeta_,
+        };
+    
+        console.log(parametros);
+    
+        enviarSolicitud("PUT", parametros, urlClientes, id_);
+    };
+    
+
+    const enviarSolicitud = async(metodo, parametros, url, id_) => {
         if(metodo != "POST"){
-            url = url + '';
+            (id_ == undefined) ? url = url + idCliente : url = url + id_;
         } 
+        //console.log(parametros);
         await axios({
             method: metodo,
             url: url,
             data: parametros
-        }).then(function (respuesta) {
-            var tipo = respuesta.data[0];
-            var msj = respuesta.data[1];
-            if(tipo === "success"){
-                show_alerta("Cambios realizados correctamente", "success");         
-            } 
+        }).then(async (result) =>{
             closMemModal();
             closeModal();
             closeModalAct();
-
-            getClientes();
+            closeActMemModal();
+            if(result.data.status == "OK" && metodo=="POST"){
+                Swal.fire("Cliente registrado","Cliente registrado correctamente", "success");         
+            } 
+            else if(result.data.status == "OK" && metodo=="PUT"){
+                Swal.fire("Cliente actualizado","Cliente Actualizado correctamente", "success");         
+            }             
+            await getClientes();
+            await setClienteMembresias(getMembresias());
+            
+            setFilteredClientes(membresiaCliente.filter(cliente => 
+                (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (cliente.identificadorUsuario && cliente.identificadorUsuario.toLowerCase().includes(searchTerm.toLowerCase()))
+            ));
+            
         })
         .catch(function (error) {
-            show_alerta("Error en la Solicitud", "error");
+            Swal.fire("Error en la Solicitud", "error");
             console.log(error);
         });
     }
@@ -194,54 +351,95 @@ function Cliente () {
     //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar equipos
-    const filteredClientes = clientes.filter(cliente => 
-        cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        cliente.identificadorusuario.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Filtrar membresia
+    useEffect(() => {
+        setFilteredClientes(
+            membresiaCliente.filter(cliente =>
+                (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (cliente.identificadorusuario && cliente.identificadorusuario.toLowerCase().includes(searchTerm.toLowerCase()))
+            )
+        );
+    }, [membresiaCliente, searchTerm]);
+    
 
-    // Actualizar
+    // Actualizar búsqueda
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
+    //Validar e-mail
+    const validarEmail = (e) => {
+        let campo = e;
+            
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if (emailRegex.test(campo.value)) {  
+            console.log("SI")
+          setEmailStatus(true);
+        } else {
+            console.log("NO")
+          setEmailStatus(false);
+        }
+    }
+
+    //Validar e-mail pero en actualiz de correo
+    const validarPrevEmail = (correo) => {
+        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+        
+        if(emailRegex.test(correo)) {
+            console.log("Si previo")
+          setEmailStatus(true);
+        }else {
+            console.log("No previo")
+          setEmailStatus(false);
+        }
+      }
+
     return (
         <>
             <Menu />
-
+ 
             <div className='main-content pb-5'>
                 <div style={{ width: '99vw' }}></div>
 
                 <div className='d-flex justify-content-evenly'>
-                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={openModal}>
+                    <Button className="m-1 fs-5 fw-bold" variant="success" onClick={() => { limpiar(); openModal(); }}>
                     <img 
                     src={cross}
                     alt='mas'
-                    style={{ width: '2vh', height: '2vh' }}  
-                    draggable="false"                  
-                    />&nbsp;&nbsp;Agregar clientes</Button>{' '}
-                    <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} />
+                    style={{ width: '2vh', height: '2vh',marginTop:-4}} draggable="false"                    
+                    />&nbsp;&nbsp;Agregar cliente</Button>{' '}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%' }}>
+                        <img src={lupa} draggable="false" alt="Buscar" style={{ width: '4vh', height: '3vh' }} />
+                        <Form.Control type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} 
+                            style={{ backgroundColor: 'rgb(217, 217, 217)', borderRadius: '12px',}}/>
+                    </div>
                 </div>
+            
 
                 <h1 className="d-flex justify-content-center mt-5">Clientes</h1>
 
                 {filteredClientes.map((cliente, i) => {
                     return (
                         <Contenedor 
-                            key={cliente.id + i}
+                            key={i}
                             title1={'Cliente'}
                             text1={cliente.nombre} 
                             title2={'Tipo de Membresía'}
-                            text2={'N/A'} 
+                            text2={cliente.tipo_membresia} 
                             title3={'Número de membresía'}
                             text3={cliente.identificadorusuario} 
                             title4={'Estado'}
                             acciones={
                                 <>
-                                    <Button className='me-1' variant="danger">Desactivar</Button>{' '}
-                                    <Button className='me-1' variant="success">Activar</Button>{' '}
-                                    <Button variant="warning" onClick={openActModal}>Editar</Button>{' '}
+                                    {cliente.estatus ? (
+                                        <Button className="me-1" variant="danger" onClick={() => activarDesactivarC(cliente, true)}>
+                                            Desactivar </Button>
+                                    ) : (
+                                        <Button className="me-1" variant="success" onClick={() => activarDesactivarC(cliente, false)}>
+                                            Activar </Button>
+                                    )}
+                                    <Button variant="warning" onClick={() => { openActModal(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus,cliente.idM,cliente.adquisicion,cliente.tipo_membresia) }}>Editar</Button>{' '}
                                 </>                    
                             } 
                         />
@@ -251,151 +449,306 @@ function Cliente () {
             </div>
 
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Registrar Cliente"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                show={modalIsOpen}
+                onHide={closeModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Registrar cliente
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={8}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre" 
+                                                 onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" onChange={(e) => setNombre(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" onChange={(e) => setNum(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" onChange={(e) => setCorreo(e.target.value)} />
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => registrarMembresia()}>Siguiente</Button>{' '}
-                </div>
-                
-                </form>
+                                <Col md={4}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                onChange={(e) => setNum(e.target.value)} maxLength="10"
+                                                onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
+                                                    if (e.target.value < 0) e.target.value = "";
+                                                }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="warning" onClick={() => registrarMembresia()}>Siguiente</Button>{' '}
+                </Modal.Footer>
             </Modal>
 
             <Modal
-                isOpen={modalMemIsOpen}
-                onRequestClose={closMemModal}
-                style={customStyles}
-                contentLabel="Registrar Cliente"
+            show={modalMemIsOpen}
+            onHide={closMemModal}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
             >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Registrar cliente
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Container>
+                <Row className="d-flex justify-content-center mt-3">
+                    <Col md={12}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de membresía:</Form.Label>
+                                
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className="d-flex justify-content-center">
+                    <Col md={6}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Número de tarjeta:</Form.Label>
+                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                    onChange={(e) => setNumTarjeta(e.target.value)} 
+                                    onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
+                                        if (e.target.value < 0) e.target.value = "";
+                                    }}/>
+                            </Form.Group>
 
-                <div className="field-1 mt-4 w-75">
-                    <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
-                        <option id="selected" value={null}>Selecciona una membresia</option>
-                        {membresias.map((membresia => (
-                            <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
-                        )))}
-                    </Form.Select>
-                </div>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de tarjeta:</Form.Label>
+                                <Form.Select required onChange={(e) => setTipoTarjeta(e.target.value)}>
+                                    <option value="">Selecciona tu banco</option>
+                                    <option value="BBVA">BBVA</option>
+                                    <option value="Banamex">Banamex</option>
+                                    <option value="Banorte">Banorte</option>
+                                    <option value="Santander">Santander</option>
+                                    <option value="HSBC">HSBC</option>
+                                    <option value="Scotiabank">Scotiabank</option>
+                                    <option value="Inbursa">Inbursa</option>
+                                    <option value="Banco Azteca">Banco Azteca</option>
+                                    <option value="BanCoppel">BanCoppel</option>
+                                    <option value="Afirme">Afirme</option>
+                                    <option value="Banco del Bienestar">Banco del Bienestar</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
+                    </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número de tarjeta" onChange={(e) => setNumTarjeta(e.target.value)} />
-                    </div>
+                    <Col md={6}>
+                        <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>CVV:</Form.Label>
+                            <Form.Control required type="number" placeholder="CVV"
+                                onChange={(e) => setCVV(e.target.value)} 
+                                onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
+                                    if (e.target.value < 0) e.target.value = "";
+                                    }}
+                            />
+                            </Form.Group>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="CVV" onChange={(e) => setCVV(e.target.value)} />
-                    </div>
-                </div>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
+                                <Form.Control required type="date"
+                                onChange={(e) => setFechaVenc(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="fw-bold" variant="outline-secondary" onClick={regresarModal}>Regresar</Button>{' '}
+                <Button className="fw-bold" variant="warning"  onClick={(e) => validar("POST",e)}>Registrar</Button>{' '}
+            </Modal.Footer>
+            </Modal>
+            
+            <Modal
+                show={modalActIsOpen}
+                onHide={closeModalAct}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Actualizar cliente
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={8}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Control type="text" placeholder="Nombre" 
+                                                value={nombre} onChange={(e) => setNombre(e.target.value)} required/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de Tarjeta" onChange={(e) => setTipoTarjeta(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Fecha de vencimiento" onChange={(e) => setFechaVenc(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={regresarModal}>Regresar</Button>{' '}
-                    <Button className="fw-bold fs-4 p-2 ms-5" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
-                </div>
-                
-                </form>
+                                <Col md={4}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                                value={num_telefonico} onChange={(e) => setNum(e.target.value)} maxLength="10" 
+                                                onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
+                                                    if (e.target.value < 0) e.target.value = "";
+                                                }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo} onChange={(e) => setCorreo(e.target.value)}
+                                                onInput={(e) => { validarEmail(e.target); }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="warning" onClick={() => actualizarMembresia()}>Siguiente</Button>{' '}
+                </Modal.Footer>
             </Modal>
 
             <Modal
-                isOpen={modalActIsOpen}
-                onRequestClose={closeModalAct}
-                style={customStyles}
-                contentLabel="Actualizar Cliente"
+            show={modalActMemIsOpen}
+            onHide={closeActMemModal}
+            size="lg"
+            aria-labelledby="contained-modal-title-vcenter"
+            centered
             >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar Cliente</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+            <Modal.Header closeButton>
+                <Modal.Title id="contained-modal-title-vcenter">
+                    Actualizar cliente
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Container>
+                <Row className="d-flex justify-content-center mt-3">
+                    <Col md={12}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de membresía:</Form.Label>
+                                <Form.Select 
+                                    required
+                                    onChange={(e) => setIdMembresia(e.target.value)}
+                                >
+                                    <option value="">Selecciona una membresía</option>
+                                    {membresias.map((membresia) => (
+                                        <option key={membresia.id} value={membresia.id}>
+                                            {membresia.tipo_membresia}
+                                        </option>
+                                    ))}
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                </Row>
+                <Row className="d-flex justify-content-center">
+                    <Col md={6}>
+                        <Form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Número de tarjeta:</Form.Label>
+                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                    value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} 
+                                    onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
+                                        if (e.target.value < 0) e.target.value = "";
+                                    }}/>
+                            </Form.Group>
 
-                    
+                            <Form.Group className="mb-3">
+                                <Form.Label>Tipo de tarjeta:</Form.Label>
+                                <Form.Select 
+                                    required 
+                                    onChange={(e) => setTipoTarjeta(e.target.value)}
+                                >
+                                    <option value="">Selecciona tu banco</option>
+                                    <option value="BBVA">BBVA</option>
+                                    <option value="Banamex">Banamex</option>
+                                    <option value="Banorte">Banorte</option>
+                                    <option value="Santander">Santander</option>
+                                    <option value="HSBC">HSBC</option>
+                                    <option value="Scotiabank">Scotiabank</option>
+                                    <option value="Inbursa">Inbursa</option>
+                                    <option value="Banco Azteca">Banco Azteca</option>
+                                    <option value="BanCoppel">BanCoppel</option>
+                                    <option value="Afirme">Afirme</option>
+                                    <option value="Banco del Bienestar">Banco del Bienestar</option>
+                                    <option value="Intercam Banco">Intercam Banco</option>
+                                </Form.Select>
+                            </Form.Group>
+                        </Form>
+                    </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre(s)" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </div>
+                    <Col md={6}>
+                        <Form>
+                        <Form.Group className="mb-3">
+                            <Form.Label>CVV:</Form.Label>
+                            <Form.Control required type="number" placeholder="CVV"
+                                value={cvv}
+                                onChange={(e) => setCVV(e.target.value)} 
+                                onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
+                                    if (e.target.value < 0) e.target.value = "";
+                                    }}
+                            />
+                            </Form.Group>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Paterno" value={ape_p} onChange={(e) => setApe_p(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Apellido Materno" value={ape_m} onChange={(e) => setApe_m(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número telefónico" value={num_telefonico} onChange={(e) => setNum(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Correo Electrónico" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-                </div>
-
-                <div className="field-1">
-                    <Form.Control required type="text" placeholder="Contraseña" value={contra} onChange={(e) => setContra(e.target.value)} />
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="warning">Siguiente</Button>{' '}
-                </div>
-                
-                </form>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
+                                <Form.Control required type="date"
+                                onChange={(e) => setFechaVenc(e.target.value)} />
+                            </Form.Group>
+                        </Form>
+                    </Col>
+                    </Row>
+                </Container>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button className="fw-bold" variant="outline-secondary" onClick={regresarModalAct}>Regresar</Button>{' '}
+                <Button className="fw-bold" variant="warning"  onClick={(e) => validar("PUT",e)}>Actualizar</Button>{' '}
+            </Modal.Footer>
             </Modal>
 
         </>
     )
 }
 
-export default Cliente;
+export default Clientes;

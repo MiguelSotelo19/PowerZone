@@ -1,7 +1,7 @@
 import CanvasJSReact from '@canvasjs/react-charts';
 import React, { useEffect, useState, Component } from "react";
 import axios from "axios";
-import Menu from "./etiquetas/Menu";
+import Menu from "./components/Menu";
 
 import Form from 'react-bootstrap/Form';
 

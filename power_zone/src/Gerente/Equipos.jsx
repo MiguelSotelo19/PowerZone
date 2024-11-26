@@ -5,8 +5,8 @@ import { show_alerta } from "../Common/js/funciones";
 import Modal from "react-modal";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "./etiquetas/Menu"
-import Contenedor from "./etiquetas/Contenedor"
+import Menu from "./components/Menu"
+import Contenedor from "../Common/components/Contenedor"
 
 //CSS
 import './css/Clientes.css'
@@ -196,14 +196,12 @@ function Equipos() {
 
                 <div className='d-flex justify-content-evenly'>
                     <Button className="m-1 fs-5 fw-bold" variant="success" onClick={openModal}>
-                    <img 
-                    src={cross}
-                    alt='mas'
-                    style={{ width: '2vh', height: '2vh' }}
-                    draggable="false"                    
-                    />&nbsp;&nbsp;Agregar equipos</Button>{' '}
-                    <Form.Control style={{ width: '30%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '7vh', textAlign: 'center' }} type="text" placeholder="Buscar equipos" value={searchTerm} onChange={handleSearchChange} />
+                    <img src={cross} alt='mas' style={{ width: '2vh', height: '2vh' }} draggable="false"/>&nbsp;&nbsp;Agregar equipos</Button>{' '}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%' }}>
+                        <img src={lupa} draggable="false" alt="Buscar" style={{ width: '4vh', height: '3vh' }} />
+                        <Form.Control type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} 
+                            style={{ backgroundColor: 'rgb(217, 217, 217)', borderRadius: '12px',}}/>
+                    </div>
                 </div>
 
                 <h1 className="d-flex justify-content-center mt-5">Equipos de Gimnasio</h1>

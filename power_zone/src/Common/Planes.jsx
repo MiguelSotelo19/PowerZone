@@ -1,10 +1,7 @@
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
-import Card from 'react-bootstrap/Card';
-import gimnasio from './img/gimnasio.png'
-
-import Menu from './Menu';
-import Footer from './Footer';
+import Menu from './components/Menu';
+import Footer from './components/Footer';
 
 //CSS
 import './css/Planes.css'
@@ -27,10 +24,12 @@ function Planes() {
                 <div className='mt-5 d-flex justify-content-center'>
                     <Table className='table-separated-columns' style={{ width: '80%' }}>
                         <thead>
-                            <th></th>
-                            <th className='plus_th fs-3'>Plus</th>
-                            <th className='planesth fs-3'>Medium</th>
-                            <th className='planesth fs-3'>Estándar</th>
+                            <tr>
+                                <th></th>
+                                <th className='plus_th fs-3'>Plus</th>
+                                <th className='planesth fs-3'>Medium</th>
+                                <th className='planesth fs-3'>Estándar</th>
+                            </tr>                            
                         </thead>
                         <tbody>
                             <tr style={{ border: 0 }}>
@@ -85,7 +84,6 @@ function Planes() {
                     </Table>
                 </div>  
             </div>
-            
             
             <Footer />
         </>

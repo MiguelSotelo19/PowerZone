@@ -5,8 +5,8 @@ import { show_alerta } from "../Common/js/funciones";
 import Modal from "react-modal";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "./etiquetas/Menu"
-import Contenedor from "./etiquetas/Contenedor"
+import Menu from "./components/Menu"
+import Contenedor from "../Common/components/Contenedor"
 
 //CSS
 import './css/Clientes.css'
@@ -148,8 +148,11 @@ function Clases() {
                 <div style={{ width: '99vw' }}></div>
 
                 <div className='d-flex justify-content-end w-75'>
-                    <Form.Control style={{ width: '40%', backgroundColor: 'rgb(217, 217, 217)', backgroundImage: `url(${lupa})`, 
-                    backgroundRepeat: 'no-repeat', backgroundSize: '5vh', textAlign: 'center' }} type="text" placeholder="Buscar clases" value={searchTerm} onChange={handleSearchChange} />
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '30%' }}>
+                        <img src={lupa} draggable="false" alt="Buscar" style={{ width: '4vh', height: '3vh' }} />
+                        <Form.Control type="text" placeholder="Buscar clientes" value={searchTerm} onChange={handleSearchChange} 
+                            style={{ backgroundColor: 'rgb(217, 217, 217)', borderRadius: '12px',}}/>
+                    </div>
                 </div>
 
                 <h1 className="d-flex justify-content-center mt-5">Clases</h1>

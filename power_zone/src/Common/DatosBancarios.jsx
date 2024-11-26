@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import "../Common/css/login.css";
-import Menu from "./Menu";
+import Menu from "./components/Menu";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

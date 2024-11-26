@@ -5,8 +5,8 @@ import Modal from 'react-bootstrap/Modal';
 import Swal from "sweetalert2";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "./etiquetas/Menu"
-import Contenedor from "./etiquetas/Contenedor"
+import Menu from "./components/Menu"
+import Contenedor from "../Common/components/Contenedor"
 
 //CSS
 import './css/Clientes.css'

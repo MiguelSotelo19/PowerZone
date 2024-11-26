@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import "../Common/css/login.css";
-import Menu from "./Menu";
+import Menu from "./components/Menu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
