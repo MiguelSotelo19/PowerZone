@@ -13,18 +13,21 @@ import './css/calendario.css';
 
 const ClienteClases = () => {
     const urlClases = "http://localhost:8080/api/power/clase/";
+    const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const urlPlanificacion = "http://localhost:8080/api/power/planificacion/";
 
-    const [showModal, setShowModal] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState(null);
-    const [events, setEvents] = useState([]);
+    const [ showModal, setShowModal ] = useState(false);
+    const [ selectedEvent, setSelectedEvent ] = useState(null);
+    const [ events, setEvents ] = useState([]);
     const amarillo = "#ffcd6c";
     const azul = "#64b7d4";
     const gris = "#e0e1ce";
 
     let user = JSON.parse(localStorage.getItem("usuario"));
+    console.log(user);
     
     useEffect(() => {
+        getMembresiaUser();
         getClase();
 
         const customSymbolButton = document.querySelector('.fc-customSymbol-button');
@@ -51,6 +54,19 @@ const ClienteClases = () => {
         }
     }, []);
 
+    const getMembresiaUser = async () => {
+        const respuesta = (await axios({
+            method: 'GET',
+            url: urlMembresias 
+        })).data.data;
+
+        let mem = respuesta.find(mem => 
+            mem.clienteBeans.some(m => m.id == user.id)
+        )
+
+        return mem.tipo_membresia;
+    }
+
     function convertirFechaPersonalizada(fechaStr) {
         const regex = /(\d{2})\/(\d{2})\/(\d{4}) (\d{1,2}):(\d{2}):(\d{2}) (a\.m\.|p\.m\.)/i;
         const match = fechaStr.match(regex);
@@ -70,6 +86,7 @@ const ClienteClases = () => {
 
     const getClase = async () => {
         try {
+            const membresia = await getMembresiaUser();
             const respuesta = await axios.get(urlClases);
             const clases = respuesta.data.data;
     
@@ -98,27 +115,65 @@ const ClienteClases = () => {
                     var agenda = "Disponible";
                     var color = azul;
 
-                    claseVP = claseVP.filter(clas =>
-                        clas.clase.id === clase.id &&
-                        clas.cliente.id === user.id &&
-                        new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
-                    );
-
-                    if (claseVP.length !== 0) {
-                        agenda = "Agendado";
-                        color = amarillo;
-                    }
-
-                    if (new Date(`${fechaActual}T${startTime}`).setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
-                        if (new Date(`${fechaActual}T${startTime}`) < new Date()) {
-                            agenda = "No disponible";
+                    switch(membresia){
+                        case "Estándar":
+                            agenda = "Mejorar";
                             color = gris;
-                        }
+                        break;
+
+                        case "Medium":
+                            let clasesSauna = claseVP.filter(clas =>
+                                clase.nombre_clase.toLowerCase().includes("sauna")
+                            );
+
+                            if(clasesSauna.length > 0){
+                                agenda = "Mejorar";
+                                color = gris;
+                            }
+
+                            claseVP = claseVP.filter(clas =>
+                                clas.clase.id === clase.id &&
+                                clas.cliente.id === user.id &&
+                                new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
+                            );                
+        
+                            if (claseVP.length !== 0) {
+                                agenda = "Agendado";
+                                color = amarillo;
+                            }
+        
+                            if (new Date(`${fechaActual}T${startTime}`).setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
+                                if (new Date(`${fechaActual}T${startTime}`) < new Date()) {
+                                    agenda = "No disponible";
+                                    color = gris;
+                                }
+                            }
+                        break;
+
+                        case "Plus":
+                            claseVP = claseVP.filter(clas =>
+                                clas.clase.id === clase.id &&
+                                clas.cliente.id === user.id &&
+                                new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
+                            );
+        
+                            if (claseVP.length !== 0) {
+                                agenda = "Agendado";
+                                color = amarillo;
+                            }
+        
+                            if (new Date(`${fechaActual}T${startTime}`).setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
+                                if (new Date(`${fechaActual}T${startTime}`) < new Date()) {
+                                    agenda = "No disponible";
+                                    color = gris;
+                                }
+                            }
+                        break;
                     }
 
                     return {
                         title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
-                        start: `${fechaActual}T${startTime}`, // Usa la fecha correcta
+                        start: `${fechaActual}T${startTime}`,
                         end: `${fechaActual}T${endTime}`,
                         backgroundColor: color,
                         borderColor: color,
@@ -320,14 +375,40 @@ const ClienteClases = () => {
                             <Button variant="secondary" onClick={closeModal}>
                                 Cerrar
                             </Button>
-                            {
-                                selectedEvent && selectedEvent.agendado == "Agendado" ? 
-                                (<div>Ya te encuentras inscrito</div>) 
-                                : ( selectedEvent && selectedEvent.agendado == "No disponible" ? (<div>No disponible</div>) : (<Button variant="primary" onClick={() => agendarClase(selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString()) }>
-                                Agendar clase
-                            </Button>) )
-                            }
+                            {selectedEvent ? (
+                                (() => {
+                                    console.log(selectedEvent.agendado);
+                                    switch (selectedEvent.agendado) {
+                                        case "Agendado":
+                                            return <div>Ya te encuentras inscrito</div>;
+                                        case "No disponible":
+                                            return <div>No disponible</div>;
+                                        case "Disponible":
+                                            return (
+                                                <Button
+                                                    variant="primary"
+                                                    onClick={() =>
+                                                        agendarClase(
+                                                            selectedEvent.id,
+                                                            selectedEvent.fecha.toLocaleDateString(),
+                                                            selectedEvent.fecha.toLocaleTimeString()
+                                                        )
+                                                    }
+                                                >
+                                                    Agendar clase
+                                                </Button>
+                                            );
+                                        case "Mejorar":
+                                            return <div>Mejora tu membresía para tener acceso</div>;
+                                        default:
+                                            return <></>;
+                                    }
+                                })()
+                            ) : (
+                                <></>
+                            )}
                         </Modal.Footer>
+
                     </Modal>
                 </div>
             </Container>

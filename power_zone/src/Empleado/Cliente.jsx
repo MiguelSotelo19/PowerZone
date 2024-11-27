@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Menu from "./components/Menu"
+import Menu from "./components/Menu";
 import Contenedor from "../Common/components/Contenedor"
 
  
