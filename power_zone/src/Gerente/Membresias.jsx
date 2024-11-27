@@ -74,11 +74,9 @@ function Membresias() {
         });
         setMembresias(respuesta.data.data);
         setClienteMembresias(respuesta.data.data);
-        console.log(respuesta.data.data)
     }
 
     const setClienteMembresias = async (membresiasB) => {
-        console.log("Valor recibido en membresiasB:", membresiasB);
     
         if (!Array.isArray(membresiasB)) {
             membresiasB = [membresiasB];
@@ -114,7 +112,6 @@ function Membresias() {
             }
         }
     
-        console.log("Clientes con membresías:", clientesConMembresia);
         setMembresiaCliente(clientesConMembresia);
     };
 
@@ -194,9 +191,7 @@ function Membresias() {
             cvv: parseInt(cvv_),
             numero_tarjeta: numero_tarjeta_,
         };
-    
-        console.log(parametros);
-    
+        
         enviarSolicitud("PUT", parametros, urlClientes, id_);
     };    
 
@@ -240,7 +235,6 @@ function Membresias() {
         if(metodo != "POST"){
             (id_ == undefined) ? url = url + idCliente : url = url + id_;
         } 
-        //console.log(parametros);
         await axios({
             method: metodo,
             url: url,
@@ -262,7 +256,6 @@ function Membresias() {
         })
         .catch(function (error) {
             Swal.fire("Error en la Solicitud", "error");
-            console.log(error);
         });
     }
 

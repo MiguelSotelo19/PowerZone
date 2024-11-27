@@ -131,7 +131,6 @@ function ClienteMembresias(){
         method: 'GET',
         url: urlClientes 
     });
-    console.log("login:",usuarioIniciado)
     setCliente(respuesta.data.data); 
     }
 
@@ -145,11 +144,9 @@ function ClienteMembresias(){
     }
     
     const setCliente = async (usuario) => {
-        console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
-                console.log("cliente:",element)
                 setCorreo(element.correo);
                 setIdCliente(element.id);
                 setContra(element.cotrasenia);
@@ -172,7 +169,6 @@ function ClienteMembresias(){
             const cliente = element.clienteBeans.find(cliente => cliente.id === usuarioIniciado.id);
             if(cliente){
             setMembresia(element)
-            console.log("membresia:",element)
             setClientes(element.clienteBeans); 
             setPrecio(element.costo);
             setTipoMembresia(element.tipo_membresia);

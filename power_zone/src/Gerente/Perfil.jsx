@@ -41,7 +41,6 @@ function Perfil(){
     const [ nombre, setNombre ] = useState("");
     const [ rol, setRol]= useState("");
     const [ telefono, setTelefono]= useState("");
-
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
@@ -53,12 +52,10 @@ function Perfil(){
         method: 'GET',
         url: urlGerente 
     });    
-    console.log("login:",usuarioIniciado)
     setGerente(respuesta.data.data); 
     }
 
     const setGerente = async (usuario) => {
-        console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
@@ -94,10 +91,10 @@ function Perfil(){
         event.preventDefault();
         let parametros;
 
-        if(correo.trim() == '' || correo == undefined || emailStatus==false) {
-            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
-        } else if(nombre.trim() == '' || nombre == undefined){
+        if(nombre.trim() == '' || nombre == undefined){
             Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+        }else if(correo.trim() == '' || correo == undefined || emailStatus==false) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
         }else if(telefono.trim() == '' || telefono == undefined){
             Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
         }else if(contra.trim() == '' || contra == undefined){
@@ -113,7 +110,6 @@ function Perfil(){
                 rol: rol,
                 telefono: telefono,
           }
-            console.log(parametros)
             actualizar(parametros);
         }
     }
@@ -126,13 +122,10 @@ function Perfil(){
             url: urlGerente+ parametros.id,
             data: parametros
         }).then(function (res) {
-            //console.log(res);
             if(res.data.data == 'OK'){
-            //console.log(res.data.data); 
             Swal.fire("Datos Actualizados","Los datos se han actualizado correctamente","success")
             }
         }).catch(function (error) {
-            //console.log(error);
         })
     }
 
@@ -142,10 +135,8 @@ function Perfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if (emailRegex.test(campo.value)) {  
-            console.log("SI")
           setEmailStatus(true);
         } else {
-            console.log("NO")
           setEmailStatus(false);
         }
     }
@@ -154,10 +145,8 @@ function Perfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if(emailRegex.test(correo)) {
-            console.log("Si previo")
           setEmailStatus(true);
         }else {
-            console.log("No previo")
           setEmailStatus(false);
         }
       }
@@ -221,7 +210,7 @@ function Perfil(){
                 <Col md={4}>
                     <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
-                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="password-input-container">
                                 <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
                                 value={contra} onChange={(e) => setContra(e.target.value)} required />
                                 <FontAwesomeIcon

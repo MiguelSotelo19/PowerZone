@@ -62,7 +62,6 @@ function ClientePerfil(){
         method: 'GET',
         url: urlClientes 
     });
-    console.log("login:",usuarioIniciado)
     setCliente(respuesta.data.data); 
     }
 
@@ -75,11 +74,9 @@ function ClientePerfil(){
     }
     
     const setCliente = async (usuario) => {
-        console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
-                console.log("cliente:",element)
                 setCorreo(element.correo);
                 setIdCliente(element.id);
                 setContra(element.cotrasenia);
@@ -100,10 +97,7 @@ function ClientePerfil(){
 
         for (let i = 0; i < membresia.length; i++) {
             const element = membresia[i];
-            //console.log(element)
-            //console.log("id:",usuarioIniciado.id)
             const cliente = element.clienteBeans.find(cliente => cliente.id === usuarioIniciado.id);
-            //console.log("cliente con membresia:",cliente)
             if(cliente){ //de todo esto la verdad nada mas que el tipo sirve jadjasdj
             setClientes(element.clienteBeans); 
             setPrecio(element.costo);
@@ -111,7 +105,6 @@ function ClientePerfil(){
             setIdMembresia(element.id)
             break;
             }
-            //console.log("membresia ",i," :",element)
         }
     }
 
@@ -134,10 +127,10 @@ function ClientePerfil(){
         event.preventDefault();
         let parametros;
 
-        if(correo.trim() == '' || correo == undefined || emailStatus==false) {
-            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
-        } else if(nombre.trim() == '' || nombre == undefined){
+        if(nombre.trim() == '' || nombre == undefined){
             Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+        }else if(correo.trim() == '' || correo == undefined || emailStatus==false) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
         }else if(num_telefonico.trim() == '' || num_telefonico == undefined){
             Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
         }else if(contra.trim() == '' || contra == undefined){
@@ -155,7 +148,6 @@ function ClientePerfil(){
             cvv: cvv,
             numero_tarjeta:num_tarjeta
           }
-            console.log(parametros)
             actualizar(parametros);
         }
     }
@@ -168,13 +160,10 @@ function ClientePerfil(){
             url: urlClientes+ parametros.id,
             data: parametros
         }).then(function (res) {
-            //console.log(res);
             if(res.data.data == 'OK'){
-            //console.log(res.data.data); 
             Swal.fire("Datos Actualizados","Los datos se han actualizado correctamente","success")
             }
         }).catch(function (error) {
-            //console.log(error);
         })
     }
 
@@ -184,10 +173,8 @@ function ClientePerfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if (emailRegex.test(campo.value)) {  
-            console.log("SI")
           setEmailStatus(true);
         } else {
-            console.log("NO")
           setEmailStatus(false);
         }
     }
@@ -196,10 +183,8 @@ function ClientePerfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if(emailRegex.test(correo)) {
-            console.log("Si previo")
           setEmailStatus(true);
         }else {
-            console.log("No previo")
           setEmailStatus(false);
         }
       }
@@ -261,7 +246,7 @@ function ClientePerfil(){
 
                         <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
-                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="password-input-container">
                                 <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
                                 value={contra} onChange={(e) => setContra(e.target.value)} required />
                                 <FontAwesomeIcon

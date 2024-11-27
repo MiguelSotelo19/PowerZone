@@ -28,7 +28,6 @@ function Acceso() {
           method: 'GET',
           url: urlClientes,
       });
-      console.log(respuesta.data.data);
 
       return respuesta.data.data;
   }
@@ -38,7 +37,6 @@ function Acceso() {
         method: 'GET',
         url: urlEmpleados,
     });
-    console.log(respuesta.data.data);
 
     return respuesta.data.data;
   }
@@ -48,8 +46,6 @@ function Acceso() {
         method: 'GET',
         url: urlGerente,
     });
-    console.log("GET GERENTE");
-    console.log(respuesta.data.data);
 
     return respuesta.data.data;
   }
@@ -75,9 +71,7 @@ function Acceso() {
 
     for (const rol of roles) {
 
-      console.log("GET DATA");
       const data = await rol.getData();
-      console.log(data);
       usuarioIniciado = data.find(persona =>
           persona.cotrasenia === contra && persona.identificadorusuario === usuario
       );
@@ -104,11 +98,8 @@ function Acceso() {
     }
 
     if (!usuarioIniciado) {
-        console.log("El usuario y/o contraseña son incorrectos");
         Swal.fire("Usuario no encontrado","El número de membresía y/o contraseña son incorrectos","error")
     }
-
-    console.log(usuarioIniciado);
   };
 
   return (
@@ -116,7 +107,7 @@ function Acceso() {
       <Menu />
       <div className="login-body" >
         <Container className="contLog" style={{margin:"50px"}}>
-          <div className="formulario">
+          <div className="formulario-login">
             <Form.Group className="formu">
               <h1 className="ttl">Iniciar sesión</h1>
 
@@ -149,7 +140,7 @@ function Acceso() {
 
               <p className="forgot-password">
                 ¿No tienes una cuenta?{" "}
-                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'p',color:'blue'}}>
+                <span onClick={handleRegisterClick} className="register-link" style={{cursor: 'pointer',color:'blue'}}>
                   Regístrate aquí
                 </span>
               </p>

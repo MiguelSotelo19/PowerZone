@@ -58,7 +58,6 @@ function Equipos() {
             method: 'GET',
             url: urlEquipos,
         });
-        console.log(respuesta.data.data);
         setEquipos(respuesta.data.data);
     }
 
@@ -125,7 +124,6 @@ function Equipos() {
                 estatus: true
             }
 
-            console.log(parametros)
             enviarSolicitud(metodo, parametros, urlEquipos);
         }
     }
@@ -136,8 +134,6 @@ function Equipos() {
         if(metodo != "POST"){
             (id_ == undefined) ? url = url + id_equipo : url = url + id_;
         } 
-        console.log(parametros);
-        console.log(url);
         await axios({
             method: metodo,
             url: url,
@@ -155,7 +151,6 @@ function Equipos() {
         })
         .catch(function (error) {
             show_alerta("Error en la Solicitud", "error");
-            console.log(error);
         });
     }
 

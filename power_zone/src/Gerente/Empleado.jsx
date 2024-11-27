@@ -37,7 +37,6 @@ function Empleados() {
             method: 'GET',
             url: urlEmpleados,
         });
-        console.log(respuesta.data.data);
         setEmpleados(respuesta.data.data);
     }
 
@@ -62,7 +61,6 @@ function Empleados() {
                 telefono: num_telefonico,
             }
 
-            console.log(parametros)
             enviarSolicitud(metodo, parametros, urlEmpleados);
         }
     }
@@ -91,7 +89,6 @@ function Empleados() {
         })
         .catch(function (error) {
             show_alerta("Error en la Solicitud", "error");
-            console.log(error);
         });
     }
 
@@ -164,10 +161,8 @@ function Empleados() {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if (emailRegex.test(campo.value)) {  
-            console.log("SI")
           setEmailStatus(true);
         } else {
-            console.log("NO")
           setEmailStatus(false);
         }
     }
@@ -176,10 +171,8 @@ function Empleados() {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if(emailRegex.test(correo)) {
-            console.log("Si previo")
           setEmailStatus(true);
         }else {
-            console.log("No previo")
           setEmailStatus(false);
         }
       }
