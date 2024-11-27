@@ -47,10 +47,7 @@ function Clientes () {
     const [ emailStatus, setEmailStatus ] = useState(false);
 
     let user = JSON.parse(localStorage.getItem("Cliente"));
-    //console.log("Cliente INICIADO: ");
-    //console.log(user);
 
-    //Traer datos de cliente
     useEffect(() => {     
         getClientes();
         getMembresias();
@@ -71,11 +68,9 @@ function Clientes () {
         });
         setMembresias(respuesta.data.data);
         setClienteMembresias(respuesta.data.data);
-        console.log(respuesta.data.data)
     }
 
     const setClienteMembresias = async (membresiasB) => {
-        console.log("Valor recibido en membresiasB:", membresiasB);
     
         if (!Array.isArray(membresiasB)) {
             membresiasB = [membresiasB];
@@ -111,7 +106,6 @@ function Clientes () {
             }
         }
     
-        console.log("Clientes con membresías:", clientesConMembresia);
         setMembresiaCliente(clientesConMembresia);
     };
     
@@ -250,8 +244,6 @@ function Clientes () {
                 id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
             }
         };
-
-        console.log(parametros);
     
         enviarSolicitud(metodo, parametros, urlClientes);
     };
@@ -306,9 +298,7 @@ function Clientes () {
             cvv: parseInt(cvv_),
             numero_tarjeta: numero_tarjeta_,
         };
-    
-        console.log(parametros);
-    
+        
         enviarSolicitud("PUT", parametros, urlClientes, id_);
     };
     
@@ -317,7 +307,6 @@ function Clientes () {
         if(metodo != "POST"){
             (id_ == undefined) ? url = url + idCliente : url = url + id_;
         } 
-        //console.log(parametros);
         await axios({
             method: metodo,
             url: url,
@@ -344,7 +333,6 @@ function Clientes () {
         })
         .catch(function (error) {
             Swal.fire("Error en la Solicitud", "error");
-            console.log(error);
         });
     }
 
@@ -374,10 +362,8 @@ function Clientes () {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if (emailRegex.test(campo.value)) {  
-            console.log("SI")
           setEmailStatus(true);
         } else {
-            console.log("NO")
           setEmailStatus(false);
         }
     }
@@ -387,10 +373,8 @@ function Clientes () {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if(emailRegex.test(correo)) {
-            console.log("Si previo")
           setEmailStatus(true);
         }else {
-            console.log("No previo")
           setEmailStatus(false);
         }
       }

@@ -35,7 +35,6 @@ function DatosBancarios() {
         url: urlMembresias,
     });
     setMembresias(respuesta.data.data);
-    console.log(estatusCorreo)
   }
 
   const datosPers = () => {
@@ -85,14 +84,12 @@ function DatosBancarios() {
                 id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
             }
       }
-        console.log(parametros)
         enviarSolicitud(parametros,urlC);
     }
   }
 
   const enviarSolicitud = async(parametros, url) => {
 
-    //console.log(parametros);
     await axios({
         method: 'POST',
         url: url,
@@ -115,7 +112,6 @@ function DatosBancarios() {
     })
     .catch(function (error) {
         Swal.fire("Error en la Solicitud", "error");
-        console.log(error);
     });
   
   } 

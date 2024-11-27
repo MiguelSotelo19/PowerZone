@@ -26,7 +26,6 @@ function DatosPersonales() {
   const validarEmail = (e) => {
     const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const isValid = emailRegex.test(e.value);
-    console.log(isValid ? "Correo válido" : "Correo inválido");
 
     setEstatusCorreo(isValid);
     localStorage.setItem("estatusCorreo", JSON.stringify(isValid));
@@ -36,7 +35,6 @@ function DatosPersonales() {
     const emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
     const isValid = emailRegex.test(correo);
 
-    console.log(isValid ? "Correo válido previamente" : "Correo inválido previamente");
     setEmailStatus(isValid);
     setEstatusCorreo(isValid);
     localStorage.setItem("estatusCorreo", JSON.stringify(isValid));

@@ -5,7 +5,6 @@ export const ProtectedRoutes = ({ allowedRoles, children }) => {
   let user = JSON.parse(localStorage.getItem("usuario"));
 
   if (!user || !allowedRoles.includes(user.rol)) {
-    console.log(user);
     return <Navigate to="/PowerZone" replace />;
   }
   return children;

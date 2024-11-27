@@ -136,7 +136,7 @@ const ClienteClases = () => {
     
             setEvents(eventos);
         } catch (error) {
-            console.error('Error obteniendo las clases:', error);
+            console.error('Error obteniendo las clases');
         }
     };
     
@@ -238,7 +238,6 @@ const ClienteClases = () => {
         })
         .catch(function (error) {
             show_alerta("Error en la Solicitud", "error");
-            console.error(error);
         });
         closeModal();
         getClase();

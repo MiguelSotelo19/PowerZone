@@ -53,12 +53,10 @@ function Perfil(){
         method: 'GET',
         url: urlGerente 
     });    
-    console.log("login:",usuarioIniciado)
     setGerente(respuesta.data.data); 
     }
 
     const setGerente = async (usuario) => {
-        console.log(usuario)
         for (let i = 0; i < usuario.length; i++) {  
             const element = usuario[i];
             if(element.id == usuarioIniciado.id){
@@ -113,7 +111,6 @@ function Perfil(){
                 rol: rol,
                 telefono: telefono,
           }
-            console.log(parametros)
             actualizar(parametros);
         }
     }
@@ -126,13 +123,10 @@ function Perfil(){
             url: urlGerente+ parametros.id,
             data: parametros
         }).then(function (res) {
-            //console.log(res);
             if(res.data.data == 'OK'){
-            //console.log(res.data.data); 
             Swal.fire("Datos Actualizados","Los datos se han actualizado correctamente","success")
             }
         }).catch(function (error) {
-            //console.log(error);
         })
     }
 
@@ -142,10 +136,8 @@ function Perfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if (emailRegex.test(campo.value)) {  
-            console.log("SI")
           setEmailStatus(true);
         } else {
-            console.log("NO")
           setEmailStatus(false);
         }
     }
@@ -154,10 +146,8 @@ function Perfil(){
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
         if(emailRegex.test(correo)) {
-            console.log("Si previo")
           setEmailStatus(true);
         }else {
-            console.log("No previo")
           setEmailStatus(false);
         }
       }

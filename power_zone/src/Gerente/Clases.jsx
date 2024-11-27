@@ -55,7 +55,6 @@ function Clases() {
             method: 'GET',
             url: urlClases,
         });
-        console.log(respuesta.data.data);
         setClases(respuesta.data.data);
     }
 
@@ -94,7 +93,6 @@ function Clases() {
                 capacidad_maxima: limite
             }
 
-            console.log(parametros)
             enviarSolicitud(metodo, parametros, urlClases);
         }
     }
@@ -120,7 +118,6 @@ function Clases() {
         })
         .catch(function (error) {
             show_alerta("Error en la Solicitud", "error");
-            console.log(error);
         });
     }
 
