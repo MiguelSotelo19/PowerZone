@@ -5,6 +5,7 @@ import Menu from "./components/Menu";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import logo from '../assets/logo.png'
 
 function DatosBancarios() {
   const urlC = "http://localhost:8080/api/power/cliente/";
@@ -96,13 +97,24 @@ function DatosBancarios() {
         data: parametros
     }).then(async (result) =>{
         if(result.data.status == "OK"){
-          Swal.fire({
-            title: 'Cliente registrado',
-            text:`Gracias por usar PowerZone.\n
+        Swal.fire({
+          title: "Cliente registrado",
+          text: `Gracias por usar PowerZone.\n
             Tu número de membresía es: ${parametros.identificadorusuario}`,
-            icon: 'success',
-            allowOutsideClick: false,
-            confirmButtonText: 'Iniciar sesión'
+          iconHtml: `<img src="${logo}" style="width: 250px; height: auto;">`,
+          customClass: {
+              icon: 'no-border-icon'
+          },
+          allowOutsideClick: false,
+          confirmButtonText: 'Iniciar sesión',
+          didRender: () => {
+              const iconElement = document.querySelector('.no-border-icon');
+              if (iconElement) {
+                  iconElement.style.border = 'none';
+                  iconElement.style.boxShadow = 'none';
+                  iconElement.style.padding = '0';
+              }
+          }
         }).then((result) => {
             if(result.isConfirmed){
               window.location = '/PowerZone/Acceso';

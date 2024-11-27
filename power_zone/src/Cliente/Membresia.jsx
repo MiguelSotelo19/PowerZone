@@ -11,11 +11,14 @@ import { Col, Form, Row, Table } from "react-bootstrap";
 
 import check from '../Common/img/check.png'
 import equis from '../Common/img/equis.png'
-
+import logo from '../assets/logo.png'
+import { useNavigate } from "react-router-dom";
 
 
 function ClienteMembresias(){
+    const navigate = useNavigate();
     const urlClientes = "http://localhost:8080/api/power/cliente/";
+    const urlUpdate = "http://localhost:8080/api/power/cliente/updatem/";
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [modalShow, setModalShow] = React.useState(false);
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
@@ -29,15 +32,18 @@ function ClienteMembresias(){
     const [ contra, setContra ] = useState("");
     const [ num_tarjeta, setNumTarjeta ] = useState("");
     const [ cvv, setCVV ] = useState(0);
+    const [ cvvPrev, setCVVPrev ] = useState(0);
     const [estatus, setEstatus]= useState(true);
     const [rol, setRol]= useState("");
     const [telefono, setTelefono]= useState("");
     const [identUsuario, setIdentUsuario] = useState("");
+    const [vencimiento, setVencimiento]= useState("");
     //Membresia
 
     const [cliente, setClientes]= useState([]);
     const [precio, setPrecio]=useState("");
     const [tipoMembresia, setTipoMembresia]= useState("");
+    const [idMembresiaPrev, setIdMembresiaPrev]= useState("");
     const [idMembresia, setIdMembresia]=useState("");
     const [tipoTarjeta, setTipoTarjeta]= useState("");
     const [fecha_venc, setFecha_venc]= useState("");
@@ -76,13 +82,14 @@ function ClienteMembresias(){
                 setCorreo(element.correo);
                 setIdCliente(element.id);
                 setContra(element.cotrasenia);
-                setCVV(element.cvv);
                 setEstatus(element.estatus);
                 setIdentUsuario(element.identificadorusuario);
                 setNombre(element.nombre);
                 setNumTarjeta(element.numero_tarjeta);
+                setCVVPrev(element.cvv);
                 setRol(element.rol);
                 setNum(element.telefono)
+                setVencimiento(element.vencimiento)
                 break;
             }
         }
@@ -98,17 +105,32 @@ function ClienteMembresias(){
             setClientes(element.clienteBeans); 
             setPrecio(element.costo);
             setTipoMembresia(element.tipo_membresia);
-            setIdMembresia(element.id)
+            setIdMembresiaPrev(element.id);
+            setIdMembresia(element.id);
             break;
             }
         }
     } 
 
+    const limpiar=()=>{
+        setCVV("")
+        setFecha_venc("")
+        setTipoTarjeta("")
+    }
+    
     const validar = (event) => {
         event.preventDefault();
 
         if (!membresia) {
             Swal.fire("Campo Membresía vacío", "Selecciona un tipo de membresía", "warning");
+            return;
+        }
+        if (typeof membresia === "object") {
+            Swal.fire("Sin modificaciones", "El tipo de membresía que intentas cambiar es el mismo que ya posees", "warning");
+            return;
+        }
+        if (membresia==idMembresiaPrev) {
+            Swal.fire("Sin modificaciones", "El tipo de membresía que intentas cambiar es el mismo que ya posees", "warning");
             return;
         }
         if ((!cvv || cvv==="") || cvv.length < 3) {
@@ -124,31 +146,21 @@ function ClienteMembresias(){
             return;
         }
         const parametros = {
-            nombre: nombre,
-            cotrasenia: contra,
-            correo: correo,
-            identificadorusuario: identUsuario,
-            rol: rol,
-            telefono: num_telefonico,
-            estatus: estatus,
-            cvv: cvv,
-            numero_tarjeta: num_tarjeta,
-            adquisicion: "",
-            vencimiento: fecha_venc,
-            membresia: {
-                id: parseInt(membresia, 10)
-            }
+            identificadorusuario: identUsuario
         };
-    
-        enviarSolicitud(parametros, urlClientes, idCliente);
+        console.log("parametros:",parametros)
+        console.log("urlUpdate:", urlUpdate)
+        console.log("membresia:", membresia)
+        enviarSolicitud('PUT',parametros, urlUpdate,membresia);
     };
 
-    const enviarSolicitud = async(parametros, url,id) => {
-        console.log(parametros)
-        console.log(parametros.membresia)
+    const enviarSolicitud = async(metodo,parametros, url,id_) => {
+        console.log(parametros);
+        console.log(parametros.membresia);
+        url = url + id_;
         await axios({
-            method: 'PUT',
-            url: url+id,
+            method: metodo,
+            url: url,
             data: parametros
         }).then(async (result) =>{
             console.log(result)
@@ -156,12 +168,89 @@ function ClienteMembresias(){
             if(result.data.data == "OK"){
                 Swal.fire("¡Membresía modificada!","El membresía ha sido actualziada", "success");         
             }
-            getMembresia()
+            getMembresia();
+            setIdMembresiaPrev(tipoMembresia);
+            setCVVPrev(cvv);
+            limpiar();
         })
         .catch(function (error) {
             Swal.fire("Error en la Solicitud", "error");
         });
     }
+
+    const enviarSolicitudCancelarMem = async(parametros) => {
+        await axios({
+            method: 'PUT',
+            url: urlClientes+idCliente,
+            data: parametros
+        }).then(async (result) =>{
+            if(result.data.data == "OK"){
+                Swal.fire({
+                    title: "Membresía cancelada",
+                    text: "Esperamos que vuelvas pronto. Tu sesión será finalizada.",
+                    iconHtml: `<img src="${logo}" style="width: 250px; height: auto;">`,
+                    customClass: {
+                        icon: 'no-border-icon' // Asignamos una clase personalizada
+                    },
+                    didRender: () => {
+                        // Agregamos los estilos directamente al contenedor
+                        const iconElement = document.querySelector('.no-border-icon');
+                        if (iconElement) {
+                            iconElement.style.border = 'none';
+                            iconElement.style.boxShadow = 'none';
+                            iconElement.style.padding = '0'; // Opcional: elimina el espacio extra
+                        }
+                    }
+                }).then(()=>{
+                    navigate("/");
+                    localStorage.clear();
+                })   
+            }
+            
+        })
+        .catch(function (error) {
+            Swal.fire("Error en la Solicitud", "error");
+        });
+    }
+
+    const activarDesactivarC = async () => {
+        Swal.fire({
+            title:'¿Desactivar membresía?',
+            text:'Una vez cancelada la membresía no podrás acceder al sistema.',
+            icon: 'warning',
+            confirmButtonText:'Desactivar membresía',
+            showCancelButton: true,
+            cancelButtonText: 'Atrás',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                activarC(
+                    idCliente,
+                    nombre,
+                    correo,
+                    contra,
+                    identUsuario,
+                    num_telefonico,
+                    cvvPrev,
+                    num_tarjeta,
+                );
+            }
+        });
+    }
+    const activarC = (id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, cvv_, numero_tarjeta_) => {
+        var parametros = {
+            nombre: nombre_,
+            cotrasenia: contrasenia_,
+            correo: correo_,
+            identificadorusuario: identificadorusuario_,
+            rol: 'Cliente',
+            telefono: telefono_,
+            estatus: false,
+            cvv: parseInt(cvv_),
+            numero_tarjeta: numero_tarjeta_,
+        };
+        
+        enviarSolicitudCancelarMem(parametros);
+    };   
 
     return(
         
@@ -178,12 +267,12 @@ function ClienteMembresias(){
                 title2={'Tipo de Membresía'}
                 text2={tipoMembresia} 
                 title3={'Renovación'}
-                text3="2024/01/01"
+                text3={vencimiento}
                 title4={'Estado'}
                 acciones={
                     <>
-                        <Button className='me-1' variant="success">Activo</Button>{' '}
-                        <Button variant="info" onClick={() => setModalShow(true)}>Cambiar membresía</Button>{' '}
+                        <Button variant="danger" onClick={() => activarDesactivarC()}>Desactivar membresía</Button>{' '}
+                        <Button variant="outline-warning" style={{width:'92%'}} className="fw-bold" onClick={() => setModalShow(true)}>Cambiar membresía </Button>{' '}
                         
                     </>                    
                 } />
@@ -313,7 +402,7 @@ function ClienteMembresias(){
                           <Form>
                               <Form.Group className="mb-3">
                                   <Form.Label className="fw-bold">CVV:</Form.Label>
-                                  <Form.Control type="number" inputMode="number" placeholder="123"
+                                  <Form.Control type="number" inputMode="number" placeholder="CVV"
                                   onChange={(e) => setCVV(e.target.value)} required
                                   onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
