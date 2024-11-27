@@ -121,10 +121,6 @@ function ClienteMembresias(){
     const validar = (event) => {
         event.preventDefault();
 
-        if (!membresia) {
-            Swal.fire("Campo Membresía vacío", "Selecciona un tipo de membresía", "warning");
-            return;
-        }
         if (typeof membresia === "object") {
             Swal.fire("Sin modificaciones", "El tipo de membresía que intentas cambiar es el mismo que ya posees", "warning");
             return;
@@ -370,7 +366,6 @@ function ClienteMembresias(){
                               <Form.Group className="mb-3">
                                   <Form.Label className="fw-bold">Tipo de membresía:</Form.Label>
                                   <Form.Select required onChange={(e) => setMembresia(e.target.value)} defaultValue={idMembresia}>
-                                    <option id="selected">Selecciona una membresia</option>
                                     {membresias.map((membresia => (
                                         <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
                                     )))}

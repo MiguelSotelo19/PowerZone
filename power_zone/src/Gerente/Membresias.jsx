@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Modal from "react-modal";
+import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Menu from "./components/Menu"
@@ -12,27 +12,7 @@ import './css/Clientes.css'
 
 //Imágenes
 import lupa from './img/lupa.png'
-
-const customStyles = {
-    content: {
-      width: "auto",
-      height: "auto",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderWidth: 2,
-      borderColor: "blue",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center"
-    }
-};
-
-Modal.setAppElement("#root");
+import { Col, Container, Row } from "react-bootstrap";
 
 function Membresias() {
     const urlClientes = "http://localhost:8080/api/power/cliente/";
@@ -45,6 +25,7 @@ function Membresias() {
     //const [searchTerm, setSearchTerm] = useState('');
     const [ filteredClientes, setFilteredClientes ] = useState([]);
 
+    const [idMembresia, setIdMembresia]= useState("");
     const [ membresia, setMembresia ] = useState([]);
     const [ num_tarjeta, setNumTarjeta ] = useState("");
     const [ cvv, setCVV ] = useState(0);
@@ -122,7 +103,11 @@ function Membresias() {
     //Modal Registrar Cliente
     function openModal(cliente1) {  
         setIdentificador(cliente1.identificadorusuario);
+        setNumTarjeta(cliente1.numero_tarjeta);
+        setIdMembresia(cliente1.idM)
         setIsOpen(true);
+        console.log(cliente1)
+        console.log("membresia", cliente1.tipo_membresia)
       }
 
     function closeModal() {
@@ -199,16 +184,21 @@ function Membresias() {
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
+    const limpiar = () => {
+        setCVV(null);
+        setFechaVenc(null)
+        setTipoTarjeta(null);
+    }
 
     const validar = (metodo, event) => {
         event.preventDefault();
 
-        if (!membresia) {
-            Swal.fire("Campo Membresía vacío", "Selecciona un tipo de membresía", "warning");
+        if (typeof membresia === "object") {
+            Swal.fire("Sin modificaciones", "El tipo de membresía que intentas cambiar es el mismo que el cliente ya posee", "warning");
             return;
         }
-        if (!num_tarjeta || num_tarjeta.trim() === "" || num_tarjeta.length < 16) {
-            Swal.fire("Campo Número de tarjeta inválido", "Escribe un número de tarjeta válido de 16 dígitos", "warning");
+        if (membresia==idMembresia) {
+            Swal.fire("Sin modificaciones", "El tipo de membresía que intentas cambiar es el mismo que el cliente ya posee", "warning");
             return;
         }
         if ((!cvv || cvv==="") || cvv.length < 3) {
@@ -247,6 +237,7 @@ function Membresias() {
             }             
             await getClientes();
             await setClienteMembresias(getMembresias());
+            limpiar();
             
             setFilteredClientes(membresiaCliente.filter(cliente => 
                 (cliente.nombre && cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -284,8 +275,8 @@ function Membresias() {
                             text1={cliente.nombre} 
                             title2={'Tipo de Membresía'}
                             text2={cliente.tipo_membresia} 
-                            title3={'Renovación'}
-                            text3={cliente.adquisicion+" - "+cliente.vencimiento} 
+                            title3={'Vencimiento'}
+                            text3={cliente.vencimiento} 
                             title4={'Estado'}
                             acciones={
                                 <>
@@ -296,7 +287,7 @@ function Membresias() {
                                         <Button className="me-1" variant="success" onClick={() => activarDesactivarC(cliente, false)}>
                                             Activar </Button>
                                     )}
-                                    <Button className='me-1' onClick={() => openModal(cliente)} variant="primary">Cambiar membresía</Button>
+                                    <Button className='me-1 fw-bold'  onClick={() => openModal(cliente)} variant="outline-warning">Cambiar membresía</Button>
                                 </>                  
                             } 
                         />
@@ -306,57 +297,99 @@ function Membresias() {
             </div>
 
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Mejorar membresía"
-            >
-                <h2 style={{color: "black", fontSize: 35}}>Mejorar membresía</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                show={modalIsOpen}
+                onHide={closeModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Cambiar membresía
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                    <Row className="d-flex justify-content-center">
+                                <Col md={12}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Tipo de membresía:</Form.Label>
+                                            <Form.Select required onChange={(e) => setMembresia(e.target.value)} defaultValue={idMembresia}>
+                                                    {membresias.map((membresia => (
+                                                    <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                                )))}
+                                            </Form.Select>  
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Número de cuenta:</Form.Label><br/>
+                                            <Form.Label className="ms-1">{num_tarjeta}</Form.Label>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
 
-                    
-                <div className="field-1">
-                    <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
-                            <option id="selected">Selecciona una membresia</option>
-                            {membresias.map((membresia => (
-                                <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
-                            )))}
-                        </Form.Select>                    
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Número de cuenta" onChange={(e) => setNumTarjeta(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="CVV" onChange={(e) => setCVV(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de tarjeta" onChange={(e) => setTipoTarjeta(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Fecha de vencimiento" onChange={(e) => setFechaVenc(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
-                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={(e) => validar("PUT", e)} >Cambiar membresía</Button>{' '}
-                </div>
-                
-                </form>
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Tipo de tarjeta:</Form.Label>
+                                            <Form.Select required onChange={(e) => setTipoTarjeta(e.target.value)}>
+                                                <option value="">Selecciona tu banco</option>
+                                                <option value="BBVA">BBVA</option>
+                                                <option value="Banamex">Banamex</option>
+                                                <option value="Banorte">Banorte</option>
+                                                <option value="Santander">Santander</option>
+                                                <option value="HSBC">HSBC</option>
+                                                <option value="Scotiabank">Scotiabank</option>
+                                                <option value="Inbursa">Inbursa</option>
+                                                <option value="Banco Azteca">Banco Azteca</option>
+                                                <option value="BanCoppel">BanCoppel</option>
+                                                <option value="Afirme">Afirme</option>
+                                                <option value="Banco del Bienestar">Banco del Bienestar</option>
+                                            </Form.Select>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            <Row className="d-flex justify-content-center">
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">CVV :</Form.Label>
+                                            <Form.Control required type="number" placeholder="CVV" 
+                                            onChange={(e) => setCVV(e.target.value)} 
+                                            onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
+                                                if (e.target.value < 0) e.target.value = "";
+                                                }}/>
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                                <Col md={6}>
+                                    <Form>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label className="ms-1">Fecha de vencimiento:</Form.Label>
+                                            <Form.Control required type="date" placeholder="Fecha de vencimiento" onChange={(e) => setFechaVenc(e.target.value)} />
+                                        </Form.Group>
+                                    </Form>
+                                </Col>
+                            </Row>
+                            
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer>
+                        <Button className="fw-bold" variant="outline-dark">Cancelar</Button>{' '}
+                    <Button className="fw-bold" variant="warning" onClick={(e) => validar("PUT", e)} >Cambiar membresía</Button>{' '}
+                </Modal.Footer>
             </Modal>
         </>
     )
 }
+/*
 
+*/
 export default Membresias
