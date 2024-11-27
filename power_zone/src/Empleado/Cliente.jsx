@@ -393,7 +393,25 @@ function Clientes () {
             console.log("No previo")
           setEmailStatus(false);
         }
-      }
+    }
+
+    const handleInputChange = (e) => {
+    let value = e.target.value;
+    
+    // Elimina cualquier carácter que no sea numérico o "/"
+    value = value.replace(/[^0-9]/g, "");
+    
+    // Inserta automáticamente "/" después de los primeros dos dígitos
+    if (value.length > 2) {
+        value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+    
+    // Limita la longitud total a 5 caracteres
+    value = value.slice(0, 5);
+    
+    setFechaVenc(value); // Actualiza el estado con el valor formateado
+    };
+      
 
     return (
         <>
@@ -468,7 +486,7 @@ function Clientes () {
                                         <Form.Group className="mb-3">
                                             <Form.Label className="ms-1">Nombre completo:</Form.Label>
                                             <Form.Control type="text" placeholder="Nombre" 
-                                                 onChange={(e) => setNombre(e.target.value)} required/>
+                                                 onChange={(e) => setNombre(e.target.value)} value={nombre} required/>
                                         </Form.Group>
                                     </Form>
                                 </Col>
@@ -477,7 +495,7 @@ function Clientes () {
                                     <Form>
                                         <Form.Group className="mb-3">
                                             <Form.Label className="ms-1">Número telefónico:</Form.Label>
-                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                            <Form.Control type="number" placeholder="Número telefónico"  value={num_telefonico}
                                                 onChange={(e) => setNum(e.target.value)} maxLength="10"
                                                 onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
                                                     if (e.target.value < 0) e.target.value = "";
@@ -492,6 +510,7 @@ function Clientes () {
                                         <Form.Group className="mb-3">
                                             <Form.Label className="ms-1">Correo electrónico :</Form.Label>
                                             <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo}
                                                 onChange={(e) => setCorreo(e.target.value)}
                                                 onInput={(e) => { validarEmail(e.target); }}/>
                                         </Form.Group>
@@ -525,7 +544,12 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label>Tipo de membresía:</Form.Label>
-                                
+                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                    <option id="selected" value={null}>Selecciona una membresia</option>
+                                    {membresias.map((membresia => (
+                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                    )))}
+                                </Form.Select>
                             </Form.Group>
                         </Form>
                     </Col>
@@ -535,7 +559,8 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label>Número de tarjeta:</Form.Label>
-                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                <Form.Control required type="number" placeholder="Número de tarjeta"
+                                    value={num_tarjeta}
                                     onChange={(e) => setNumTarjeta(e.target.value)} 
                                     onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
                                         if (e.target.value < 0) e.target.value = "";
@@ -567,6 +592,7 @@ function Clientes () {
                         <Form.Group className="mb-3">
                             <Form.Label>CVV:</Form.Label>
                             <Form.Control required type="number" placeholder="CVV"
+                                value={cvv}
                                 onChange={(e) => setCVV(e.target.value)} 
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
@@ -576,8 +602,14 @@ function Clientes () {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha de vencimiento:</Form.Label><br/>
-                                <Form.Control required type="date"
-                                onChange={(e) => setFechaVenc(e.target.value)} />
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="MM/YY"
+                                    maxLength={5}
+                                    value={fecha_venc}
+                                    onChange={(e) => handleInputChange(e)}
+                                />
                             </Form.Group>
                         </Form>
                     </Col>
@@ -667,16 +699,11 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label>Tipo de membresía:</Form.Label>
-                                <Form.Select 
-                                    required
-                                    onChange={(e) => setIdMembresia(e.target.value)}
-                                >
-                                    <option value="">Selecciona una membresía</option>
-                                    {membresias.map((membresia) => (
-                                        <option key={membresia.id} value={membresia.id}>
-                                            {membresia.tipo_membresia}
-                                        </option>
-                                    ))}
+                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                    <option id="selected" value={null}>Selecciona una membresia</option>
+                                    {membresias.map((membresia => (
+                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                    )))}
                                 </Form.Select>
                             </Form.Group>
                         </Form>
@@ -728,13 +755,19 @@ function Clientes () {
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
                                     }}
-                            />
+                            />    
                             </Form.Group>
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha de vencimiento:</Form.Label><br/>
-                                <Form.Control required type="date"
-                                onChange={(e) => setFechaVenc(e.target.value)} />
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="MM/YY"
+                                    maxLength={5}
+                                    value={fecha_venc}
+                                    onChange={(e) => handleInputChange(e)}
+                                />
                             </Form.Group>
                         </Form>
                     </Col>

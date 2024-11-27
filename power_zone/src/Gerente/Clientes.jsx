@@ -525,7 +525,12 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label>Tipo de membresía:</Form.Label>
-                                
+                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                    <option id="selected" value={null}>Selecciona una membresia</option>
+                                    {membresias.map((membresia => (
+                                        <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
+                                    )))}
+                                </Form.Select>
                             </Form.Group>
                         </Form>
                     </Col>
@@ -576,8 +581,14 @@ function Clientes () {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha de vencimiento:</Form.Label><br/>
-                                <Form.Control required type="date"
-                                onChange={(e) => setFechaVenc(e.target.value)} />
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="MM/YY"
+                                    maxLength={5} 
+                                    value={fecha_venc}
+                                    onChange={(e) => handleInputChange(e)}
+                                />
                             </Form.Group>
                         </Form>
                     </Col>
@@ -733,8 +744,14 @@ function Clientes () {
 
                             <Form.Group className="mb-3">
                                 <Form.Label>Fecha de vencimiento:</Form.Label><br/>
-                                <Form.Control required type="date"
-                                onChange={(e) => setFechaVenc(e.target.value)} />
+                                <Form.Control
+                                    required
+                                    type="text"
+                                    placeholder="MM/YY"
+                                    maxLength={5}
+                                    value={fecha_venc}
+                                    onChange={(e) => handleInputChange(e)}
+                                />
                             </Form.Group>
                         </Form>
                     </Col>
