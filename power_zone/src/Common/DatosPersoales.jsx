@@ -51,7 +51,7 @@ function DatosPersonales() {
     localStorage.setItem("num_telefonico", num_telefonico);
     localStorage.setItem("correo", correo);
     localStorage.setItem("contra", contra);
-    localStorage.setItem("estatusCorreo", JSON.stringify(estatusCorreo));
+    localStorage.setItem("estatusCorreo", estatusCorreo.toString());
     navigate("/PowerZone/DatosBancarios");
   };
 

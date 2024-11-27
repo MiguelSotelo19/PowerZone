@@ -4,15 +4,18 @@ import "../Common/css/login.css";
 import Menu from "./components/Menu";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function DatosBancarios() {
+  const urlC = "http://localhost:8080/api/power/cliente/";
   const urlMembresias = "http://localhost:8080/api/power/membresia/";
 
   const navigate = useNavigate();
+  const [ idMembresia, setIdMembresia ] = useState("");
   const [membresias, setMembresias ] = useState([]);
   const [membresia, setMembresia ] = useState([]);
-  const [num_tarjeta, setNum_tarjeta] = useState("");
-  const [cvv, setCvv] = useState("");
+  const [num_tarjeta, setNum_tarjeta] = useState(localStorage.getItem("num_tarjeta") || "");
+  const [cvv, setCvv] = useState(localStorage.getItem("cvv") || "");
   const [tipo, setTipo] = useState("");
   const [vencimiento, setVencimiento] = useState("");
 
@@ -20,9 +23,9 @@ function DatosBancarios() {
   let correo = localStorage.getItem("correo");
   let telefono = localStorage.getItem("num_telefonico");
   let contra = localStorage.getItem("contra");
-  let estatusCorreo= localStorage.getItem("estatusCorreo");
+  let estatusCorreo = localStorage.getItem("estatusCorreo") === "true";
 
-    useEffect(() => {    
+  useEffect(() => {    
       getMembresias();
   }, [])
 
@@ -32,32 +35,27 @@ function DatosBancarios() {
         url: urlMembresias,
     });
     setMembresias(respuesta.data.data);
-    console.log(nombre)
-    console.log(correo)
-    console.log(contra)
-    console.log(telefono)
+    console.log(estatusCorreo)
   }
 
   const datosPers = () => {
+    localStorage.setItem("num_tarjeta", num_tarjeta);
+    localStorage.setItem("cvv", cvv);
     navigate("/PowerZone/DatosPersonales");
-  };
-
-  const handleRegisterClick = () => {
-    navigate("/PowerZone/Acceso");
   };
 
   const validar = async () => {
     event.preventDefault();
     let parametros;
 
-    if(correo.trim() == '' || !correo || estatusCorreo==false) {
-        Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
-    } else if(nombre.trim() == '' || !nombre){
-        Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
-    }else if(telefono.trim() == '' || !telefono){
-        Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
+     if(nombre.trim() == '' || !nombre){
+      Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+    }else if(telefono.trim() == '' || !telefono || telefono.length<10){
+      Swal.fire("Número de teléfono vacío","El campo del número telefónico debe contener 10 digitos","warning")
+    }else if((correo.trim() == '' || !correo ) || !estatusCorreo) {
+      Swal.fire("Correo vacío","El campo de correo se encuentra vacío o no tiene el formato requerido","warning")
     }else if(contra.trim() == '' || !contra){
-        Swal.fire("Contraseña vacía","El campo de contraseña se encuentra vacío","warning")
+      Swal.fire("Contraseña vacía","El campo de contraseña se encuentra vacío","warning")
     }else if(num_tarjeta.trim() == '' || !num_tarjeta || num_tarjeta.length<16){
       Swal.fire("Número de tarjeta incorrecto","El campo de contraseña debe contener 16 digitos","warning")
     }else if(tipo.trim() == '' || !tipo){
@@ -66,23 +64,76 @@ function DatosBancarios() {
       Swal.fire("CVV vacío","El campo de CVV debe contener 3 digitos","warning")
     }else if(vencimiento.trim() == '' || !vencimiento){
       Swal.fire("Fecha de vencimiento vacía","El campo de fecha de vencimiento se encuentra vacío","warning")
-    }else if(!membresia){
+    }else if(!membresia || !idMembresia){
       Swal.fire("Sin membresía seleccionada","Seleccione un tipo de membresía","warning")
     }else {
+        let identificador= `PZC_${(Math.random().toString().slice(2, 7))}`;
         parametros = {
             correo: correo,
             cotrasenia: contra,
-            estatus: estatus,
-            id: idGerente,
-            identificadorusuario: identUsuario,
+            estatus: true,
+            id: 0,
+            identificadorusuario: identificador,
             nombre: nombre,
             rol: 'Cliente',
             telefono: telefono,
+            adquisicion: "",
+            vencimiento: "",
+            numero_tarjeta: num_tarjeta,
+            cvv: cvv,
+            membresia: {
+                id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
+            }
       }
         console.log(parametros)
-        actualizar(parametros);
+        enviarSolicitud(parametros,urlC);
     }
   }
+
+  const enviarSolicitud = async(parametros, url) => {
+
+    //console.log(parametros);
+    await axios({
+        method: 'POST',
+        url: url,
+        data: parametros
+    }).then(async (result) =>{
+        if(result.data.status == "OK"){
+          Swal.fire({
+            title: 'Cliente registrado',
+            text:`Gracias por usar PowerZone.\n
+            Tu número de membresía es: ${parametros.identificadorusuario}`,
+            icon: 'success',
+            allowOutsideClick: false,
+            confirmButtonText: 'Iniciar sesión'
+        }).then((result) => {
+            if(result.isConfirmed){
+              window.location = '/PowerZone/Acceso';
+              localStorage.clear();
+            }})
+          }
+    })
+    .catch(function (error) {
+        Swal.fire("Error en la Solicitud", "error");
+        console.log(error);
+    });
+  
+  } 
+
+  const alertDatos=()=>{
+    Swal.fire({
+        title: 'Registrar cuenta',
+        icon: 'warning',
+        text:'Verifique su información antes de registrarse.',
+        confirmButtonText: 'Registrarse',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if(result.isConfirmed){
+            validar()
+        }   
+    })
+}
 
   return (
     <>
@@ -168,11 +219,13 @@ function DatosBancarios() {
               <Col md={12}>
                 <Form.Group className="mb-3">
                     <Form.Label className="fw-bold">Tipo de membresía:</Form.Label>
-                    <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
-                        <option id="selected">Selecciona una membresia</option>
-                        {membresias.map((membresia => (
-                            <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
-                        )))}
+                    <Form.Select required onChange={(e) => setIdMembresia(e.target.value)}>
+                        <option value="">Selecciona una membresía</option>
+                        {membresias.map((membresia) => (
+                            <option key={membresia.id} value={membresia.id}>
+                                {membresia.tipo_membresia}
+                            </option>
+                        ))}
                     </Form.Select>
                 </Form.Group>
               </Col>
@@ -182,7 +235,7 @@ function DatosBancarios() {
                 <Button className="fw-bold" variant="light" onClick={datosPers}>Regresar</Button>{' '}
                 </Col>
                 <Col md={6} className="ps-5">
-                <Button variant="warning" className="fw-bold" onClick={handleRegisterClick}>Registrarse</Button>
+                <Button variant="warning" className="fw-bold" onClick={()=> alertDatos()}>Registrarse</Button>
                 </Col>
             </Row>
           </Form>
