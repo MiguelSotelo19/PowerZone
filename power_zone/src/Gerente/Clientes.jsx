@@ -230,7 +230,7 @@ function Clientes () {
             nombre,
             cotrasenia: contra == null ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
             correo,
-            identificadorusuario: identificador == null ? `PowerClient_${Math.random().toString(36).substring(2, 11)}` : identificador,
+            identificadorusuario: identificador == null ? `PZC_${(Math.random().toString().slice(2, 7))}` : identificador,
             rol: 'Cliente',
             telefono: num_telefonico,
             estatus,

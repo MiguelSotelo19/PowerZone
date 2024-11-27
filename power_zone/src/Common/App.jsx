@@ -29,7 +29,7 @@ function App() {
                         <Card.Title style={{ fontSize: 'clamp(4rem, 8vw, 4rem)', marginTop: '20px' }}>
                             Donde la fuerza <br /> se convierte <br /> en hábito
                         </Card.Title>
-                        <Button className="fs-3" 
+                        <Button className="fs-3" href="/PowerZone/Planes"
                                 style={{ alignSelf: 'flex-start', marginBottom: '20px', backgroundColor: 'rgb(51, 79, 106)' }}>
                             Conoce nuestros planes
                         </Button>{' '}

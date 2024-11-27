@@ -67,17 +67,17 @@ function Planes() {
                                 <td className='plus centerText ' style={{ border:0, borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px'}}>
                                     <div className='fw-bold fs-4 mb-1'>Desde</div>
                                     <div className='fw-bold fs-4 mb-2'>$1,500.00</div>
-                                    <Button className="fs-5 fw-bold mb-1" variant="light">Adquirir</Button>{' '}
+                                    <Button className="fs-5 fw-bold mb-1" variant="light" href='/PowerZone/DatosPersonales'>Adquirir</Button>{' '}
                                 </td>
                                 <td className='centerText planes2'>
                                     <div className='fw-bold fs-4 mb-1'>Desde</div>
                                     <div className='fw-bold fs-4 mb-2'>$1,000.00</div>
-                                    <Button className="fs-5 fw-bold mb-1" variant="warning">Adquirir</Button>{' '}
+                                    <Button className="fs-5 fw-bold mb-1" variant="warning" href='/PowerZone/DatosPersonales'>Adquirir</Button>{' '}
                                 </td>
                                 <td className='planes2 centerText'>
                                     <div className='fw-bold fs-4 mb-1'>Desde</div>
                                     <div className='fw-bold fs-4 mb-2'>$800.00</div>
-                                    <Button className="fs-5 fw-bold mb-1" variant="warning">Adquirir</Button>{' '}
+                                    <Button className="fs-5 fw-bold mb-1" variant="warning" href='/PowerZone/DatosPersonales'>Adquirir</Button>{' '}
                                 </td>
                             </tr>
                         </tbody>

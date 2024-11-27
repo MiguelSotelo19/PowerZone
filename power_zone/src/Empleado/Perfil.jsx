@@ -92,10 +92,10 @@ function Perfil(){
         event.preventDefault();
         let parametros;
 
-        if(correo.trim() == '' || correo == undefined || emailStatus==false) {
-            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
-        } else if(nombre.trim() == '' || nombre == undefined){
+        if(nombre.trim() == '' || nombre == undefined){
             Swal.fire("Nombre vacío","El campo de nombre se encuentra vacío","warning")
+        }else if(correo.trim() == '' || correo == undefined || emailStatus==false) {
+            Swal.fire("Correo vacío","El campo de correo se encuentra vacío o está incorrecto","warning")
         }else if(telefono.trim() == '' || telefono == undefined){
             Swal.fire("Número de teléfono vacío","El campo del número telefónico se encuentra vacío","warning")
         }else if(contra.trim() == '' || contra == undefined){
@@ -211,7 +211,7 @@ function Perfil(){
                 <Col md={4}>
                     <Form.Group className="mb-3">
                             <Form.Label>Contraseña:</Form.Label>
-                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}}>
+                            <div style={{display:'flex', justifyContent:'center', alignItems:'center'}} className="password-input-container">
                                 <Form.Control type={showPassword ? "text" : "password"} placeholder="Constraseña"
                                 value={contra} onChange={(e) => setContra(e.target.value)} required />
                                 <FontAwesomeIcon

@@ -12,7 +12,7 @@ function Menu() {
     <>
       <Navbar style={{ backgroundColor: 'rgb(228, 228, 228)' }} fixed="top">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/PowerZone">
             <img 
                 src={logo}
                 alt='logo_PowerZone'
