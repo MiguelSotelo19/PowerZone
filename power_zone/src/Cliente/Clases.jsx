@@ -82,38 +82,43 @@ const ClienteClases = () => {
             });
     
             const eventos = [];
-            
+
             for (let day of daysOfWeek) {
-                const fechaActual = day.toISOString().split('T')[0];
+                const fechaActual = day.toLocaleDateString('en-CA'); // Cambia aquí para usar la fecha de cada día
+                
                 const dayEventos = await Promise.all(clases.map(async clase => {
                     const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
                     const [inicioHora, inicioMinuto] = horaInicio.split(':');
                     const [finHora, finMinuto] = horaFin.split(':');
-    
+
                     const startTime = `${inicioHora}:${inicioMinuto}:00`;
                     const endTime = `${finHora}:${finMinuto}:00`;
-    
+
                     var claseVP = await getClaseP();
                     var agenda = "Disponible";
                     var color = azul;
 
-                    claseVP = claseVP.filter(clas => clas.clase.id === clase.id && clas.cliente.id === user.id && new Date(convertirFechaPersonalizada(clas.dia)).setHours(0,0,0,0) === new Date(day).setHours(0,0,0,0));
-                    
+                    claseVP = claseVP.filter(clas =>
+                        clas.clase.id === clase.id &&
+                        clas.cliente.id === user.id &&
+                        new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
+                    );
+
                     if (claseVP.length !== 0) {
                         agenda = "Agendado";
                         color = amarillo;
                     }
 
-                    if( new Date(`${fechaActual}T${startTime}`).setHours(0,0,0,0) == today.setHours(0,0,0,0)){
-                        if(new Date(`${fechaActual}T${startTime}`) < new Date()){
+                    if (new Date(`${fechaActual}T${startTime}`).setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
+                        if (new Date(`${fechaActual}T${startTime}`) < new Date()) {
                             agenda = "No disponible";
                             color = gris;
                         }
                     }
-    
+
                     return {
                         title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
-                        start: `${fechaActual}T${startTime}`,
+                        start: `${fechaActual}T${startTime}`, // Usa la fecha correcta
                         end: `${fechaActual}T${endTime}`,
                         backgroundColor: color,
                         borderColor: color,
@@ -130,11 +135,13 @@ const ClienteClases = () => {
                         },
                     };
                 }));
-    
+
                 eventos.push(...dayEventos);
             }
-    
+
             setEvents(eventos);
+
+            console.log(eventos);
         } catch (error) {
             console.error('Error obteniendo las clases');
         }
@@ -167,6 +174,7 @@ const ClienteClases = () => {
     };
 
     const agendarClase = async (idClase, fecha, hora) => {
+        console.log(idClase, fecha, hora)
         var clasePlanificacion = await getClaseP();
 
         if(clasePlanificacion.length > 0){
@@ -273,7 +281,7 @@ const ClienteClases = () => {
                         contentHeight="auto"
                         expandRows={true}
                         validRange={{
-                            start: new Date().toISOString().split('T')[0], 
+                            start: new Date().toLocaleDateString('en-CA'), 
                             end: (() => {
                                 const today = new Date();
                                 const endOfWeek = new Date(today.setDate(today.getDate() + (7 - today.getDay()))); 
