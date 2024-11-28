@@ -144,16 +144,29 @@ function Empleados() {
     };
 
     const activarC = (id_, nombre_, telefono_, correo_, cotrasenia_, estatus_) => {
-        var parametros = {
-            nombre: nombre_,
-            contrasenia: cotrasenia_,
-            correo: correo_,
-            rol: 'Empleado',
-            telefono: telefono_,
-            estatus: estatus_ == true ? false : true,
-        }
-
-        enviarSolicitud("PUT", parametros, urlEmpleados, id_);
+        Swal.fire({
+            title: estatus_ ? '¿Desactivar empleado?' : '¿Activar empleado?',
+            text: estatus_
+                ? `El empleado ${nombre_} será desactivado.`
+                : `El empleado ${nombre_} será activado.`,
+            icon: 'warning',
+            confirmButtonText: estatus_ ? 'Desactivar empleado' : 'Activar empleado',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+            if (result.isConfirmed){
+                var parametros = {
+                    nombre: nombre_,
+                    contrasenia: cotrasenia_,
+                    correo: correo_,
+                    rol: 'Empleado',
+                    telefono: telefono_,
+                    estatus: estatus_ == true ? false : true,
+                }
+        
+                enviarSolicitud("PUT", parametros, urlEmpleados, id_);
+            }
+        });
     }
     const validarEmail = (e) => {
         let campo = e;
@@ -166,16 +179,6 @@ function Empleados() {
           setEmailStatus(false);
         }
     }
-
-    const validarPrevEmail = (correo) => {
-        let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        
-        if(emailRegex.test(correo)) {
-          setEmailStatus(true);
-        }else {
-          setEmailStatus(false);
-        }
-      }
 
     return (
         <>

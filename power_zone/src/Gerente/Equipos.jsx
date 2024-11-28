@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Col, Container, Row } from "react-bootstrap";
+import Swal from "sweetalert2";
 import axios from 'axios';
 import { show_alerta } from "../Common/js/funciones";
 
-import Modal from "react-modal";
+import Modal from "react-bootstrap/Modal";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Menu from "./components/Menu"
@@ -15,26 +17,6 @@ import './css/Clientes.css'
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
 
-const customStyles = {
-    content: {
-      width: "auto",
-      height: "auto",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderWidth: 2,
-      borderColor: "blue",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center"
-    }
-};
-
-Modal.setAppElement("#root");
 
 function Equipos() {
     const urlEquipos = "http://localhost:8080/api/power/equipos/";
@@ -43,10 +25,8 @@ function Equipos() {
     const [ id_equipo, setId_equipo ] = useState("");
     const [ nombre, setNombre ] = useState("");
     const [ marca, setMarca ] = useState("");
-    const [ tipo_maquina, setTipo_maquina ] = useState("");    
     const [ cantidad, setCantidad ] = useState("");
     const [ estado, setEstado ] = useState("");
-    const [ area, setArea ] = useState("");
 
     //Traer datos de equipo
     useEffect(() => {     
@@ -58,6 +38,7 @@ function Equipos() {
             method: 'GET',
             url: urlEquipos,
         });
+        console.log(respuesta.data.data);
         setEquipos(respuesta.data.data);
     }
 
@@ -66,7 +47,7 @@ function Equipos() {
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
 
     //Modal Registrar Cliente
-    function openModal() {
+    function openModal() { 
         setId_equipo(undefined);
         setIsOpen(true);
     }
@@ -171,15 +152,28 @@ function Equipos() {
     };
 
     const activarE = (id_, modelo_, marca_, cantidad_, estado_, estatus_) => {
-        var parametros = {
-            modelo: modelo_,
-            marca: marca_,
-            estado: estado_,
-            cantidad: cantidad_,
-            estatus: estatus_ == true ? false : true,
-        }
-
-        enviarSolicitud("PUT", parametros, urlEquipos, id_);
+        Swal.fire({
+            title: estatus_ ? '¿Desactivar equipo?' : '¿Activar equipo?',
+            text: estatus_
+                ? `El equipo ${modelo_} será desactivado.`
+                : `El equipo ${modelo_} será activado.`,
+            icon: 'warning',
+            confirmButtonText: estatus_ ? 'Desactivar equipo' : 'Activar equipo',
+            showCancelButton: true,
+            cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+            if (result.isConfirmed){
+                var parametros = {
+                    modelo: modelo_,
+                    marca: marca_,
+                    estado: estado_,
+                    cantidad: cantidad_,
+                    estatus: estatus_ == true ? false : true,
+                }
+        
+                enviarSolicitud("PUT", parametros, urlEquipos, id_);
+            }
+        });        
     }
 
     return (
@@ -228,123 +222,131 @@ function Equipos() {
             </div>
 
             <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Registrar Equipo"
+                show={modalIsOpen}
+                onHide={closeModal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered            
             >
-                <h2 style={{color: "black", fontSize: 35}}>Registrar Equipo</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
- 
-                    
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Registrar equipo
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                        <Row className="d-flex justify-content-center">
+                            <Col md={8}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Nombre de la maquina:</Form.Label>
+                                        <Form.Control type="text" placeholder="Nombre" 
+                                                onChange={(e) => setNombre(e.target.value)} required/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre" onChange={(e) => setNombre(e.target.value)} />
-                    </div>
+                            <Col md={4}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Marca:</Form.Label>
+                                        <Form.Control type="text" placeholder="Marca" 
+                                            onChange={(e) => setMarca(e.target.value)}/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
+                        </Row>
+                        <Row className="d-flex justify-content-center">
+                            <Col md={8}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Estado:</Form.Label>
+                                        <Form.Control type="text" placeholder="Estado" 
+                                                onChange={(e) => setEstado(e.target.value)} required/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
 
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Marca" onChange={(e) => setMarca(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de maquina" onChange={(e) => setTipo_maquina(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Cantidad" onChange={(e) => setCantidad(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Estado" onChange={(e) => setEstado(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Área" onChange={(e) => setArea(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
-                    <Button className="fw-bold fs-4 p-2 ms-5" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
-                </div>
-                
-                </form>
+                            <Col md={4}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Cantidad:</Form.Label>
+                                        <Form.Control type="text" placeholder="Cantidad" 
+                                            onChange={(e) => setCantidad(e.target.value)}/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
+                        </Row>
+                    </Container>                        
+                </Modal.Body>   
+                <Modal.Footer>
+                    <Button className="fw-bold fs-4 p-2" variant="danger" onClick={() => {closeModal()}}>Cancelar</Button>{' '}
+                    <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("POST")}>Registrar</Button>{' '}
+                </Modal.Footer>             
             </Modal>
 
             <Modal
-                isOpen={modalActIsOpen}
-                onAfterOpen={afterOpenModalAct}
-                onRequestClose={closeModalAct}
-                style={customStyles}
-                contentLabel="Actualizar Equipo"
+                show={modalActIsOpen}
+                onHide={closeModalAct}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered            
             >
-                <h2 style={{color: "black", fontSize: 35}}>Actualizar Equipo</h2>
-                <form style={{
-                    width: "90%",
-                    display: "flex", 
-                    flexDirection: "column", 
-                    alignItems: "center"}}>
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Actualizar equipo
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Container>
+                        <Row className="d-flex justify-content-center">
+                            <Col md={8}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Nombre de la maquina:</Form.Label>
+                                        <Form.Control type="text" placeholder="Nombre" value={nombre} 
+                                                onChange={(e) => setNombre(e.target.value)} required/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
 
-                    
+                            <Col md={4}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Marca:</Form.Label>
+                                        <Form.Control type="text" placeholder="Marca" value={marca}
+                                            onChange={(e) => setMarca(e.target.value)}/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
+                        </Row>
+                        <Row className="d-flex justify-content-center">
+                            <Col md={8}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Estado:</Form.Label>
+                                        <Form.Control type="text" placeholder="Estado" value={estado}
+                                                onChange={(e) => setEstado(e.target.value)} required/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
 
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Marca" value={marca} onChange={(e) => setMarca(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                <div className="field">
-                        <Form.Control required type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Cantidad" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
-                    </div>
-                </div>
-
-                {/*
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Tipo de maquina" value={tipo_maquina} onChange={(e) => setTipo_maquina(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Cantidad" value={cantidad} onChange={(e) => setCantidad(e.target.value)} />
-                    </div>
-                </div>
-
-                <div className="info-1">
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Estado" value={estado} onChange={(e) => setEstado(e.target.value)} />
-                    </div>
-
-                    <div className="field">
-                        <Form.Control required type="text" placeholder="Área" value={area} onChange={(e) => setArea(e.target.value)} />
-                    </div>
-                </div>
-                */}
-
-                <div className="acciones">
-                    <Button className="fw-bold fs-4 p-2" variant="danger">Cancelar</Button>{' '}
+                            <Col md={4}>
+                                <Form>
+                                    <Form.Group className="mb-3">
+                                        <Form.Label className="ms-1">Cantidad:</Form.Label>
+                                        <Form.Control type="text" placeholder="Cantidad"  value={cantidad}
+                                            onChange={(e) => setCantidad(e.target.value)}/>
+                                    </Form.Group>
+                                </Form>
+                            </Col>
+                        </Row>
+                    </Container>                        
+                </Modal.Body>   
+                <Modal.Footer>
+                    <Button className="fw-bold fs-4 p-2" variant="danger" onClick={() => closeModalAct()}>Cancelar</Button>{' '}
                     <Button className="fw-bold fs-4 p-2" variant="warning" onClick={() => validar("PUT")}>Actualizar</Button>{' '}
-                </div>
-                
-                </form>
+                </Modal.Footer>             
             </Modal>
 
         </>
