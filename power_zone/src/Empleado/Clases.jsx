@@ -176,6 +176,11 @@ const Clases = () => {
                         }
                     }
 
+                    if(clase.capacidad_maxima == claseVP.length){
+                        agenda = "Cupo alcanzado";
+                        color = gris;
+                    }
+
                     return {
                         title: `${clase.nombre_clase} - ${clase.nombre_profesor}`,
                         start: `${fechaActual}T${startTime}`,
@@ -235,33 +240,40 @@ const Clases = () => {
     };
 
     const validarClienteR = async (clienteId) => {
-        setCliente(clienteId);
-        const clasesR = await getClaseP(); 
-        console.log(clasesR, clienteId, selectedEvent);
+        if(clienteId){
+            setCliente(clienteId);
+            const clasesR = await getClaseP(); 
+            console.log(clasesR, clienteId, selectedEvent);
 
-        let clienteI = membresiaCliente.find(cl => cl.idC == clienteId);
-        if(clienteI.tipo_membresia == "Plus" || clienteI.tipo_membresia == "Medium"){
-            if(clienteI.tipo_membresia == "Medium" && selectedEvent.nombre_clase == "Sauna") {
-                setEstado("Mejorar");
-            } else {
-                let claseRC = clasesR.filter(clas => clas.clase.id == selectedEvent.id && clienteId == clas.cliente.id &&
-                    new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(selectedEvent.fecha).setHours(0, 0, 0, 0));
-            
-                console.log("Clase:", claseRC);
-            
-                if(clienteId != "Selecciona un cliente"){
-                    if(claseRC.length > 0){
-                        setEstado("Agendado");
-                    } else {
-                        setEstado("Disponible");
-                    }
+            let clienteI = membresiaCliente.find(cl => cl.idC == clienteId);
+            if(clienteI.tipo_membresia == "Plus" || clienteI.tipo_membresia == "Medium"){
+                if(clienteI.tipo_membresia == "Medium" && selectedEvent.nombre_clase == "Sauna") {
+                    setEstado("Mejorar");
                 } else {
-                    setEstado("");
-                }
-            }            
-        } else {
-            setEstado("Mejorar");
-        }
+                    let claseL = clasesR.filter(clas => clas.clase.id == selectedEvent.id &&
+                        new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(selectedEvent.fecha).setHours(0, 0, 0, 0));
+                    let claseRC = clasesR.filter(clas => clas.clase.id == selectedEvent.id && clienteId == clas.cliente.id &&
+                        new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(selectedEvent.fecha).setHours(0, 0, 0, 0));
+                
+                    if(selectedEvent.capacidad_maxima < claseL.length){
+                        if(clienteId != "Selecciona un cliente"){
+                            console.log(claseRC);
+                            if(claseRC.length > 0){
+                                setEstado("Agendado");
+                            } else {
+                                setEstado("Disponible");
+                            }
+                        } else {
+                            setEstado("");
+                        }
+                    } else {
+                        setEstado("Cupo alcanzado");
+                    }                
+                }            
+            } else {
+                setEstado("Mejorar");
+            }
+        }        
     };
     
 
@@ -305,7 +317,7 @@ const Clases = () => {
 
         enviarSolicitud("POST", parametros, urlPlanificacion);
         closeModal();
-        show_alerta("Te has inscrito correctamente", "success"); 
+        show_alerta("Cliente inscrito correctamente", "success"); 
     }
 
     const cancelarInscripcion = async (idClase_, fecha_) => {
@@ -397,7 +409,6 @@ const Clases = () => {
                                     </div>
                                     <h5>Instructor: {selectedEvent.nombre_profesor}</h5>
                                     <p>Cupo máximo: {selectedEvent.capacidad_maxima}</p>
-                                    <p>ID: {selectedEvent.id}</p>
                                     <p>Fecha seleccionada: {selectedEvent.fecha.toLocaleDateString()}</p>
                                     <p>Hora de inicio: {selectedEvent.fecha.toLocaleTimeString()}</p>
 
@@ -434,6 +445,8 @@ const Clases = () => {
                                                 <Button variant="primary" onClick={() => agendarClase( selectedEvent.id, selectedEvent.fecha.toLocaleDateString(), selectedEvent.fecha.toLocaleTimeString())}>Agendar clase</Button>);
                                         case "Mejorar":
                                             return <div>Mejorar membresía para tener acceso</div>;
+                                        case "Cupo alcanzado":
+                                                return <div>Cupo máximo alcanzado</div>
                                         default:
                                             return <></>;
                                     }
