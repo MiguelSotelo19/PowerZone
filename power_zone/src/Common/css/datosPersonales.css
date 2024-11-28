@@ -1,0 +1,15 @@
+
+.login-body {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgba(227, 213, 213, 0.811), rgba(143, 129, 129, 0.022)),
+      url('../../assets/fondo.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-top:5px;
+}
+

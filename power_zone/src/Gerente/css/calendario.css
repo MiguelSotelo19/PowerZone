@@ -1,0 +1,14 @@
+.fc-customSymbol-button {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.fc-customSymbol-button div {
+    font-size: 20px;
+    color: #333;
+}
+
+.fc-customSymbol-button span {
+    margin-right: 10px;
+}
