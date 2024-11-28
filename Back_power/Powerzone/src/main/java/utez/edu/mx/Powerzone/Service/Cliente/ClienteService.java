@@ -59,7 +59,7 @@ public class ClienteService {
         service.SaveGanancias(cliente.getMembresia());
 
         // Enviar un correo de bienvenida al cliente
-        enviarCorreo(cliente.getCorreo(), cliente.getNombre());
+        enviarCorreo(cliente.getCorreo(), cliente.getNombre(), cliente.getIdentificadorusuario(), cliente.getCotrasenia());
 
         // Guardar cliente y devolver respuesta exitosa
         ClienteBean savedCliente = repository.saveAndFlush(cliente);
@@ -67,20 +67,22 @@ public class ClienteService {
     }
 
 
-    public void enviarCorreo(String correo, String nombre)
+    public void enviarCorreo(String correo, String nombre, String identificadorUsuario, String contrasenia)
             throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(correo);
-        helper.setFrom("alexisduranduran105@gmail.com");
+        helper.setFrom("powerzone395@gmail.com");
         helper.setSubject("¡Membresía adquirida con éxito!");
 
-        String htmlContent = "<h1 style='color: #007bff;'>¡Hola!" + nombre+"</h1>"
+        String htmlContent = "<h1 style='color: #007bff;'>¡Hola! " + nombre+"</h1>"
                 + "<p style='font-weight: bold;'>¡Esperamos que estés bien!</p>"
-                + "<p style='font-size: 18px;'>Este es un correo de parte de " +
-                "Power Zone Gym para darte un detalle sobre tu adquisisión de membresía.</p>"
-                + "<p style='font-size: 18px;'>putos todos.</p>";
+                + "<p style='font-size: 18px;'>Este es un correo de parte de "
+                + "Power Zone Gym para darte un detalle sobre su adquisisión de membresía.</p></br>"
+                + "<p style='font-size: 18px;'> Tú número de membresía es: "+identificadorUsuario+"</p>"
+                + "<p style='font-size: 18px;'> Tú contraseña es: "+contrasenia+"</p></br>"
+                + "<p style='font-size: 18px;'>Gracias por su preferencia.</p>";
 
         helper.setText(htmlContent, true);
 
