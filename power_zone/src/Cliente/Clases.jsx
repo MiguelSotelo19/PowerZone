@@ -129,7 +129,12 @@ const ClienteClases = () => {
                             if(clasesSauna.length > 0){
                                 agenda = "Mejorar";
                                 color = gris;
-                            }
+                            } 
+
+                            let claseL = claseVP.filter(clas =>
+                                clas.clase.id === clase.id &&
+                                new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
+                            );
 
                             claseVP = claseVP.filter(clas =>
                                 clas.clase.id === clase.id &&
@@ -148,9 +153,19 @@ const ClienteClases = () => {
                                     color = gris;
                                 }
                             }
+
+                            if(clase.capacidad_maxima == claseL.length){
+                                agenda = "Cupo alcanzado";
+                                color = gris;
+                            }
                         break;
 
                         case "Plus":
+                            let claseR = claseVP.filter(clas =>
+                                clas.clase.id === clase.id &&
+                                new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(day).setHours(0, 0, 0, 0)
+                            );
+
                             claseVP = claseVP.filter(clas =>
                                 clas.clase.id === clase.id &&
                                 clas.cliente.id === user.id &&
@@ -167,6 +182,11 @@ const ClienteClases = () => {
                                     agenda = "No disponible";
                                     color = gris;
                                 }
+                            }
+
+                            if(clase.capacidad_maxima == claseR.length){
+                                agenda = "Cupo alcanzado";
+                                color = gris;
                             }
                         break;
                     }
@@ -362,8 +382,6 @@ const ClienteClases = () => {
                                     </div>
                                     <h5>Instructor: {selectedEvent.nombre_profesor}</h5>
                                     <p>Cupo máximo: {selectedEvent.capacidad_maxima}</p>
-                                    <p>ID: {selectedEvent.id}</p>
-                                    <p>Estado: {selectedEvent.estatus}</p>
                                     <p>Fecha seleccionada: {selectedEvent.fecha.toLocaleDateString()}</p>
                                     <p>Hora de inicio: {selectedEvent.fecha.toLocaleTimeString()}</p>
                                 </>
@@ -400,6 +418,8 @@ const ClienteClases = () => {
                                             );
                                         case "Mejorar":
                                             return <div>Mejora tu membresía para tener acceso</div>;
+                                        case "Cupo alcanzado":
+                                            return <div>Cupo máximo alcanzado</div>
                                         default:
                                             return <></>;
                                     }
