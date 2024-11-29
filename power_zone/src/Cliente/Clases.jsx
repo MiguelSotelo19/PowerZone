@@ -395,7 +395,6 @@ const ClienteClases = () => {
                             </Button>
                             {selectedEvent ? (
                                 (() => {
-                                    console.log(selectedEvent.agendado);
                                     switch (selectedEvent.agendado) {
                                         case "Agendado":
                                             return <div>Ya te encuentras inscrito</div>;

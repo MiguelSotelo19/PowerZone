@@ -176,7 +176,7 @@ const Clases = () => {
                         }
                     }
 
-                    if(clase.capacidad_maxima == claseVP.length){
+                    if(claseVP.length >= clase.capacidad_maxima){
                         agenda = "Cupo alcanzado";
                         color = gris;
                     }
@@ -255,7 +255,9 @@ const Clases = () => {
                     let claseRC = clasesR.filter(clas => clas.clase.id == selectedEvent.id && clienteId == clas.cliente.id &&
                         new Date(convertirFechaPersonalizada(clas.dia)).setHours(0, 0, 0, 0) === new Date(selectedEvent.fecha).setHours(0, 0, 0, 0));
                 
-                    if(selectedEvent.capacidad_maxima < claseL.length){
+                    if(claseL.length >= selectedEvent.capacidad_maxima){
+                        setEstado("Cupo alcanzado");                        
+                    } else {
                         if(clienteId != "Selecciona un cliente"){
                             console.log(claseRC);
                             if(claseRC.length > 0){
@@ -266,8 +268,6 @@ const Clases = () => {
                         } else {
                             setEstado("");
                         }
-                    } else {
-                        setEstado("Cupo alcanzado");
                     }                
                 }            
             } else {
