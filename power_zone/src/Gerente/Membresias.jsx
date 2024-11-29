@@ -106,8 +106,6 @@ function Membresias() {
         setNumTarjeta(cliente1.numero_tarjeta);
         setIdMembresia(cliente1.idM)
         setIsOpen(true);
-        console.log(cliente1)
-        console.log("membresia", cliente1.tipo_membresia)
       }
 
     function closeModal() {
