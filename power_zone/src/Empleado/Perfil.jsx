@@ -29,10 +29,10 @@ function cerrarSesion(){
 
 
 function Perfil(){
-    const urlGerente = "http://localhost:8080/api/power/gerente/";
+    const urlGerente = "http://localhost:8080/api/power/empleado/";
     const [ showPassword, setShowPassword] = useState(false); 
     const [ emailStatus, setEmailStatus ] = useState(false);
-    //Gerente
+    
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
     const [ estatus, setEstatus]= useState(true);
@@ -41,7 +41,6 @@ function Perfil(){
     const [ nombre, setNombre ] = useState("");
     const [ rol, setRol]= useState("");
     const [ telefono, setTelefono]= useState("");
-
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {

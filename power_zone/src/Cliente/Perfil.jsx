@@ -33,7 +33,7 @@ function ClientePerfil(){
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [showPassword, setShowPassword] = useState(false); 
     const [ emailStatus, setEmailStatus ] = useState(false);
-    //cliente
+    
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
     const [ num_telefonico, setNum ] = useState("");
@@ -45,7 +45,6 @@ function ClientePerfil(){
     const [rol, setRol]= useState("");
     const [identUsuario, setIdentUsuario] = useState("")
 
-    //Membresia
     const [cliente, setClientes]= useState([]);
     const [precio, setPrecio]=useState("");
     const [tipoMembresia, setTipoMembresia]= useState("");
@@ -98,7 +97,7 @@ function ClientePerfil(){
         for (let i = 0; i < membresia.length; i++) {
             const element = membresia[i];
             const cliente = element.clienteBeans.find(cliente => cliente.id === usuarioIniciado.id);
-            if(cliente){ //de todo esto la verdad nada mas que el tipo sirve jadjasdj
+            if(cliente){
             setClientes(element.clienteBeans); 
             setPrecio(element.costo);
             setTipoMembresia(element.tipo_membresia);

@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import Footer from "./components/Footer";
 import Menu from "./components/Menu";
 import axios from "axios";
-import { show_alerta } from "../Common/js/funciones";
 import { Container, Form, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 
-//CSS
 import "../Common/css/login.css";
 import Swal from "sweetalert2";
 

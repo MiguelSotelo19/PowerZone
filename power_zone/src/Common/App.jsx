@@ -3,7 +3,6 @@ import Footer from "./components/Footer";
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
-//Imágenes
 import gimnasio from './img/gimnasio.png'
 import zumba from './img/zumba.png'
 import kickboxing from './img/kickboxing.png'
@@ -11,7 +10,6 @@ import reloj from './img/reloj.png'
 import sauna from './img/sauna.png'
 import area_equipos from './img/area_equipos.png'
 
-//CSS
 import './css/App.css'
 
 

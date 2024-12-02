@@ -22,7 +22,7 @@ function ClienteMembresias(){
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [modalShow, setModalShow] = React.useState(false);
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
-    //cliente
+    
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
     const [ num_telefonico, setNum ] = useState("");
@@ -38,7 +38,6 @@ function ClienteMembresias(){
     const [telefono, setTelefono]= useState("");
     const [identUsuario, setIdentUsuario] = useState("");
     const [vencimiento, setVencimiento]= useState("");
-    //Membresia
 
     const [cliente, setClientes]= useState([]);
     const [precio, setPrecio]=useState("");
@@ -144,22 +143,16 @@ function ClienteMembresias(){
         const parametros = {
             identificadorusuario: identUsuario
         };
-        console.log("parametros:",parametros)
-        console.log("urlUpdate:", urlUpdate)
-        console.log("membresia:", membresia)
         enviarSolicitud('PUT',parametros, urlUpdate,membresia);
     };
 
     const enviarSolicitud = async(metodo,parametros, url,id_) => {
-        console.log(parametros);
-        console.log(parametros.membresia);
         url = url + id_;
         await axios({
             method: metodo,
             url: url,
             data: parametros
         }).then(async (result) =>{
-            console.log(result)
             closeModal();
             if(result.data.data == "OK"){
                 Swal.fire("¡Membresía modificada!","El membresía ha sido actualizada", "success");         

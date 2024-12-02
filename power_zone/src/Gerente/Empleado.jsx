@@ -8,10 +8,8 @@ import Button from 'react-bootstrap/Button';
 import Menu from "./components/Menu"
 import Contenedor from "../Common/components/Contenedor"
 
-//CSS
 import './css/Clientes.css'
 
-//Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
 import { Col, Container, Row } from "react-bootstrap";
@@ -27,7 +25,6 @@ function Empleados() {
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
 
-    //Traer datos de empleado
     useEffect(() => {     
         getEmpleados();
     }, [])
@@ -40,7 +37,6 @@ function Empleados() {
         setEmpleados(respuesta.data.data);
     }
 
-    //Envío de formulario
     const validar = (metodo) => {
         event.preventDefault();
 
@@ -92,11 +88,9 @@ function Empleados() {
         });
     }
 
-    //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
 
-    //Modal Registrar empleado
     function openModal() {
         setIsOpen(true);
     }
@@ -105,7 +99,6 @@ function Empleados() {
         setIsOpen(false);
     }
 
-    //Modal Actualizar empleado
     function openActModal(empleado_id, nombre_, telefono_, correo_, contrasenia_) {
         setIdEmp(empleado_id);
         setNombre(nombre_);
@@ -128,17 +121,14 @@ function Empleados() {
         setNum(null);
     }
 
-    //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar empleados
     const filteredEmpleados = empleados.filter(empleado => 
         empleado.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         empleado.correo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         empleado.telefono.toString().includes(searchTerm) 
     );
 
-    // Actualizar
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };

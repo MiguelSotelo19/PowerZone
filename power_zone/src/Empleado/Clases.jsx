@@ -31,7 +31,6 @@ const Clases = () => {
     const gris = "#e0e1ce";
 
     let user = JSON.parse(localStorage.getItem("usuario"));
-    console.log(user);
     
     useEffect(() => {
         getClientes();
@@ -90,7 +89,7 @@ const Clases = () => {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        // Cliente
+                        
                         idC: cliente.id,
                         nombre: cliente.nombre,
                         correo: cliente.correo,
@@ -104,7 +103,7 @@ const Clases = () => {
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
                         tipo_tarjeta: cliente.tipo_tarjeta,
-                        // Membresía
+                        
                         idM: membresia.id,
                         tipo_membresia: membresia.tipo_membresia,
                         costo: membresia.costo,
@@ -113,7 +112,6 @@ const Clases = () => {
                 }
             }
         }
-        console.log(clientesConMembresia);
         setMembresiaCliente(clientesConMembresia);
     };
 
@@ -205,8 +203,6 @@ const Clases = () => {
             }
 
             setEvents(eventos);
-
-            console.log(eventos);
         } catch (error) {
             console.error('Error obteniendo las clases');
         }
@@ -243,7 +239,6 @@ const Clases = () => {
         if(clienteId){
             setCliente(clienteId);
             const clasesR = await getClaseP(); 
-            console.log(clasesR, clienteId, selectedEvent);
 
             let clienteI = membresiaCliente.find(cl => cl.idC == clienteId);
             if(clienteI.tipo_membresia == "Plus" || clienteI.tipo_membresia == "Medium"){
@@ -259,7 +254,6 @@ const Clases = () => {
                         setEstado("Cupo alcanzado");                        
                     } else {
                         if(clienteId != "Selecciona un cliente"){
-                            console.log(claseRC);
                             if(claseRC.length > 0){
                                 setEstado("Agendado");
                             } else {
@@ -278,7 +272,6 @@ const Clases = () => {
     
 
     const agendarClase = async (idClase, fecha, hora) => {
-        console.log(idClase, fecha, hora)
         var clasePlanificacion = await getClaseP();
 
         if(clasePlanificacion.length > 0){

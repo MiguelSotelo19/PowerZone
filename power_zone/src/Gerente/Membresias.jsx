@@ -7,10 +7,8 @@ import Menu from "./components/Menu"
 import Contenedor from "../Common/components/Contenedor"
 import Swal from "sweetalert2";
 
-//CSS
 import './css/Clientes.css'
 
-//Imágenes
 import lupa from './img/lupa.png'
 import { Col, Container, Row } from "react-bootstrap";
 
@@ -22,7 +20,6 @@ function Membresias() {
     const [ clientes, setClientes ] = useState([]);
     const [ membresiaCliente, setMembresiaCliente ] = useState([]);
     const [ membresias, setMembresias ] = useState([]);
-    //const [searchTerm, setSearchTerm] = useState('');
     const [ filteredClientes, setFilteredClientes ] = useState([]);
 
     const [idMembresia, setIdMembresia]= useState("");
@@ -69,7 +66,6 @@ function Membresias() {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        // Cliente
                         idC: cliente.id,
                         nombre: cliente.nombre,
                         correo: cliente.correo,
@@ -83,7 +79,6 @@ function Membresias() {
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
                         tipo_tarjeta: cliente.tipo_tarjeta,
-                        // Membresía
                         idM: membresia.id,
                         tipo_membresia: membresia.tipo_membresia,
                         costo: membresia.costo,
@@ -96,11 +91,9 @@ function Membresias() {
         setMembresiaCliente(clientesConMembresia);
     };
 
-    //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
 
-    //Modal Registrar Cliente
     function openModal(cliente1) {  
         setIdentificador(cliente1.identificadorusuario);
         setNumTarjeta(cliente1.numero_tarjeta);
@@ -112,10 +105,8 @@ function Membresias() {
         setIsOpen(false);
     }
 
-    //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar membresia
     useEffect(() => {
         setFilteredClientes(
             membresiaCliente.filter(cliente =>
@@ -178,7 +169,6 @@ function Membresias() {
         enviarSolicitud("PUT", parametros, urlClientes, id_);
     };    
 
-    // Actualizar búsqueda
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
@@ -387,7 +377,5 @@ function Membresias() {
         </>
     )
 }
-/*
 
-*/
 export default Membresias

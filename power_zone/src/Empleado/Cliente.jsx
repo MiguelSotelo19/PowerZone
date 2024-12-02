@@ -10,10 +10,9 @@ import Menu from "./components/Menu";
 import Contenedor from "../Common/components/Contenedor"
 
  
-//CSS
+
 import './css/Clientes.css'
 
-//Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
 import { Col, Container, InputGroup, Row } from "react-bootstrap";
@@ -83,7 +82,7 @@ function Clientes () {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        // Cliente
+                        
                         idC: cliente.id,
                         nombre: cliente.nombre,
                         correo: cliente.correo,
@@ -97,7 +96,7 @@ function Clientes () {
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
                         tipo_tarjeta: cliente.tipo_tarjeta,
-                        // Membresía
+                       
                         idM: membresia.id,
                         tipo_membresia: membresia.tipo_membresia,
                         costo: membresia.costo,
@@ -127,13 +126,11 @@ function Clientes () {
         setTipo_membresia(null)
     }
 
-    //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalMemIsOpen, setMemIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
     const [modalActMemIsOpen, setActMemIsOpen] = React.useState(false);
 
-    //Modal Registrar Cliente
     function openModal() {  
         setEstatus(true);
         setIsOpen(true);
@@ -152,7 +149,6 @@ function Clientes () {
         setMemIsOpen(false);
     }
 
-    //Modal Actualizar Cliente 
     function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_, idM_,adquisicion_,tipo_membresia_) {
         setIdCliente(id_);
         setNombre(nombre_);
@@ -193,7 +189,6 @@ function Clientes () {
         openActModal();
     }
 
-    //Envío de formulario
     const validar = (metodo,event) => {
         event.preventDefault();
     
@@ -338,10 +333,8 @@ function Clientes () {
         });
     }
 
-    //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar membresia
     useEffect(() => {
         setFilteredClientes(
             membresiaCliente.filter(cliente =>
@@ -352,12 +345,10 @@ function Clientes () {
     }, [membresiaCliente, searchTerm]);
     
 
-    // Actualizar búsqueda
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    //Validar e-mail
     const validarEmail = (e) => {
         let campo = e;
             
@@ -370,7 +361,6 @@ function Clientes () {
         }
     }
 
-    //Validar e-mail pero en actualiz de correo
     const validarPrevEmail = (correo) => {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
@@ -383,19 +373,14 @@ function Clientes () {
 
     const handleInputChange = (e) => {
     let value = e.target.value;
-    
-    // Elimina cualquier carácter que no sea numérico o "/"
     value = value.replace(/[^0-9]/g, "");
-    
-    // Inserta automáticamente "/" después de los primeros dos dígitos
     if (value.length > 2) {
         value = value.slice(0, 2) + "/" + value.slice(2);
     }
     
-    // Limita la longitud total a 5 caracteres
     value = value.slice(0, 5);
     
-    setFechaVenc(value); // Actualiza el estado con el valor formateado
+    setFechaVenc(value); 
     };
       
 
@@ -530,7 +515,7 @@ function Clientes () {
                         <Form>
                             <Form.Group className="mb-3">
                                 <Form.Label className="ms-1 fw-bold">Tipo de membresía:</Form.Label>
-                                <Form.Select required onChange={(e) => {setMembresia(e.target.value); console.log(membresia)}}>
+                                <Form.Select required onChange={(e) => {setMembresia(e.target.value);}}>
                                     <option id="selected" value={null}>Selecciona una membresia</option>
                                     {membresias.map((membresia => (
                                         <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>

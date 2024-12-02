@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client';
 
 import { ProtectedRoutes } from './protectedRoutes.jsx';
 
-//Páginas
 import App from './Common/App.jsx';
 import Acceso from './Common/Acceso.jsx';
 import Planes from './Common/Planes.jsx';
@@ -31,7 +30,6 @@ createRoot(document.getElementById('root')).render(
       <Route path='/PowerZone' element={<App />} />
       <Route path='/PowerZone/Planes' element={<Planes />} />
 
-      {/*Páginas del gerente*/}
       <Route path='/PowerZone/G/Clientes' element={<ProtectedRoutes allowedRoles={['Gerente']}> <Clientes /> </ProtectedRoutes>} />
       <Route path='/PowerZone/G/Clases' element={<ProtectedRoutes allowedRoles={['Gerente']}> <Clases /> </ProtectedRoutes>} />
       <Route path='/PowerZone/G/Membresias' element={<ProtectedRoutes allowedRoles={['Gerente']}> <Membresias /> </ProtectedRoutes>} />
@@ -40,18 +38,15 @@ createRoot(document.getElementById('root')).render(
       <Route path='/PowerZone/G/Ingresos' element={<ProtectedRoutes allowedRoles={['Gerente']}> <Ingresos /> </ProtectedRoutes>} />
       <Route path='/PowerZone/G/Perfil' element={<ProtectedRoutes allowedRoles={['Gerente']}> <Perfil /> </ProtectedRoutes>} />
 
-      {/*Páginas del empleado*/}
       <Route path='/PowerZone/E/Cliente' element={<ProtectedRoutes allowedRoles={['Empleado']}> <Cliente /> </ProtectedRoutes>} />
       <Route path='/PowerZone/E/Clases' element={<ProtectedRoutes allowedRoles={['Empleado']}> <Clase /> </ProtectedRoutes>} />
       <Route path= '/PowerZone/E/Membresias' element={<ProtectedRoutes allowedRoles={['Empleado']}> <Membresia /> </ProtectedRoutes>} />
       <Route path='/PowerZone/E/Perfil' element={<ProtectedRoutes allowedRoles={['Empleado']}> <EmpleadoPerfil /> </ProtectedRoutes>}/>
 
-      {/*Páginas del cliente*/}
       <Route path='/PowerZone/C/Membresias' element={<ProtectedRoutes allowedRoles={['Cliente']}> <ClienteMembresias /> </ProtectedRoutes>} />
       <Route path='/PowerZone/C/Clases' element={<ProtectedRoutes allowedRoles={['Cliente']}> <ClienteClases /> </ProtectedRoutes>} />
       <Route path='/PowerZone/C/Perfil' element={<ProtectedRoutes allowedRoles={['Cliente']}> <ClientePerfil /> </ProtectedRoutes>} />
 
-      {/*Página por defecto*/}
       <Route path="/" element={<Navigate to="/PowerZone" replace />} />
       <Route path='/PowerZone/Acceso' element={<Acceso />} />
       <Route path='/PowerZone/DatosPersonales' element={<Personales />} />

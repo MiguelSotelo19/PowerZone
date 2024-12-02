@@ -24,7 +24,6 @@ const ClienteClases = () => {
     const gris = "#e0e1ce";
 
     let user = JSON.parse(localStorage.getItem("usuario"));
-    console.log(user);
     
     useEffect(() => {
         getMembresiaUser();
@@ -101,7 +100,7 @@ const ClienteClases = () => {
             const eventos = [];
 
             for (let day of daysOfWeek) {
-                const fechaActual = day.toLocaleDateString('en-CA'); // Cambia aquí para usar la fecha de cada día
+                const fechaActual = day.toLocaleDateString('en-CA');
                 
                 const dayEventos = await Promise.all(clases.map(async clase => {
                     const [horaInicio, horaFin] = clase.hora_inicio.split(' - ');
@@ -215,8 +214,6 @@ const ClienteClases = () => {
             }
 
             setEvents(eventos);
-
-            console.log(eventos);
         } catch (error) {
             console.error('Error obteniendo las clases');
         }
@@ -249,7 +246,6 @@ const ClienteClases = () => {
     };
 
     const agendarClase = async (idClase, fecha, hora) => {
-        console.log(idClase, fecha, hora)
         var clasePlanificacion = await getClaseP();
 
         if(clasePlanificacion.length > 0){

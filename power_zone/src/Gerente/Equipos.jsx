@@ -10,10 +10,8 @@ import Button from 'react-bootstrap/Button';
 import Menu from "./components/Menu"
 import Contenedor from "../Common/components/Contenedor"
 
-//CSS
 import './css/Clientes.css'
 
-//Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
 
@@ -28,7 +26,6 @@ function Equipos() {
     const [ cantidad, setCantidad ] = useState("");
     const [ estado, setEstado ] = useState("");
 
-    //Traer datos de equipo
     useEffect(() => {     
         getEquipos();
     }, [])
@@ -38,15 +35,12 @@ function Equipos() {
             method: 'GET',
             url: urlEquipos,
         });
-        console.log(respuesta.data.data);
         setEquipos(respuesta.data.data);
     }
 
-    //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
 
-    //Modal Registrar Cliente
     function openModal() { 
         setId_equipo(undefined);
         setIsOpen(true);
@@ -60,7 +54,6 @@ function Equipos() {
         setIsOpen(false);
     }
 
-    //Modal Actualizar Cliente
     function openActModal(id, modelo_, marca_, cantidad_, estado_) {
         setId_equipo(id);
         setNombre(modelo_);
@@ -79,7 +72,6 @@ function Equipos() {
         setActIsOpen(false);
     }
 
-    //Envío de formulario
     const validar = (metodo) => {
         event.preventDefault();
 
@@ -88,15 +80,11 @@ function Equipos() {
             show_alerta("Escribe el modelo del equipo", "warning");
         }else if(marca.trim() === ""){
             show_alerta("Escribe la marca", "warning");
-        } /*else if(tipo_maquina.trim() === ""){
-            show_alerta("Escribe el tipo de maquina", "warning");
-        } */else if(cantidad < 0){
+        } else if(cantidad < 0){
             show_alerta("Escribe la cantidad", "warning");
         } else if(estado.trim() === ""){
             show_alerta("Escribe el estado del equipo", "warning");
-        } /*else if(area.trim() === ""){
-            show_alerta("Escribe el área del equipo", "warning");
-        }*/ else {
+        } else {
             parametros = {
                 modelo: nombre,
                 marca: marca,
@@ -135,10 +123,8 @@ function Equipos() {
         });
     }
 
-    //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar equipos
     const filteredEquipos = equipos.filter(equipo => 
         equipo.modelo.toLowerCase().includes(searchTerm.toLowerCase()) ||
         equipo.marca.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -146,7 +132,6 @@ function Equipos() {
         equipo.estado.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Actualizar
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };

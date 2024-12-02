@@ -5,7 +5,7 @@ import Menu from "./components/Menu";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
-import logo from '../assets/logo.png'
+import logo from '../assets/logo.png';
 
 function DatosBancarios() {
   const urlC = "http://localhost:8080/api/power/cliente/";
@@ -128,6 +128,18 @@ function DatosBancarios() {
   
   } 
 
+  const handleInputChange = (e) => {
+    let value = e.target.value;
+    value = value.replace(/[^0-9]/g, "");
+
+    if (value.length > 2) {
+        value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+    value = value.slice(0, 5);
+    
+    setVencimiento(value); 
+    };
+
   const alertDatos=()=>{
     Swal.fire({
         title: 'Registrar cuenta',
@@ -215,11 +227,12 @@ function DatosBancarios() {
               <Col md={6}>
                 <Form.Label className="fw-bold">Fecha de vencimiento:</Form.Label>
                 <Form.Control
-                  required
-                  type="date"
-                  placeholder="Fecha de vencimiento"
-                  value={vencimiento}
-                  onChange={(e) => setVencimiento(e.target.value)}
+                    required
+                    type="text"
+                    placeholder="MM/YY"
+                    maxLength={5}
+                    value={vencimiento}
+                    onChange={(e) => handleInputChange(e)}
                 />
               </Col>
             </Row>

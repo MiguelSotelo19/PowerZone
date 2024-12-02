@@ -3,10 +3,8 @@ import Button from 'react-bootstrap/Button';
 import Menu from './components/Menu';
 import Footer from './components/Footer';
 
-//CSS
 import './css/Planes.css'
 
-//Imágenes
 import check from './img/check.png'
 import equis from './img/equis.png'
 
