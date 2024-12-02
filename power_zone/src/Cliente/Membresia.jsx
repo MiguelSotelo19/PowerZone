@@ -22,7 +22,7 @@ function ClienteMembresias(){
     const urlMembresias = "http://localhost:8080/api/power/membresia/";
     const [modalShow, setModalShow] = React.useState(false);
     let usuarioIniciado = JSON.parse(localStorage.getItem("usuario"));
-    //cliente
+    
     const [ idCliente, setIdCliente ] = useState("");
     const [ nombre, setNombre ] = useState("");
     const [ num_telefonico, setNum ] = useState("");
@@ -38,7 +38,6 @@ function ClienteMembresias(){
     const [telefono, setTelefono]= useState("");
     const [identUsuario, setIdentUsuario] = useState("");
     const [vencimiento, setVencimiento]= useState("");
-    //Membresia
 
     const [cliente, setClientes]= useState([]);
     const [precio, setPrecio]=useState("");
@@ -144,25 +143,19 @@ function ClienteMembresias(){
         const parametros = {
             identificadorusuario: identUsuario
         };
-        console.log("parametros:",parametros)
-        console.log("urlUpdate:", urlUpdate)
-        console.log("membresia:", membresia)
         enviarSolicitud('PUT',parametros, urlUpdate,membresia);
     };
 
     const enviarSolicitud = async(metodo,parametros, url,id_) => {
-        console.log(parametros);
-        console.log(parametros.membresia);
         url = url + id_;
         await axios({
             method: metodo,
             url: url,
             data: parametros
         }).then(async (result) =>{
-            console.log(result)
             closeModal();
             if(result.data.data == "OK"){
-                Swal.fire("¡Membresía modificada!","El membresía ha sido actualziada", "success");         
+                Swal.fire("¡Membresía modificada!","El membresía ha sido actualizada", "success");         
             }
             getMembresia();
             setIdMembresiaPrev(tipoMembresia);
@@ -170,7 +163,7 @@ function ClienteMembresias(){
             limpiar();
         })
         .catch(function (error) {
-            Swal.fire("Error en la Solicitud", "error");
+            Swal.fire("Error","Error en la Solicitud", "error");
         });
     }
 
@@ -186,15 +179,14 @@ function ClienteMembresias(){
                     text: "Esperamos que vuelvas pronto. Tu sesión será finalizada.",
                     iconHtml: `<img src="${logo}" style="width: 250px; height: auto;">`,
                     customClass: {
-                        icon: 'no-border-icon' // Asignamos una clase personalizada
+                        icon: 'no-border-icon'
                     },
                     didRender: () => {
-                        // Agregamos los estilos directamente al contenedor
                         const iconElement = document.querySelector('.no-border-icon');
                         if (iconElement) {
                             iconElement.style.border = 'none';
                             iconElement.style.boxShadow = 'none';
-                            iconElement.style.padding = '0'; // Opcional: elimina el espacio extra
+                            iconElement.style.padding = '0';
                         }
                     }
                 }).then(()=>{

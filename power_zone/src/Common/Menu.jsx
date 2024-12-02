@@ -4,19 +4,18 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Button from 'react-bootstrap/Button';
 
-import logo from '../img/logo.png'
+import logo from './img/logo.png'
 
 function Menu() {
   return (
     <>
       <Navbar style={{ backgroundColor: 'rgb(228, 228, 228)' }} fixed="top">
         <Container>
-          <Navbar.Brand href="/PowerZone">
+          <Navbar.Brand href="#home">
             <img 
                 src={logo}
                 alt='logo_PowerZone'
                 style={{ minWidth: '30%', maxWidth: '35%', height: 'auto' }}
-                draggable="false"
             />
           </Navbar.Brand>
           <Nav className="justify-content-end">

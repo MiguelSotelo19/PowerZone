@@ -9,11 +9,8 @@ import Button from 'react-bootstrap/Button';
 import Menu from "./components/Menu"
 import Contenedor from "../Common/components/Contenedor"
 
- 
-//CSS
 import './css/Clientes.css'
 
-//Imágenes
 import cross from './img/cross.png'
 import lupa from './img/lupa.png'
 import { Col, Container, InputGroup, Row } from "react-bootstrap";
@@ -40,6 +37,7 @@ function Clientes () {
     const [ fecha_venc, setFechaVenc ] = useState("");
     const [ identificador, setIdentificador] = useState("");
     const [ idMembresia, setIdMembresia ] = useState("");
+    const [ idMembresiaPrev, setIdMembresiaPrev ] = useState("");
     const [ estatus, setEstatus ] = useState(true);
     const [adquisicion, setAdquisicion]= useState("");
     const [tipo_membresia, setTipo_membresia]= useState("");
@@ -47,6 +45,7 @@ function Clientes () {
     const [ emailStatus, setEmailStatus ] = useState(false);
 
     let user = JSON.parse(localStorage.getItem("Cliente"));
+
     useEffect(() => {     
         getClientes();
         getMembresias();
@@ -81,7 +80,6 @@ function Clientes () {
             if (membresia.clienteBeans && membresia.clienteBeans.length > 0) {
                 for (const cliente of membresia.clienteBeans) {
                     const clienteMembresia = {
-                        // Cliente
                         idC: cliente.id,
                         nombre: cliente.nombre,
                         correo: cliente.correo,
@@ -95,7 +93,6 @@ function Clientes () {
                         cotrasenia: cliente.cotrasenia,
                         estatus: cliente.estatus,
                         tipo_tarjeta: cliente.tipo_tarjeta,
-                        // Membresía
                         idM: membresia.id,
                         tipo_membresia: membresia.tipo_membresia,
                         costo: membresia.costo,
@@ -104,6 +101,7 @@ function Clientes () {
                 }
             }
         }
+    
         setMembresiaCliente(clientesConMembresia);
     };
     
@@ -124,13 +122,11 @@ function Clientes () {
         setTipo_membresia(null)
     }
 
-    //Modales
     const [modalIsOpen, setIsOpen] = React.useState(false);
     const [modalMemIsOpen, setMemIsOpen] = React.useState(false);
     const [modalActIsOpen, setActIsOpen] = React.useState(false);
     const [modalActMemIsOpen, setActMemIsOpen] = React.useState(false);
 
-    //Modal Registrar Cliente
     function openModal() {  
         setEstatus(true);
         setIsOpen(true);
@@ -149,7 +145,6 @@ function Clientes () {
         setMemIsOpen(false);
     }
 
-    //Modal Actualizar Cliente 
     function openActModal(id_, nombre_, correo_, contrasenia_, identificadorusuario_, telefono_, membresia_, cvv_, numero_tarjeta_, estatus_, idM_,adquisicion_,tipo_membresia_) {
         setIdCliente(id_);
         setNombre(nombre_);
@@ -190,45 +185,44 @@ function Clientes () {
         openActModal();
     }
 
-    //Envío de formulario
     const validar = (metodo,event) => {
         event.preventDefault();
     
         if (!nombre || nombre.trim() === "") {
-            Swal.fire("Campo Nombre inválido", "Escribe el nombre del cliente", "warning");
+            Swal.fire("Campo Nombre inválido", "Escribe el nombre del cliente.", "warning");
             return;
         }
         if (!num_telefonico || num_telefonico.trim() === "" || num_telefonico.length < 10) {
-            Swal.fire("Campo Teléfono inválido", "Escribe un número de teléfono válido para el cliente", "warning");
+            Swal.fire("Campo Teléfono inválido", "Escribe un número de teléfono válido para el cliente.", "warning");
             return;
         }
         if (!correo || correo.trim() === "" || !emailStatus) {
-            Swal.fire("Campo Correo inválido", "Escribe un correo válido del cliente", "warning");
+            Swal.fire("Campo Correo inválido", "Escribe un correo válido del cliente.", "warning");
             return;
         }
-        if (!membresia) {
-            Swal.fire("Campo Membresía vacío", "Selecciona un tipo de membresía", "warning");
+        if (!membresia || membresia=="" && metodo=="POST") {
+            Swal.fire("Sin membresía seleccionada", "Seleccione un tipo de membresía.", "warning");
             return;
         }
-        if (!num_tarjeta || num_tarjeta.trim() === "" || num_tarjeta.length < 16) {
-            Swal.fire("Campo Número de tarjeta inválido", "Escribe un número de tarjeta válido de 16 dígitos", "warning");
+        if (((!num_tarjeta || num_tarjeta.trim() === "") || num_tarjeta.length < 16) && metodo=="POST") {
+            Swal.fire("Campo Número de tarjeta inválido", "Escribe un número de tarjeta válido de 16 dígitos.", "warning");
             return;
         }
-        if ((!cvv || cvv==="") || cvv.length < 3) {
-            Swal.fire("Campo CVV inválido", "Escribe un CVV válido de 3 digitos", "warning");
+        if (((!cvv || cvv==="") || cvv.length < 3) && metodo=="POST") {
+            Swal.fire("Campo CVV inválido", "Escribe un CVV válido de 3 digitos.", "warning");
             return;
         }
-        if (!tipo_tarjeta || tipo_tarjeta.trim() === "") {
-            Swal.fire("Campo Tipo de tarjeta vacío", "Seleccione el tipo de tarjeta", "warning");
+        if ((!tipo_tarjeta || tipo_tarjeta.trim() === "") && metodo=="POST") {
+            Swal.fire("Campo Tipo de tarjeta vacío", "Seleccione el tipo de tarjeta.", "warning");
             return;
         }
-        if (!fecha_venc || fecha_venc.trim() === "") {
-            Swal.fire("Campo Fecha de vencimiento inválido", "Escribe la fecha de vencimiento", "warning");
+        if ((!fecha_venc || fecha_venc.trim() === "") && metodo=="POST") {
+            Swal.fire("Campo Fecha de vencimiento inválido", "Escribe la fecha de vencimiento.", "warning");
             return;
         }
         const parametros = {
             nombre,
-            cotrasenia: contra == null ? `PowerPass_${Math.random().toString(36).substring(2, 10)}` : contra,
+            cotrasenia: contra == null ? `${(Math.random().toString().slice(2, 7))}` : contra,
             correo,
             identificadorusuario: identificador == null ? `PZC_${(Math.random().toString().slice(2, 7))}` : identificador,
             rol: 'Cliente',
@@ -242,7 +236,7 @@ function Clientes () {
                 id: idMembresia == null ? parseInt(membresia, 10) : idMembresia
             }
         };
-    
+        
         enviarSolicitud(metodo, parametros, urlClientes);
     };
     
@@ -296,7 +290,7 @@ function Clientes () {
             cvv: parseInt(cvv_),
             numero_tarjeta: numero_tarjeta_,
         };
-    
+        
         enviarSolicitud("PUT", parametros, urlClientes, id_);
     };
     
@@ -314,6 +308,7 @@ function Clientes () {
             closeModal();
             closeModalAct();
             closeActMemModal();
+            
             if(result.data.status == "OK" && metodo=="POST"){
                 Swal.fire("Cliente registrado","Cliente registrado correctamente", "success");         
             } 
@@ -334,10 +329,8 @@ function Clientes () {
         });
     }
 
-    //Filtrado
     const [searchTerm, setSearchTerm] = useState('');
 
-    // Filtrar membresia
     useEffect(() => {
         setFilteredClientes(
             membresiaCliente.filter(cliente =>
@@ -347,13 +340,10 @@ function Clientes () {
         );
     }, [membresiaCliente, searchTerm]);
     
-
-    // Actualizar búsqueda
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    //Validar e-mail
     const validarEmail = (e) => {
         let campo = e;
             
@@ -366,7 +356,6 @@ function Clientes () {
         }
     }
 
-    //Validar e-mail pero en actualiz de correo
     const validarPrevEmail = (correo) => {
         let emailRegex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
         
@@ -375,7 +364,21 @@ function Clientes () {
         }else {
           setEmailStatus(false);
         }
-      }
+    }
+
+    const handleInputChange = (e) => {
+    let value = e.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    
+    if (value.length > 2) {
+        value = value.slice(0, 2) + "/" + value.slice(2);
+    }
+    
+    value = value.slice(0, 5);
+    
+    setFechaVenc(value); 
+    };
+      
 
     return (
         <>
@@ -421,7 +424,7 @@ function Clientes () {
                                         <Button className="me-1" variant="success" onClick={() => activarDesactivarC(cliente, false)}>
                                             Activar </Button>
                                     )}
-                                    <Button variant="warning" onClick={() => { openActModal(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus,cliente.idM,cliente.adquisicion,cliente.tipo_membresia) }}>Editar</Button>{' '}
+                                    <Button variant="warning" onClick={() => {limpiar(); openActModal(cliente.idC, cliente.nombre, cliente.correo, cliente.cotrasenia, cliente.identificadorusuario, cliente.telefono, cliente.membresia, cliente.cvv, cliente.numero_tarjeta, cliente.estatus,cliente.idM,cliente.adquisicion,cliente.tipo_membresia) }}>Editar</Button>{' '}
                                 </>                    
                             } 
                         />
@@ -448,9 +451,9 @@ function Clientes () {
                                 <Col md={8}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Label className="ms-1 fw-bold">Nombre completo:</Form.Label>
                                             <Form.Control type="text" placeholder="Nombre" 
-                                                 onChange={(e) => setNombre(e.target.value)} required/>
+                                                 onChange={(e) => setNombre(e.target.value)} value={nombre} required/>
                                         </Form.Group>
                                     </Form>
                                 </Col>
@@ -458,8 +461,8 @@ function Clientes () {
                                 <Col md={4}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
-                                            <Form.Control type="number" placeholder="Número telefónico" 
+                                            <Form.Label className="ms-1 fw-bold">Número telefónico:</Form.Label>
+                                            <Form.Control type="number" placeholder="Número telefónico"  value={num_telefonico}
                                                 onChange={(e) => setNum(e.target.value)} maxLength="10"
                                                 onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
                                                     if (e.target.value < 0) e.target.value = "";
@@ -472,8 +475,9 @@ function Clientes () {
                                 <Col md={12}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Label className="ms-1 fw-bold">Correo electrónico :</Form.Label>
                                             <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
+                                                value={correo}
                                                 onChange={(e) => setCorreo(e.target.value)}
                                                 onInput={(e) => { validarEmail(e.target); }}/>
                                         </Form.Group>
@@ -506,8 +510,8 @@ function Clientes () {
                     <Col md={12}>
                         <Form>
                             <Form.Group className="mb-3">
-                                <Form.Label>Tipo de membresía:</Form.Label>
-                                <Form.Select required onChange={(e) => setMembresia(e.target.value)}>
+                                <Form.Label className="ms-1 fw-bold">Tipo de membresía:</Form.Label>
+                                <Form.Select required onChange={(e) => {setMembresia(e.target.value);}}>
                                     <option id="selected" value={null}>Selecciona una membresia</option>
                                     {membresias.map((membresia => (
                                         <option key={membresia.id} value={membresia.id}>{membresia.tipo_membresia}</option>
@@ -521,8 +525,9 @@ function Clientes () {
                     <Col md={6}>
                         <Form>
                             <Form.Group className="mb-3">
-                                <Form.Label>Número de tarjeta:</Form.Label>
-                                <Form.Control required type="number" placeholder="Número de tarjeta" 
+                                <Form.Label className="ms-1 fw-bold">Número de tarjeta:</Form.Label>
+                                <Form.Control required type="number" placeholder="Número de tarjeta"
+                                    value={num_tarjeta}
                                     onChange={(e) => setNumTarjeta(e.target.value)} 
                                     onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
                                         if (e.target.value < 0) e.target.value = "";
@@ -530,7 +535,7 @@ function Clientes () {
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Tipo de tarjeta:</Form.Label>
+                                <Form.Label className="ms-1 fw-bold">Tipo de tarjeta:</Form.Label>
                                 <Form.Select required onChange={(e) => setTipoTarjeta(e.target.value)}>
                                     <option value="">Selecciona tu banco</option>
                                     <option value="BBVA">BBVA</option>
@@ -552,8 +557,9 @@ function Clientes () {
                     <Col md={6}>
                         <Form>
                         <Form.Group className="mb-3">
-                            <Form.Label>CVV:</Form.Label>
+                            <Form.Label className="ms-1 fw-bold">CVV:</Form.Label>
                             <Form.Control required type="number" placeholder="CVV"
+                                value={cvv}
                                 onChange={(e) => setCVV(e.target.value)} 
                                 onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
                                     if (e.target.value < 0) e.target.value = "";
@@ -562,12 +568,12 @@ function Clientes () {
                             </Form.Group>
 
                             <Form.Group className="mb-3">
-                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
+                                <Form.Label className="ms-1 fw-bold">Fecha de vencimiento:</Form.Label><br/>
                                 <Form.Control
                                     required
                                     type="text"
                                     placeholder="MM/YY"
-                                    maxLength={5} 
+                                    maxLength={5}
                                     value={fecha_venc}
                                     onChange={(e) => handleInputChange(e)}
                                 />
@@ -601,7 +607,7 @@ function Clientes () {
                                 <Col md={8}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Nombre completo:</Form.Label>
+                                            <Form.Label className="ms-1 fw-bold">Nombre completo:</Form.Label>
                                             <Form.Control type="text" placeholder="Nombre" 
                                                 value={nombre} onChange={(e) => setNombre(e.target.value)} required/>
                                         </Form.Group>
@@ -611,7 +617,7 @@ function Clientes () {
                                 <Col md={4}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Número telefónico:</Form.Label>
+                                            <Form.Label className="ms-1 fw-bold">Número telefónico:</Form.Label>
                                             <Form.Control type="number" placeholder="Número telefónico" 
                                                 value={num_telefonico} onChange={(e) => setNum(e.target.value)} maxLength="10" 
                                                 onInput={(e) => {e.target.value = e.target.value.slice(0, 10);
@@ -622,14 +628,20 @@ function Clientes () {
                                 </Col>
                             </Row>
                             <Row className="d-flex justify-content-center">
-                                <Col md={12}>
+                                <Col md={8}>
                                     <Form>
                                         <Form.Group className="mb-3">
-                                            <Form.Label className="ms-1">Correo electrónico :</Form.Label>
+                                            <Form.Label className="ms-1 fw-bold">Correo electrónico:</Form.Label>
                                             <Form.Control type="email" inputMode="email" placeholder="example@correo.com" required 
                                                 value={correo} onChange={(e) => setCorreo(e.target.value)}
                                                 onInput={(e) => { validarEmail(e.target); }}/>
                                         </Form.Group>
+                                    </Form>
+                                </Col>
+                                <Col md={4}>
+                                    <Form>
+                                        <Form.Label className="ms-1 fw-bold">Contraseña:</Form.Label><br/>
+                                        <Form.Label className="pt-1 ps-1">{contra}</Form.Label>
                                     </Form>
                                 </Col>
                             </Row>
@@ -637,115 +649,9 @@ function Clientes () {
                     </Container>
                 </Modal.Body>
                 <Modal.Footer>
-                        <Button className="fw-bold" variant="warning" onClick={() => actualizarMembresia()}>Siguiente</Button>{' '}
+                    <Button className="fw-bold" variant="warning"  onClick={(e) => validar("PUT",e)}>Actualizar</Button>{' '}
                 </Modal.Footer>
             </Modal>
-
-            <Modal
-            show={modalActMemIsOpen}
-            onHide={closeActMemModal}
-            size="lg"
-            aria-labelledby="contained-modal-title-vcenter"
-            centered
-            >
-            <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter">
-                    Actualizar cliente
-                </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-                <Container>
-                <Row className="d-flex justify-content-center mt-3">
-                    <Col md={12}>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Tipo de membresía:</Form.Label>
-                                <Form.Select 
-                                    required
-                                    onChange={(e) => setIdMembresia(e.target.value)}
-                                >
-                                    <option value="">Selecciona una membresía</option>
-                                    {membresias.map((membresia) => (
-                                        <option key={membresia.id} value={membresia.id}>
-                                            {membresia.tipo_membresia}
-                                        </option>
-                                    ))}
-                                </Form.Select>
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                </Row>
-                <Row className="d-flex justify-content-center">
-                    <Col md={6}>
-                        <Form>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Número de tarjeta:</Form.Label>
-                                <Form.Control required type="number" placeholder="Número de tarjeta" 
-                                    value={num_tarjeta} onChange={(e) => setNumTarjeta(e.target.value)} 
-                                    onInput={(e) => {e.target.value = e.target.value.slice(0, 16);
-                                        if (e.target.value < 0) e.target.value = "";
-                                    }}/>
-                            </Form.Group>
-
-                            <Form.Group className="mb-3">
-                                <Form.Label>Tipo de tarjeta:</Form.Label>
-                                <Form.Select 
-                                    required 
-                                    onChange={(e) => setTipoTarjeta(e.target.value)}
-                                >
-                                    <option value="">Selecciona tu banco</option>
-                                    <option value="BBVA">BBVA</option>
-                                    <option value="Banamex">Banamex</option>
-                                    <option value="Banorte">Banorte</option>
-                                    <option value="Santander">Santander</option>
-                                    <option value="HSBC">HSBC</option>
-                                    <option value="Scotiabank">Scotiabank</option>
-                                    <option value="Inbursa">Inbursa</option>
-                                    <option value="Banco Azteca">Banco Azteca</option>
-                                    <option value="BanCoppel">BanCoppel</option>
-                                    <option value="Afirme">Afirme</option>
-                                    <option value="Banco del Bienestar">Banco del Bienestar</option>
-                                    <option value="Intercam Banco">Intercam Banco</option>
-                                </Form.Select>
-                            </Form.Group>
-                        </Form>
-                    </Col>
-
-                    <Col md={6}>
-                        <Form>
-                        <Form.Group className="mb-3">
-                            <Form.Label>CVV:</Form.Label>
-                            <Form.Control required type="number" placeholder="CVV"
-                                value={cvv}
-                                onChange={(e) => setCVV(e.target.value)} 
-                                onInput={(e) => { e.target.value = e.target.value.slice(0, 3);
-                                    if (e.target.value < 0) e.target.value = "";
-                                    }}
-                            />
-                            </Form.Group>
-
-                            <Form.Group className="mb-3">
-                                <Form.Label>Fecha de vencimiento:</Form.Label><br/>
-                                <Form.Control
-                                    required
-                                    type="text"
-                                    placeholder="MM/YY"
-                                    maxLength={5}
-                                    value={fecha_venc}
-                                    onChange={(e) => handleInputChange(e)}
-                                />
-                            </Form.Group>
-                        </Form>
-                    </Col>
-                    </Row>
-                </Container>
-            </Modal.Body>
-            <Modal.Footer>
-                <Button className="fw-bold" variant="outline-secondary" onClick={regresarModalAct}>Regresar</Button>{' '}
-                <Button className="fw-bold" variant="warning"  onClick={(e) => validar("PUT",e)}>Actualizar</Button>{' '}
-            </Modal.Footer>
-            </Modal>
-
         </>
     )
 }

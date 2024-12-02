@@ -32,7 +32,7 @@ function Perfil(){
     const urlGerente = "http://localhost:8080/api/power/gerente/";
     const [ showPassword, setShowPassword] = useState(false); 
     const [ emailStatus, setEmailStatus ] = useState(false);
-    //Gerente
+    
     const [ correo, setCorreo ] = useState("");
     const [ contra, setContra ] = useState("");
     const [ estatus, setEstatus]= useState(true);

@@ -5,7 +5,6 @@ import Menu from "./components/Menu";
 
 import Form from 'react-bootstrap/Form';
 
-//Canvas
 let CanvasJS = CanvasJSReact.CanvasJS;
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -21,7 +20,6 @@ function Ingresos() {
     const [fechaFin, setFechaFin] = useState("");
     const [stringhisto, setStringhisto] = useState([]);
 
-    // Traer datos de membresías
     useEffect(() => {
         getMembresias();
     }, []);

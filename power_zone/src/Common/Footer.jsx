@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import facebook from '../img/facebook.png'
-import instagram from '../img/instagram.png'
-import twitter from '../img/twitter.png'
-import Gmail from '../img/mail.png'
-import derecho_c from '../img/derecho_c.png'
+import facebook from './img/facebook.png'
+import instagram from './img/instagram.png'
+import twitter from './img/twitter.png'
+import Gmail from './img/mail.png'
+import derecho_c from './img/derecho_c.png'
 
 function Footer() {
   return (
@@ -15,7 +15,6 @@ function Footer() {
                 src={derecho_c}
                 alt='derecho_c'
                 className='me-3'
-                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             PowerZone</div>
@@ -24,28 +23,24 @@ function Footer() {
                 src={facebook}
                 alt='Facebook'
                 className='me-4'
-                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={instagram}
                 alt='Instagram'
                 className='me-4'
-                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={twitter}
                 alt='Twitter'
                 className='me-4'
-                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
             <img 
                 src={Gmail}
                 alt='Gmail'
                 className='me-4'
-                draggable="false"
                 style={{ width: '4vh', height: 'auto' }}
             />
         </div>
@@ -54,4 +49,4 @@ function Footer() {
   );
 }
 
-export default Footer; 
+export default Footer;
